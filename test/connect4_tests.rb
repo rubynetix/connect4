@@ -6,7 +6,7 @@ class Connect4Tests < Helper
   RESULTS = %w(win loss draw)
 
   def new_connect4
-    Connect4.new UI.new
+    Connect4.new UI.new, GameStats.new
   end
 
   def tst_launch_game
@@ -20,7 +20,7 @@ class Connect4Tests < Helper
 
       # Postconditions
       begin
-        assert_true (RESULTS.include? result)
+        assert_true (RESULTS.include? result), 'Game must return a result'
       end
     end
   end
