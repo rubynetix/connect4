@@ -1,4 +1,4 @@
-require_relative 'Helper'
+require_relative 'helper'
 
 class GameStatsTest < Helper
 
