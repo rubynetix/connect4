@@ -23,9 +23,7 @@ class GameBoard
   def map
     # Preconditions
     # None
-    iter do |r, c, counter|
-      @board[r][c] = yield(r, c, counter)
-    end
+    iter {|r, c, counter| @board[r][c] = yield(r, c, counter)}
 
     # Postconditions
     # TODO
@@ -58,5 +56,7 @@ class GameBoard
   end
 end
 
-class ColumnFullError < StandardError; end
-class InvalidColumnError < StandardError; end
+class ColumnFullError < StandardError;
+end
+class InvalidColumnError < StandardError;
+end
