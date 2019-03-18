@@ -24,6 +24,4 @@ class Game
   def update_board(action)
     raise(NotImplementedError)
   end
-
-
 end
