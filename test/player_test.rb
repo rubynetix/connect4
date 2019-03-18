@@ -10,8 +10,6 @@ class PlayerTest < Test::Unit::TestCase
 
   def teardown; end
 
-  def initialize;  end
-
   def tst_take_turn
     # Preconditions
       # None
