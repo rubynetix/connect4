@@ -7,7 +7,6 @@ class GameBoard
   end
 
   def place(counter, col)
-    # Preconditions
     raise InvalidColumnError if col < 0 || col > @size
     raise ColumnFullError if row(col) == INVALID_ROW
 
@@ -15,31 +14,24 @@ class GameBoard
   end
 
   def clear
-    # Preconditions
-    # None
     map {|_, _, _| nil}
   end
 
   def map
-    # Preconditions
-    # None
     iter {|r, c, counter| @board[r][c] = yield(r, c, counter)}
-
-    # Postconditions
-    # TODO
   end
 
   def iter
-    # Preconditions
-    # None
     @board.each do |r|
       r.each do |c|
         yield(r, c, @board[r][c])
       end
     end
+  end
 
-    # Postconditions
-    # - all elements should be unchanged
+  # Useful for testing only
+  def at(r, c)
+    @board[r][c]
   end
 
   private
