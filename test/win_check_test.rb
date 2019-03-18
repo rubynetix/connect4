@@ -1,15 +1,15 @@
 require 'test/unit'
-require 'lib/models/game_board'
-require 'lib/models/counter'
-require 'lib/models/otto_win_check'
-require 'lib/models/toot_win_check'
-require 'lib/models/red_win_check'
-require 'lib/models/yellow_win_check'
+require_relative '../lib/models/game_board'
+require_relative '../lib/models/counter'
+require_relative '../lib/models/otto_win_check'
+require_relative '../lib/models/toot_win_check'
+require_relative '../lib/models/red_win_check'
+require_relative '../lib/models/yellow_win_check'
 
 class WinCheckTest < Test::Unit::TestCase
   TEST_ITER = 10
 
-  def setup
+  def _setup
     @o_counter = Counter.new("O", "../TODO/")
     @t_counter = Counter.new("T", "../TODO/")
 
