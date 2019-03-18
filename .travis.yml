@@ -1,0 +1,19 @@
+language: ruby
+sudo: false
+dist: xenial
+
+notifications:
+  email: false
+
+rvm: 2.5.3
+
+stages:
+  - test
+
+jobs:
+  include:
+    - stage: test
+      before_install:
+        - ./scripts/setup.sh
+      script:
+        - bundle exec rake
