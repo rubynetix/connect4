@@ -7,6 +7,15 @@ notifications:
 
 rvm: 2.5.3
 
+env:
+  - GTK=3.3
+  - GTK=latest
+
+addons:
+  apt:
+    packages:
+      - libgtk-3-dev
+
 stages:
   - test
 
