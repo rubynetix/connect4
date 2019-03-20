@@ -1,4 +1,6 @@
 require 'test/unit'
+require_relative '../lib/models/game_board'
+require_relative '../lib/models/counter'
 
 class GameBoardTest < Test::Unit::TestCase
   TEST_ITER = 10
@@ -15,6 +17,23 @@ class GameBoardTest < Test::Unit::TestCase
 
   def rand_board(size: rand(MIN_SIZE..MAX_SIZE))
     raise NotImplementedError
+  end
+
+  def test_smoke
+    puts "Smoke test..."
+    board = GameBoard.new(5)
+
+    puts board.to_s
+
+    board.place(YellowCounter.new, 1)
+
+    puts board.to_s
+
+    board.clear
+
+    puts board.to_s
+
+    puts "Ok"
   end
 
   def tst_clear
