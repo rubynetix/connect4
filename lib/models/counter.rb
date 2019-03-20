@@ -1,29 +1,35 @@
+require 'singleton'
+
 class Counter
-  attr_accessor :symbol, :sprite
+  include Singleton
 
-  def initialize(symbol, sprite_path)
-    @symbol = symbol
-    @sprite = sprite_path
-  end
+  @@symbol = nil
+  @@sprite_path = nil
 
-  def to_s
-    symbol
+  def self.to_s
+    @@symbol
   end
 end
 
 
-class EmptyCounter < Counter
-  def initialize(symbol = "-", sprite_path="")
-    super(symbol, sprite_path)
-  end
+class EmptyCounter
+  include Singleton
 
-  def ==(other)
-    other.instance_of?(EmptyCounter)
+  @@symbol = "-"
+  @@sprite_path = "/TO/DO"
+
+  def self.to_s
+    @@symbol
   end
 end
 
-class YellowCounter < Counter
-  def initialize(symbol = "Y", sprite_path="")
-    super(symbol, sprite_path)
+class YellowCounter
+  include Singleton
+
+  @@symbol = "Y"
+  @@sprite_path = "/TO/DO"
+
+  def self.to_s
+    @@symbol
   end
 end

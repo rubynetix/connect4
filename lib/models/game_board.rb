@@ -5,11 +5,10 @@ class GameBoard
 
   def initialize(size)
     @size = size
-    @board = Array.new(@size) {Array.new(@size) {EmptyCounter.new}}
+    @board = Array.new(@size) {Array.new(@size, EmptyCounter)}
   end
 
   def place(counter, col)
-    raise InvalidCounterError unless counter.is_a?(Counter)
     raise InvalidColumnError unless col >= 0 && col < @size
     raise ColumnFullError if col_full?(col)
 
@@ -17,7 +16,7 @@ class GameBoard
   end
 
   def clear
-    map {|_, _, _| EmptyCounter.new}
+    map {|_, _, _| EmptyCounter}
   end
 
   def map
@@ -54,7 +53,7 @@ class GameBoard
   def row(col)
     height = INVALID_ROW
     iter do |r, c, counter|
-      if c == col && counter == EmptyCounter.new
+      if c == col && counter == EmptyCounter
         height = [height, r].max
       end
     end
@@ -65,4 +64,3 @@ end
 
 class ColumnFullError < StandardError; end
 class InvalidColumnError < StandardError; end
-class InvalidCounterError < StandardError; end

@@ -25,7 +25,7 @@ class GameBoardTest < Test::Unit::TestCase
 
     puts board.to_s
 
-    board.place(YellowCounter.new, 1)
+    board.place(YellowCounter, 1)
 
     puts board.to_s
 
