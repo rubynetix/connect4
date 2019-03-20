@@ -1,6 +1,9 @@
 require 'test/unit'
 require_relative '../lib/models/game_board'
-require_relative '../lib/models/counter'
+require_relative '../lib/models/o_counter'
+require_relative '../lib/models/t_counter'
+require_relative '../lib/models/red_counter'
+require_relative '../lib/models/yellow_counter'
 require_relative '../lib/models/otto_win_check'
 require_relative '../lib/models/toot_win_check'
 require_relative '../lib/models/red_win_check'
@@ -10,11 +13,6 @@ class WinCheckTest < Test::Unit::TestCase
   TEST_ITER = 10
 
   def _setup
-    @o_counter = Counter.new("O", "../TODO/")
-    @t_counter = Counter.new("T", "../TODO/")
-
-    @red_counter = Counter.new("R", "../TODO/")
-    @yellow_counter = Counter.new("Y", "../TODO/")
 
   end
 
@@ -62,17 +60,17 @@ class WinCheckTest < Test::Unit::TestCase
     board_list = []
 
     horiz_win_board = GameBoard.new(5)
-    horiz_win_board.place(@o_counter, 1)
-    horiz_win_board.place(@t_counter, 2)
-    horiz_win_board.place(@t_counter, 3)
-    horiz_win_board.place(@o_counter, 4)
+    horiz_win_board.place(OCounter.instance, 1)
+    horiz_win_board.place(TCounter.instance, 2)
+    horiz_win_board.place(TCounter.instance, 3)
+    horiz_win_board.place(OCounter.instance, 4)
     board_list.push(horiz_win_board)
 
     vert_win_board = GameBoard.new(5)
-    vert_win_board.place(@o_counter, 1)
-    vert_win_board.place(@t_counter, 1)
-    vert_win_board.place(@t_counter, 1)
-    vert_win_board.place(@o_counter, 1)
+    vert_win_board.place(OCounter.instance, 1)
+    vert_win_board.place(TCounter.instance, 1)
+    vert_win_board.place(TCounter.instance, 1)
+    vert_win_board.place(OCounter.instance, 1)
     board_list.push(vert_win_board)
 
     return board_list
@@ -82,17 +80,17 @@ class WinCheckTest < Test::Unit::TestCase
     board_list = []
 
     horiz_win_board = GameBoard.new(5)
-    horiz_win_board.place(@t_counter, 1)
-    horiz_win_board.place(@o_counter, 2)
-    horiz_win_board.place(@o_counter, 3)
-    horiz_win_board.place(@t_counter, 4)
+    horiz_win_board.place(TCounter.instance, 1)
+    horiz_win_board.place(OCounter.instance, 2)
+    horiz_win_board.place(OCounter.instance, 3)
+    horiz_win_board.place(TCounter.instance, 4)
     board_list.push(horiz_win_board)
 
     vert_win_board = GameBoard.new(5)
-    vert_win_board.place(@t_counter, 1)
-    vert_win_board.place(@o_counter, 1)
-    vert_win_board.place(@o_counter, 1)
-    vert_win_board.place(@t_counter, 1)
+    vert_win_board.place(TCounter.instance, 1)
+    vert_win_board.place(OCounter.instance, 1)
+    vert_win_board.place(OCounter.instance, 1)
+    vert_win_board.place(TCounter.instance, 1)
     board_list.push(vert_win_board)
 
     return board_list
@@ -102,13 +100,13 @@ class WinCheckTest < Test::Unit::TestCase
 
   def tst_ot_neutral
     ot_neutral_board = GameBoard.new(5)
-    ot_neutral_board.place(@o_counter, 1)
-    ot_neutral_board.place(@t_counter, 4)
+    ot_neutral_board.place(OCounter.instance, 1)
+    ot_neutral_board.place(TCounter.instance, 4)
 
     # Preconditions
     begin
       assert_true( ot_neutral_board.is_a?(GameBoard), "Board is not of type GameBoard")
-      assert_true( board_counter_check(ot_neutral_board, [@o_counter, @t_counter]), "GameBoard contains invalid counter types")
+      assert_true( board_counter_check(ot_neutral_board, [OCounter.instance, TCounter.instance]), "GameBoard contains invalid counter types")
     end
 
     otto_result = OttoWinCheck.new().is_winner?(ot_neutral_board)
@@ -128,7 +126,7 @@ class WinCheckTest < Test::Unit::TestCase
       # Preconditions
       begin
         assert_true( otto_win_board.is_a?(GameBoard), "Board is not of type GameBoard")
-        assert_true( board_counter_check(otto_win_board, [@o_counter, @t_counter]), "GameBoard contains invalid counter types")
+        assert_true( board_counter_check(otto_win_board, [OCounter.instance, TCounter.instance]), "GameBoard contains invalid counter types")
       end
 
       otto_result = OttoWinCheck.new().is_winner?(otto_win_board)
@@ -151,7 +149,7 @@ class WinCheckTest < Test::Unit::TestCase
       # Preconditions
       begin
         assert_true( toot_win_board.is_a?(GameBoard), "Board is not of type GameBoard")
-        assert_true( board_counter_check(toot_win_board, [@o_counter, @t_counter]), "GameBoard contains invalid counter types")
+        assert_true( board_counter_check(toot_win_board, [OCounter.instance, TCounter.instance]), "GameBoard contains invalid counter types")
       end
 
       otto_result = OttoWinCheck.new().is_winner?(toot_win_board)
@@ -168,13 +166,13 @@ class WinCheckTest < Test::Unit::TestCase
 
   def tst_red_yellow_neutral
     red_yellow_neutral_board = GameBoard.new(5)
-    red_yellow_neutral_board.place(@red_counter, 1)
-    red_yellow_neutral_board.place(@yellow_counter, 1)
+    red_yellow_neutral_board.place(RedCounter.Instance, 1)
+    red_yellow_neutral_board.place(YellowCounter.Instance, 1)
 
     # Preconditions
     begin
       assert_true( red_yellow_neutral_board.is_a?(GameBoard), "Board is not of type GameBoard")
-      assert_true( board_counter_check(red_yellow_neutral_board, [@red_counter, @yellow_counter]), "GameBoard contains invalid counter types")
+      assert_true( board_counter_check(red_yellow_neutral_board, [RedCounter.Instance, YellowCounter.Instance]), "GameBoard contains invalid counter types")
     end
 
     red_result = RedWinCheck.new().is_winner?(red_yellow_neutral_board)
@@ -189,14 +187,14 @@ class WinCheckTest < Test::Unit::TestCase
 
 
   def tst_red_win
-    red_win_boards = generate_red_yellow_win_boards(@red_counter, @yellow_counter)
+    red_win_boards = generate_red_yellow_win_boards(RedCounter.Instance, YellowCounter.Instance)
 
     red_win_boards.each do |red_win_board|
 
       # Preconditions
       begin
         assert_true( red_win_board.is_a?(GameBoard), "Board is not of type GameBoard")
-        assert_true( board_counter_check(red_win_board, [@red_counter, @yellow_counter]), "GameBoard contains invalid counter types")
+        assert_true( board_counter_check(red_win_board, [RedCounter.Instance, YellowCounter.Instance]), "GameBoard contains invalid counter types")
       end
 
       red_result = RedWinCheck.new().is_winner?(red_win_board)
@@ -213,13 +211,13 @@ class WinCheckTest < Test::Unit::TestCase
 
 
   def tst_yellow_win
-    yellow_win_boards = generate_red_yellow_win_boards(@yellow_counter, @red_counter)
+    yellow_win_boards = generate_red_yellow_win_boards(YellowCounter.Instance, RedCounter.Instance)
 
     yellow_win_boards.each do |yellow_win_board|
       # Preconditions
       begin
         assert_true( yellow_win_board.is_a?(GameBoard), "Board is not of type GameBoard")
-        assert_true( board_counter_check(yellow_win_board, [@red_counter, @yellow_counter]), "GameBoard contains invalid counter types")
+        assert_true( board_counter_check(yellow_win_board, [RedCounter.Instance, YellowCounter.Instance]), "GameBoard contains invalid counter types")
       end
 
       red_result = RedWinCheck.new().is_winner?(yellow_win_board)
