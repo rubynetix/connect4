@@ -3,15 +3,16 @@ require_relative '../../lib/models/counter'
 class GameBoard
   INVALID_ROW = -1
 
-  attr_accessor :size
+  attr_accessor :rows, :cols
 
-  def initialize(size)
-    @size = size
-    @board = Array.new(@size) {Array.new(@size, EmptyCounter.instance)}
+  def initialize(rows = 6, cols = 7)
+    @rows = rows
+    @cols = cols
+    @board = Array.new(@rows) {Array.new(@cols, EmptyCounter.instance)}
   end
 
   def place(counter, col)
-    raise InvalidColumnError unless col >= 0 && col < @size
+    raise InvalidColumnError unless col >= 0 && col < @cols
     raise ColumnFullError if col_full?(col)
 
     @board[row(col)][col] = counter
