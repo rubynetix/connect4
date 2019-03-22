@@ -1,0 +1,3 @@
+class LocalPlayer < Player
+
+end
