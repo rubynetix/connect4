@@ -36,44 +36,6 @@ class GameBoard
     end
   end
 
-  # def rows
-  #   @board.each do |r|
-  #     yield r
-  #   end
-  # end
-
-  # def cols
-  #   (0...@size).each do |c|
-  #     col = []
-  #     (0...@size).each do |r|
-  #       col.append(@board[r][c])
-  #     end
-  #     yield col
-  #   end
-  # end
-
-  # def left_diags
-  #   (0...2*@size-1).each do |d|
-  #     diag = []
-  #     r_top = [0, d - @size + 1].max
-  #     r_bot = [d, @size - 1].min
-  #     (r_top..r_bot).each do |r|
-  #       diag.append(@board[r][d - r])
-  #     end
-  #     yield diag
-  #   end
-  # end
-  
-  # def right_diags
-  #   (0...2*@size-1).each do |d|
-  #     diag = []
-  #     r_top = [0, d - @size + 1].max
-  #     r_bot = [d, @size - 1].min
-  #     r_bot.downto(r_top).each {|r| diag.append(@board[r][d - r])}
-  #     yield diag
-  #   end
-  # end
-
   def to_s
     s = ''
     @board.each do |r|

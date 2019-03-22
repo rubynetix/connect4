@@ -14,11 +14,11 @@ class GameBoardTest < Test::Unit::TestCase
   def teardown;
   end
 
-  def empty_board(rows: 6, cols: 7)
+  def empty_board(rows: rand(MIN_SIZE..MAX_SIZE), cols: rand(MIN_SIZE..MAX_SIZE))
     GameBoard.new(rows, cols)
   end
 
-  def rand_board(rows: 6, cols: 7, fill_factor: rand(1..100))
+  def rand_board(rows: rand(MIN_SIZE..MAX_SIZE), cols: rand(MIN_SIZE..MAX_SIZE), fill_factor: rand(1..100))
     board = empty_board(rows: rows, cols: cols)
     counters = ([fill_factor.abs.to_f, 1.0].min * board.rows * board.cols).floor
 
@@ -102,28 +102,4 @@ class GameBoardTest < Test::Unit::TestCase
       end
     end
   end
-
-  # def tst_smoke
-  #   board = rand_board(rows: 4, fill_factor: 0.5)
-  #
-  #   puts board.to_s
-  #   puts "-----------------"
-  #
-  #   board.rows {|r| puts "ROW == #{r.map(&:to_s)}"}
-  #   board.cols {|c| puts "COL == #{c.map(&:to_s)}"}
-  #   board.right_diags {|d| puts "RDIAG == #{d.map(&:to_s)}"}
-  #   board.left_diags {|d| puts "LDIAG == #{d.map(&:to_s)}"}
-  #
-  #   board.place(YellowCounter.instance, 0)
-  #
-  #   puts board.to_s
-  #   puts "-----------------"
-  #
-  #   board.rows {|r| puts "ROW == #{r.map(&:to_s)}"}
-  #   board.cols {|c| puts "COL == #{c.map(&:to_s)}"}
-  #   board.right_diags {|d| puts "RDIAG == #{d.map(&:to_s)}"}
-  #   board.left_diags {|d| puts "LDIAG == #{d.map(&:to_s)}"}
-  #
-  #
-  # end
 end
