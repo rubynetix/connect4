@@ -20,8 +20,8 @@ class WinCheck
     win2 = false
 
     create_strings(board, position).each do | string |
-      win1 = win1 or string.include? @win1_substring
-      win2 = win2 or string.include? @win2_substring
+      win1 = win1 or string.include? @win1_string
+      win2 = win2 or string.include? @win2_string
     end
 
     if win1 and win2 #or board.full?
