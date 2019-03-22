@@ -1,8 +1,8 @@
 require_relative 'game_stats'
-require_relative '../view/UI'
+require_relative '../views/ui'
 
 class Connect4
-  include GameStats
+
   def initialize(ui, stats)
     @ui = ui
     @game_stats = GameStats.new stats
