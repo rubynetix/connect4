@@ -3,15 +3,16 @@ require_relative '../../lib/models/counter'
 class GameBoard
   INVALID_ROW = -1
 
-  attr_accessor :size
+  attr_accessor :rows, :cols
 
-  def initialize(size)
-    @size = size
-    @board = Array.new(@size) {Array.new(@size, EmptyCounter.instance)}
+  def initialize(rows = 6, cols = 7)
+    @rows = rows
+    @cols = cols
+    @board = Array.new(@rows) {Array.new(@cols, EmptyCounter.instance)}
   end
 
   def place(counter, col)
-    raise InvalidColumnError unless col >= 0 && col < @size
+    raise InvalidColumnError unless col >= 0 && col < @cols
     raise ColumnFullError if col_full?(col)
 
     @board[row(col)][col] = counter
@@ -35,34 +36,43 @@ class GameBoard
     end
   end
 
-  def rows
-    @board.each do |r|
-      yield(r)
-    end
-  end
+  # def rows
+  #   @board.each do |r|
+  #     yield r
+  #   end
+  # end
 
-  def cols
-    (0...@size).each do |c|
-      col = []
-      (0...@size).each do |r|
-        col.append(@board[r][c])
-      end
-      yield(col)
-    end
-  end
+  # def cols
+  #   (0...@size).each do |c|
+  #     col = []
+  #     (0...@size).each do |r|
+  #       col.append(@board[r][c])
+  #     end
+  #     yield col
+  #   end
+  # end
 
-  def left_diags
-  end
-
-  def right_diags
-    (0...2*@size-1).each do |d|
-      diag = []
-      r_top = [0, d - @size + 1].max
-      r_bot = [d, @size - 1].min
-      r_bot.downto(r_top).each {|r| diag.append(@board[r][d - r])}
-      yield diag
-    end
-  end
+  # def left_diags
+  #   (0...2*@size-1).each do |d|
+  #     diag = []
+  #     r_top = [0, d - @size + 1].max
+  #     r_bot = [d, @size - 1].min
+  #     (r_top..r_bot).each do |r|
+  #       diag.append(@board[r][d - r])
+  #     end
+  #     yield diag
+  #   end
+  # end
+  
+  # def right_diags
+  #   (0...2*@size-1).each do |d|
+  #     diag = []
+  #     r_top = [0, d - @size + 1].max
+  #     r_bot = [d, @size - 1].min
+  #     r_bot.downto(r_top).each {|r| diag.append(@board[r][d - r])}
+  #     yield diag
+  #   end
+  # end
 
   def to_s
     s = ''

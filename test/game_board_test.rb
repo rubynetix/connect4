@@ -14,16 +14,16 @@ class GameBoardTest < Test::Unit::TestCase
   def teardown;
   end
 
-  def empty_board(size: rand(MIN_SIZE..MAX_SIZE))
-    GameBoard.new(size)
+  def empty_board(rows: 6, cols: 7)
+    GameBoard.new(rows, cols)
   end
 
-  def rand_board(size: rand(MIN_SIZE..MAX_SIZE), fill_factor: rand(1..100))
-    board = empty_board(size: size)
-    counters = ([fill_factor.abs.to_f, 1.0].min * board.size * board.size).floor
+  def rand_board(rows: 6, cols: 7, fill_factor: rand(1..100))
+    board = empty_board(rows: rows, cols: cols)
+    counters = ([fill_factor.abs.to_f, 1.0].min * board.rows * board.cols).floor
 
     while counters > 0
-      c = rand(0...board.size)
+      c = rand(0...board.cols)
       unless board.col_full?(c)
         board.place(@default_counter, c)
         counters -= 1
@@ -35,7 +35,7 @@ class GameBoardTest < Test::Unit::TestCase
 
   def test_clear
     TEST_ITER.times do
-      board = rand_board(size: 5, fill_factor: 0.5)
+      board = rand_board(fill_factor: 0.5)
 
       # Preconditions
       begin
@@ -54,16 +54,16 @@ class GameBoardTest < Test::Unit::TestCase
   def test_place_non_full
     TEST_ITER.times do
       board = rand_board(fill_factor: 0.5)
-      c = rand(0...board.size)
+      c = rand(0...board.cols)
 
       # Find a non-full column for this test
-      c = rand(0...board.size) while board.col_full?(c)
+      c = rand(0...board.cols) while board.col_full?(c)
       height_og = board.send(:row, c)
 
       # Preconditions
       begin
         assert_true(c >= 0)
-        assert_true(c < board.size)
+        assert_true(c < board.cols)
         assert_false(board.col_full?(c))
       end
 
@@ -84,12 +84,12 @@ class GameBoardTest < Test::Unit::TestCase
   def test_place_full
     TEST_ITER.times do
       board = rand_board(fill_factor: 1.0)
-      c = rand(0...board.size)
+      c = rand(0...board.cols)
 
       # Preconditions
       begin
         assert_true(c >= 0)
-        assert_true(c < board.size)
+        assert_true(c < board.cols)
       end
 
       # Cannot place counter if the board is full
@@ -102,4 +102,28 @@ class GameBoardTest < Test::Unit::TestCase
       end
     end
   end
+
+  # def tst_smoke
+  #   board = rand_board(rows: 4, fill_factor: 0.5)
+  #
+  #   puts board.to_s
+  #   puts "-----------------"
+  #
+  #   board.rows {|r| puts "ROW == #{r.map(&:to_s)}"}
+  #   board.cols {|c| puts "COL == #{c.map(&:to_s)}"}
+  #   board.right_diags {|d| puts "RDIAG == #{d.map(&:to_s)}"}
+  #   board.left_diags {|d| puts "LDIAG == #{d.map(&:to_s)}"}
+  #
+  #   board.place(YellowCounter.instance, 0)
+  #
+  #   puts board.to_s
+  #   puts "-----------------"
+  #
+  #   board.rows {|r| puts "ROW == #{r.map(&:to_s)}"}
+  #   board.cols {|c| puts "COL == #{c.map(&:to_s)}"}
+  #   board.right_diags {|d| puts "RDIAG == #{d.map(&:to_s)}"}
+  #   board.left_diags {|d| puts "LDIAG == #{d.map(&:to_s)}"}
+  #
+  #
+  # end
 end
