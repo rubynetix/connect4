@@ -25,6 +25,12 @@ class GameBoard
     row(col) == INVALID_ROW
   end
 
+  def possible_moves
+    moves = []
+    (1..@size).each { |col| moves.push(col) unless col_full? col }
+    moves
+  end
+
   def map
     iter {|r, c, counter| @board[r][c] = yield(r, c, counter)}
   end
