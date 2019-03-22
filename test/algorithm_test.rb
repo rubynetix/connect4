@@ -3,6 +3,10 @@
 require 'test/unit'
 require_relative '../lib/models/game_board'
 require_relative '../lib/models/counter'
+require_relative '../lib/controllers/computer_player'
+require_relative '../lib/controllers/algorithms/mcts'
+require_relative '../lib/controllers/algorithms/alpha_beta_pruning'
+require_relative '../lib/controllers/algorithms/random'
 
 class GameBoardTest < Test::Unit::TestCase
   TEST_ITER = 100
@@ -13,7 +17,8 @@ class GameBoardTest < Test::Unit::TestCase
     @default_counter = RedCounter.instance
   end
 
-  def teardown; end
+  def teardown;
+  end
 
   def empty_board(size: rand(MIN_SIZE..MAX_SIZE))
     GameBoard.new(size)
@@ -38,7 +43,7 @@ class GameBoardTest < Test::Unit::TestCase
   def test_random
     TEST_ITER.times do
       board = rand_board(size: 5, fill_factor: 0.5)
-      player = ComputerPlayer('name').extend RandomAction
+      player = ComputerPlayer.new('name').extend RandomAction
 
       possible_moves = board.possible_moves.dup
 
@@ -46,7 +51,44 @@ class GameBoardTest < Test::Unit::TestCase
 
       # Postconditions
       begin
-        assert_include possible_moves, move, "Move must be in the set of possible moves"
+        assert_include possible_moves, move, 'Move must be in the set of possible moves'
+      end
+    end
+  end
+
+
+  def tst_mcts
+    TEST_ITER.times do
+      board = rand_board(size: 5, fill_factor: 0.5)
+      player = ComputerPlayer.new('name').extend MCTS
+
+      possible_moves = board.possible_moves.dup
+
+      move = player.get_move board
+
+      # Postconditions
+      begin
+        assert_include possible_moves, move, 'Move must be in the set of possible moves'
+      end
+    end
+  end
+
+
+  def test_alpha_beta_pruning
+    TEST_ITER.times do
+      board = rand_board(size: 5, fill_factor: 0.5)
+      player = ComputerPlayer.new('name').extend AlphaBetaPruning
+
+      starting_board = board.to_s.dup
+      puts 'Before:', board
+
+      move = player.get_move board, RedCounter.instance
+      puts 'After:', board
+
+      # Postconditions
+      begin
+        assert_equal board.to_s, starting_board, 'The board should not be modified.'
+        assert_include board.possible_moves, move, 'Move must be in the set of possible moves.'
       end
     end
   end

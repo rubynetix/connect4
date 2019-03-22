@@ -5,9 +5,31 @@ class GameBoard
 
   attr_accessor :size
 
-  def initialize(size)
+  def initialize(size, board = nil)
     @size = size
-    @board = Array.new(@size) {Array.new(@size, EmptyCounter.instance)}
+    @board = if board.nil?
+               Array.new(@size) {Array.new(@size, EmptyCounter.instance)}
+             else
+               board
+             end
+  end
+
+  def initialize_copy(orig)
+
+    self.class.new @size.dup, @board.dup
+
+  end
+
+
+
+
+  def remove(col)
+    raise InvalidColumnError unless col >= 0 && col < @size
+    row = row(col)
+    row = @size unless row.positive?
+
+    puts 'Col: ', col, 'Row: ', row - 1
+    @board[row - 1][col] = EmptyCounter.instance
   end
 
   def place(counter, col)
@@ -27,8 +49,18 @@ class GameBoard
 
   def possible_moves
     moves = []
-    (1..@size).each { |col| moves.push(col) unless col_full? col }
+    (0..@size - 1).each {|col| moves.push(col) unless col_full? col}
     moves
+  end
+
+  def ended?
+    return true if possible_moves.size.zero?
+
+    false
+  end
+
+  def winner?
+    #
   end
 
   def map
@@ -69,5 +101,7 @@ class GameBoard
   end
 end
 
-class ColumnFullError < StandardError; end
-class InvalidColumnError < StandardError; end
+class ColumnFullError < StandardError;
+end
+class InvalidColumnError < StandardError;
+end

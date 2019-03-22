@@ -1,5 +1,5 @@
 module StateCheck
-  def draw?
+  def winner?(player)
 
   end
 end

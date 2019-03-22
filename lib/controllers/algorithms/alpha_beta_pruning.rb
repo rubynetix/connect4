@@ -1,5 +1,6 @@
 module AlphaBetaPruning
   MAX_SCORE = 10_000
+  MAX_DEPTH = 1
 
   class BestScores
     include Singleton
@@ -9,21 +10,36 @@ module AlphaBetaPruning
     @best_scores = {}
   end
 
-  def get_move(board)
+  def counter(prev)
+    YellowCounter.instance if prev == RedCounter.instance
+    RedCounter.instance
+  end
+
+  def get_move(board, counters)
     BestScores.instance.best_scores = {}
-    negamax board.dup, 1
+    negamax board.dup, counters
+
     BestScores.instance.best_scores.max_by {|_, value| value}[0]
   end
 
-  def negamax(board, turn, alpha: -MAX_SCORE, beta: MAX_SCORE, depth: 0)
+  def negamax(board, turn, alpha: -MAX_SCORE, beta: MAX_SCORE, depth: 0, max_depth: 1)
     return get_score(board, depth, turn) if board.ended?
+    return 0 if depth == max_depth
 
     max = -MAX_SCORE
 
     board.possible_moves.each do |move|
       next_board = board.dup
-      # Play turn
-      negamax_return = -negamax(next_board, alpha: -beta, beta: -alpha, depth: depth + 1)
+      puts 'Pre-move', move
+      puts next_board
+      next_board.place turn, move
+      turn = counter turn
+      negamax_return = -negamax(next_board, turn, alpha: -beta, beta: -alpha, depth: depth + 1)
+
+      next_board.remove move
+      puts 'Post-remove', move
+      puts next_board
+      turn = counter turn
 
       max = negamax_return if negamax_return > max
       BestScores.instance.best_scores[move] = max if depth.zero?
@@ -37,7 +53,7 @@ module AlphaBetaPruning
   # we want to win quickly (or lose slowly)
   def scoring(board, depth)
     return 0 if board.draw?
-    return MAX_SCORE / depth if board.winner? self
+    return MAX_SCORE / depth if board.winner? == self.name
 
     -MAX_SCORE / depth
   end

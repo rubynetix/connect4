@@ -6,11 +6,12 @@ class Game
   end
 
   def game_loop
-    raise(NotImplementedError)
     # For each player
     #   get their player action
     #   handle the player action
-    #
+    while not @gameboard.ended?
+
+    end
   end
 
   def request_player_action(player)

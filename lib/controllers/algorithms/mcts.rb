@@ -4,7 +4,7 @@ module MCTS
 
   def random_turn(board)
     next_board = board.dup
-    next_board.place(RedCounter, board.possible_moves.sample)
+    next_board.place(RedCounter.instance, board.possible_moves.sample)
   end
 
   class Node

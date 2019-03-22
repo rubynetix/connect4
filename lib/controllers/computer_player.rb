@@ -1,18 +1,23 @@
+require_relative 'Player'
+require_relative 'algorithms/mcts'
+require_relative 'algorithms/alpha_beta_pruning'
+require_relative 'algorithms/random'
+
 class ComputerPlayer < Player
 
   def initialize(name)
     super name
   end
 
-  def set_algorithm(algorithm)
-    @algorithm = case algorithm
-                 when :AlphaBetaPruning
-                   Algorithm.new.extend(AlphaBetaPruning)
-                 when :MCTS
-                   Algorithm.new.extend(MCTS)
-                 else
-                   Algorithm.new.extend(RandomAction)
-                 end
+  def algorithm=(algorithm)
+    case algorithm
+    when :AlphaBetaPruning
+      extend AlphaBetaPruning
+    when :MCTS
+      extend MCTS
+    else
+      extend RandomAction
+    end
   end
 
   def get_action(board)
