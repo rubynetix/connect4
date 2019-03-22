@@ -10,14 +10,13 @@ class Connect4
   def initialize(ui, stats)
     @ui = ui
     @game_stats = GameStats.new stats
-    @players = []
+    @players = [LocalPlayer.new, LocalPlayer.new]
     @gameboard = GameBoard.new
     @win_check = WinCheck.new 'YYYY', 'RRRR'
   end
 
   def app_loop
     # TODO: Implement a main menu
-    @players [LocalPlayer.new, LocalPlayer.new]
     loop do
       launch_game @players, @gameboard, @win_check
     end
@@ -32,7 +31,8 @@ class Connect4
   end
 
   def launch_game
-    Game.new @players, @gameboard, @win_check
+    game = Game.new @players, @gameboard, @win_check
+    game.game_loop
   end
 
   def update_game_stats(update)
