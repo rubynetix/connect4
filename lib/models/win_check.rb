@@ -2,24 +2,24 @@ require 'singleton'
 
 module WinEnum
   NEUTRAL = 0
-  OTTO_WIN = 1
-  TOOT_WIN = 2
+  WIN1 = 1
+  WIN2 = 2
   DRAW = 3
 end
 
 class WinCheck
 
-  def initialize(substring1, substring2)
-    @win1_substring = substring1
-    @win2_substring = substring2
+  def initialize(win_string1, win_string2)
+    @win1_string = win_string1
+    @win2_string = win_string2
   end
 
 
-  def check_win(row, column, board)
+  def check(board, position)
     win1 = false
     win2 = false
 
-    create_strings(row, column, board).each do | string |
+    create_strings(board, position).each do | string |
       win1 = win1 or string.include? @win1_substring
       win2 = win2 or string.include? @win2_substring
     end
@@ -39,7 +39,9 @@ class WinCheck
 
   private
 
-  def create_strings(row, column, board)
+  def create_strings(board, position)
+    row = position[0]
+    col = position[1]
     return []
   end
 

@@ -4,18 +4,22 @@ class GameBoard
   INVALID_ROW = -1
 
   attr_accessor :rows, :cols
+  attr_reader :last_counter_pos
 
   def initialize(rows = 6, cols = 7)
     @rows = rows
     @cols = cols
     @board = Array.new(@rows) {Array.new(@cols, EmptyCounter.instance)}
+    @last_counter_pos = nil
   end
 
   def place(counter, col)
     raise InvalidColumnError unless col >= 0 && col < @cols
     raise ColumnFullError if col_full?(col)
 
-    @board[row(col)][col] = counter
+    row = row(col)
+    @board[row][col] = counter
+    @last_counter_pos = [row, col]
   end
 
   def clear
