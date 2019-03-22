@@ -2,9 +2,15 @@ module MCTS
   EXPLORE_FACTOR = 2 # optimize
   MAX_ITERATIONS = 100
 
-  def random_turn(board)
+  def random_turn(board, turn)
     next_board = board.dup
-    next_board.place(RedCounter.instance, board.possible_moves.sample)
+    next_board.place(counter(turn), board.possible_moves.sample)
+  end
+
+  def counter(turn)
+    return @counter if turn == 1
+    return YellowCounter.instance if @counter == RedCounter.instance
+    RedCounter.instance
   end
 
   class Node
@@ -39,7 +45,7 @@ module MCTS
 
   def get_reward(board, turn)
     while not board.draw? and not board.winner?
-      board = random_turn(board)
+      board = random_turn(board, turn)
       turn *= -1
     end
     board.winner?
@@ -75,7 +81,7 @@ module MCTS
     possible_moves.each do |move|
       unless tried_moves.include? move
         new_board = node.board.dup
-        new_board.place(RedCounter, move)
+        new_board.place(counter(turn), move)
         node.add_child new_board, move
         return node.children[-1]
       end

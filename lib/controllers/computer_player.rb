@@ -5,10 +5,6 @@ require_relative 'algorithms/random'
 
 class ComputerPlayer < Player
 
-  def initialize(name)
-    super name
-  end
-
   def algorithm=(algorithm)
     case algorithm
     when :AlphaBetaPruning
@@ -23,6 +19,6 @@ class ComputerPlayer < Player
   def get_action(board)
     return :FORFEIT if board.possible_moves.size.zero?
 
-    get_move board
+    get_move board, @counter
   end
 end

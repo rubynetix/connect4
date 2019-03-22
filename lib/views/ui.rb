@@ -1,5 +1,6 @@
 require 'gtk3'
 require_relative 'observable'
+require_relative 'game_window'
 
 class UI
   include Observable
@@ -12,7 +13,17 @@ class UI
         action.call(ui)
       end
     end
+
     @observers = []
+
+    @game_window = GameWindow.new
+    @game_window.build
+  end
+
+  def draw_gameboard(gb)
+    on_ui_thread do
+      @game_window.draw_game(gb)
+    end
   end
 
   def draw_bitmap(x, y, bitmap)

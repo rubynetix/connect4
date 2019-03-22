@@ -1,8 +1,14 @@
+require_relative 'player_action'
+
 class Player
-  def initialize(name)
+  include PlayerAction
+  def initialize(name, counter)
     @name = name
+    @counter = counter
   end
 
+  # Waits for the player to make an
+  # action and returns it.
   def take_turn(board, ui)
     ui.register(self)
     raise NotImplementedError
@@ -18,7 +24,11 @@ class Player
     raise NotImplementedError
   end
 
-  def get_action
+  def action
     raise NotImplementedError
+  end
+
+  def forfeit
+    PlayerAction::FORFEIT
   end
 end

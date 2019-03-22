@@ -1,6 +1,6 @@
 module AlphaBetaPruning
   MAX_SCORE = 10_000
-  MAX_DEPTH = 1
+  MAX_DEPTH = 100
 
   class BestScores
     include Singleton
@@ -11,13 +11,13 @@ module AlphaBetaPruning
   end
 
   def counter(prev)
-    YellowCounter.instance if prev == RedCounter.instance
+    return YellowCounter.instance if prev == RedCounter.instance
     RedCounter.instance
   end
 
-  def get_move(board, counters)
+  def get_move(board)
     BestScores.instance.best_scores = {}
-    negamax board.dup, counters
+    negamax board.dup, @counter
 
     BestScores.instance.best_scores.max_by {|_, value| value}[0]
   end
@@ -30,16 +30,10 @@ module AlphaBetaPruning
 
     board.possible_moves.each do |move|
       next_board = board.dup
-      puts 'Pre-move', move
-      puts next_board
       next_board.place turn, move
       turn = counter turn
       negamax_return = -negamax(next_board, turn, alpha: -beta, beta: -alpha, depth: depth + 1)
 
-      next_board.remove move
-      puts 'Post-remove', move
-      puts next_board
-      turn = counter turn
 
       max = negamax_return if negamax_return > max
       BestScores.instance.best_scores[move] = max if depth.zero?

@@ -3,40 +3,36 @@ require_relative '../../lib/models/counter'
 class GameBoard
   INVALID_ROW = -1
 
-  attr_accessor :size
+  attr_accessor :rows, :cols
+  attr_reader :last_counter_pos
 
-  def initialize(size, board = nil)
-    @size = size
-    @board = if board.nil?
-               Array.new(@size) {Array.new(@size, EmptyCounter.instance)}
-             else
-               board
-             end
+  def initialize(rows = 6, cols = 7, board = nil)
+    @rows = rows
+    @cols = cols
+    @board = Array.new(@rows) {Array.new(@cols, EmptyCounter.instance)}
+    @board = board unless board.nil?
+    @last_counter_pos = nil
   end
 
-  def initialize_copy(orig)
-
-    self.class.new @size.dup, @board.dup
-
+  def dup(*)
+    initialize_copy
   end
 
+  def initialize_copy(*)
 
+    board = Array.new(@rows) {Array.new(@cols, EmptyCounter.instance)}
+    iter {|r, c, counter| board[r][c] = counter}
+    self.class.new @rows.dup, @cols.dup, board.dup
 
-
-  def remove(col)
-    raise InvalidColumnError unless col >= 0 && col < @size
-    row = row(col)
-    row = @size unless row.positive?
-
-    puts 'Col: ', col, 'Row: ', row - 1
-    @board[row - 1][col] = EmptyCounter.instance
   end
 
   def place(counter, col)
-    raise InvalidColumnError unless col >= 0 && col < @size
+    raise InvalidColumnError unless col >= 0 && col < @cols
     raise ColumnFullError if col_full?(col)
 
-    @board[row(col)][col] = counter
+    row = row(col)
+    @board[row][col] = counter
+    @last_counter_pos = [row, col]
   end
 
   def clear
@@ -49,7 +45,7 @@ class GameBoard
 
   def possible_moves
     moves = []
-    (0..@size - 1).each {|col| moves.push(col) unless col_full? col}
+    (0..@cols - 1).each {|col| moves.push(col) unless col_full? col}
     moves
   end
 

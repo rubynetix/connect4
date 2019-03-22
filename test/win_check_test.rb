@@ -16,8 +16,9 @@ class WinCheckTest < Test::Unit::TestCase
   def teardown; end
 
   def board_counter_check(board, valid_counters)
-    # TODO: Check that all counters on the board are in the list of valid_counters
-    return TRUE
+    board.iter do |_, _, counter|
+      assert_true(valid_counters.include?(counter))
+    end
   end
 
   def generate_red_yellow_win_boards(winning_counter, losing_counter)
@@ -99,63 +100,71 @@ class WinCheckTest < Test::Unit::TestCase
     ot_neutral_board = GameBoard.new(5)
     ot_neutral_board.place(OCounter.instance, 1)
     ot_neutral_board.place(TCounter.instance, 4)
+    last_counter_pos = ot_neutral_board.last_counter_pos
+
+    win_check = WinCheck.new("TOOT", "OTTO")
 
     # Preconditions
     begin
-      assert_true( ot_neutral_board.is_a?(GameBoard), "Board is not of type GameBoard")
-      assert_true( board_counter_check(ot_neutral_board, [OCounter.instance, TCounter.instance]), "GameBoard contains invalid counter types")
+      assert_true(last_counter_pos.is_a?(Array))
+      assert_true(last_counter_pos[0].is_a?(Integer))
+      assert_true(last_counter_pos[1].is_a?(Integer))
+      assert_true(board_counter_check(ot_neutral_board, [OCounter.instance, TCounter.instance]), "GameBoard contains invalid counter types")
     end
 
-    otto_result = OttoWinCheck.new().is_winner?(ot_neutral_board)
-    toot_result = TootWinCheck.new().is_winner?(ot_neutral_board)
+    result = win_check.check(ot_neutral_board, last_counter_pos)
 
     # Postconditions
     begin
-      assert_false(otto_result, "OTTO win check incorrectly found a win on a neutral board")
-      assert_false(toot_result, "TOOT win check incorrectly found a win on a neutral board")
+      assert_equal(result, WinEnum::NEUTRAL, "Wincheck found incorrect result. Expected: #{WinEnum::NEUTRAL}. Actual: #{result}")
     end
   end
 
   def tst_otto_win
-    otto_win_boards = generate_otto_win_boards()
+    otto_win_boards = generate_otto_win_boards
+    win_check = WinCheck.new("TOOT", "OTTO")
 
     otto_win_boards.each do |otto_win_board|
+      last_counter_pos = otto_win_board.last_counter_pos
+
       # Preconditions
       begin
-        assert_true( otto_win_board.is_a?(GameBoard), "Board is not of type GameBoard")
-        assert_true( board_counter_check(otto_win_board, [OCounter.instance, TCounter.instance]), "GameBoard contains invalid counter types")
+        assert_true(last_counter_pos.is_a?(Array))
+        assert_true(last_counter_pos[0].is_a?(Integer))
+        assert_true(last_counter_pos[1].is_a?(Integer))
+        assert_true(board_counter_check(otto_win_board, [OCounter.instance, TCounter.instance]), "GameBoard contains invalid counter types")
       end
 
-      otto_result = OttoWinCheck.new().is_winner?(otto_win_board)
-      toot_result = TootWinCheck.new().is_winner?(otto_win_board)
+      result = win_check.check(otto_win_board, last_counter_pos)
 
       # Postconditions
       begin
-        assert_true(otto_result, "OTTO missed win on a winning board")
-        assert_false(toot_result, "TOOT incorrectly found a win on a losing board")
+        assert_equal(result, WinEnum::WIN2, "Wincheck found incorrect result. Expected: #{WinEnum::WIN2}. Actual: #{result}")
       end
     end
   end
 
 
   def tst_toot_win
-    toot_win_boards = generate_otto_win_boards()
+    toot_win_boards = generate_toot_win_boards
+    win_check = WinCheck.new("TOOT", "OTTO")
 
     toot_win_boards.each do |toot_win_board|
+      last_counter_pos = toot_win_board.last_counter_pos
 
       # Preconditions
       begin
-        assert_true( toot_win_board.is_a?(GameBoard), "Board is not of type GameBoard")
-        assert_true( board_counter_check(toot_win_board, [OCounter.instance, TCounter.instance]), "GameBoard contains invalid counter types")
+        assert_true(last_counter_pos.is_a?(Array))
+        assert_true(last_counter_pos[0].is_a?(Integer))
+        assert_true(last_counter_pos[1].is_a?(Integer))
+        assert_true(board_counter_check(toot_win_board, [OCounter.instance, TCounter.instance]), "GameBoard contains invalid counter types")
       end
 
-      otto_result = OttoWinCheck.new().is_winner?(toot_win_board)
-      toot_result = TootWinCheck.new().is_winner?(toot_win_board)
+      result = win_check.check(toot_win_board, last_counter_pos)
 
       # Postconditions
       begin
-        assert_false(otto_result, "OTTO incorrectly found a win on a losing board")
-        assert_true(toot_result, "TOOT missed win on a winning board")
+        assert_equal(result, WinEnum::WIN1, "Wincheck found incorrect result. Expected: #{WinEnum::WIN1}. Actual: #{result}")
       end
     end
   end
@@ -165,42 +174,47 @@ class WinCheckTest < Test::Unit::TestCase
     red_yellow_neutral_board = GameBoard.new(5)
     red_yellow_neutral_board.place(RedCounter.Instance, 1)
     red_yellow_neutral_board.place(YellowCounter.Instance, 1)
+    last_counter_pos = red_yellow_neutral_board.last_counter_pos
+
+    win_check = WinCheck.new("RRRR", "YYYY")
 
     # Preconditions
     begin
-      assert_true( red_yellow_neutral_board.is_a?(GameBoard), "Board is not of type GameBoard")
+      assert_true(last_counter_pos.is_a?(Array))
+      assert_true(last_counter_pos[0].is_a?(Integer))
+      assert_true(last_counter_pos[1].is_a?(Integer))
       assert_true( board_counter_check(red_yellow_neutral_board, [RedCounter.Instance, YellowCounter.Instance]), "GameBoard contains invalid counter types")
     end
 
-    red_result = RedWinCheck.new().is_winner?(red_yellow_neutral_board)
-    yellow_result = YellowWinCheck.new().is_winner?(red_yellow_neutral_board)
+    result = win_check.check(red_yellow_neutral_board, last_counter_pos)
 
     # Postconditions
     begin
-      assert_false(red_result, "RED win check incorrectly found a win on a neutral board")
-      assert_false(yellow_result, "YELLOW win check incorrectly found a win on a neutral board")
+      assert_equal(result, WinEnum::NEUTRAL, "Wincheck found incorrect result. Expected: #{WinEnum::NEUTRAL}. Actual: #{result}")
     end
   end
 
 
   def tst_red_win
     red_win_boards = generate_red_yellow_win_boards(RedCounter.Instance, YellowCounter.Instance)
+    win_check = WinCheck.new("RRRR", "YYYY")
 
     red_win_boards.each do |red_win_board|
+      last_counter_pos = red_win_board.last_counter_pos
 
       # Preconditions
       begin
-        assert_true( red_win_board.is_a?(GameBoard), "Board is not of type GameBoard")
-        assert_true( board_counter_check(red_win_board, [RedCounter.Instance, YellowCounter.Instance]), "GameBoard contains invalid counter types")
+        assert_true(last_counter_pos.is_a?(Array))
+        assert_true(last_counter_pos[0].is_a?(Integer))
+        assert_true(last_counter_pos[1].is_a?(Integer))
+        assert_true(board_counter_check(red_win_board, [RedCounter.instance, YellowCounter.instance]), "GameBoard contains invalid counter types")
       end
 
-      red_result = RedWinCheck.new().is_winner?(red_win_board)
-      yellow_result = YellowWinCheck.new().is_winner?(red_win_board)
+      result = win_check.check(red_win_board, last_counter_pos)
 
       # Postconditions
       begin
-        assert_true(red_result, "RED win check missed win on a winning board")
-        assert_false(yellow_result, "YELLOW win check incorrectly found a win on a losing board")
+        assert_equal(result, WinEnum::WIN1, "Wincheck found incorrect result. Expected: #{WinEnum::WIN1}. Actual: #{result}")
       end
     end
 
@@ -209,21 +223,24 @@ class WinCheckTest < Test::Unit::TestCase
 
   def tst_yellow_win
     yellow_win_boards = generate_red_yellow_win_boards(YellowCounter.Instance, RedCounter.Instance)
+    win_check = WinCheck.new("RRRR", "YYYY")
 
     yellow_win_boards.each do |yellow_win_board|
+      last_counter_pos = yellow_win_board.last_counter_pos
+
       # Preconditions
       begin
-        assert_true( yellow_win_board.is_a?(GameBoard), "Board is not of type GameBoard")
-        assert_true( board_counter_check(yellow_win_board, [RedCounter.Instance, YellowCounter.Instance]), "GameBoard contains invalid counter types")
+        assert_true(last_counter_pos.is_a?(Array))
+        assert_true(last_counter_pos[0].is_a?(Integer))
+        assert_true(last_counter_pos[1].is_a?(Integer))
+        assert_true(board_counter_check(yellow_win_board, [RedCounter.instance, YellowCounter.instance]), "GameBoard contains invalid counter types")
       end
 
-      red_result = RedWinCheck.new().is_winner?(yellow_win_board)
-      yellow_result = YellowWinCheck.new().is_winner?(yellow_win_board)
+      result = win_check.check(yellow_win_board, last_counter_pos)
 
       # Postconditions
       begin
-        assert_false(red_result, "RED win check incorrectly found a win on a losing board")
-        assert_true(yellow_result, "YELLOW win check missed win on a winning board")
+        assert_equal(result, WinEnum::WIN2, "Wincheck found incorrect result. Expected: #{WinEnum::WIN2}. Actual: #{result}")
       end
     end
   end
