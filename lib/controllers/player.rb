@@ -1,4 +1,6 @@
 require_relative 'player_action'
+require_relative '../views/events/cell_click_event'
+require_relative '../views/events/forfeit_click_event'
 
 class Player
   include PlayerAction
@@ -13,27 +15,40 @@ class Player
   def take_turn(board, ui)
     @board = board
     @waiting = true
-    register(ui, nil)
+    register(ui, [CellClickEvent, ForfeitClickEvent])
     e = @event_que.deq
-    @board.place(@counter, e[1])
+    action = do_action(e)
     ui.unregister self
-    PlayerAction::PLACE_COUNTER
+    action
   end
 
+  # Event filter is a list of events
+  # we want to listen to.
   def register(ui, event_filter)
     @event_filter = event_filter
     ui.register(self)
   end
 
   def notify(event)
-    @event_que.enq event
+    @event_que.enq event if @event_filter.include? event.class
   end
 
-  def action
-    raise NotImplementedError
+  # does and returns an action based on event
+  def do_action(event)
+    case event.class.to_s
+    when 'CellClickEvent'
+      place_counter(event.col)
+    when 'ForfeitClickEvent'
+      forfeit
+    end
   end
 
   def forfeit
     PlayerAction::FORFEIT
+  end
+
+  def place_counter(col)
+    @board.place(@counter, col)
+    PlayerAction::PLACE_COUNTER
   end
 end

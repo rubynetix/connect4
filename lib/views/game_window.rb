@@ -38,15 +38,15 @@ class GameWindow
     end
   end
 
-  def on_click(r, c)
-    notify_all([r, c])
+  def on_click(event)
+    notify_all(event)
   end
 
   def notify(event)
-    on_click(*event)
+    on_click(event)
   end
 
-private
+  private
 
   def draw_board(grid_layout)
     @cells = Matrix.build(6, 7) do |r, c|
