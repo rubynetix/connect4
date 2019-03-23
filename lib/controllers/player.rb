@@ -1,4 +1,5 @@
 require_relative 'player_action'
+require_relative '../views/events/cell_click_event'
 
 class Player
   include PlayerAction
@@ -13,7 +14,7 @@ class Player
   def take_turn(board, ui)
     @board = board
     @waiting = true
-    register(ui, nil)
+    register(ui, [CellClickEvent])
     e = @event_que.deq
     @board.place(@counter, e.col)
     ui.unregister self
@@ -28,7 +29,7 @@ class Player
   end
 
   def notify(event)
-    @event_que.enq event
+    @event_que.enq event if @event_filter.include? event.class
   end
 
   def action
