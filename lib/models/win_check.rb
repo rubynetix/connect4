@@ -15,11 +15,11 @@ class WinCheck
   end
 
 
-  def check(board, position)
+  def check(board)
     win1 = false
     win2 = false
 
-    create_strings(board, position).each do | string |
+    create_strings(board, board.last_counter_pos).each do | string |
       win1 = win1 or string.include? @win1_string
       win2 = win2 or string.include? @win2_string
     end

@@ -1,8 +1,10 @@
 require 'gtk3'
 require 'matrix'
+require_relative 'observable'
 require_relative 'components/counter_cell'
 
 class GameWindow
+  include Observable
 
   def initialize
     @builder_file = "#{File.expand_path(__dir__)}/windows/game.ui"
@@ -10,13 +12,13 @@ class GameWindow
     @counter_height = 50
 
     @cells = nil
+
+    @observers = []
     @css = Gtk::CssProvider.new
     @css.load(:path => "#{File.expand_path(__dir__)}/styles/main.css")
   end
 
   def build
-    css =
-
     # Construct a Gtk::Builder instance and load our UI description
     builder = Gtk::Builder.new(:file => @builder_file)
 
@@ -36,11 +38,20 @@ class GameWindow
     end
   end
 
+  def on_click(r, c)
+    notify_all([r, c])
+  end
+
+  def notify(event)
+    on_click(*event)
+  end
+
 private
 
   def draw_board(grid_layout)
     @cells = Matrix.build(6, 7) do |r, c|
       cell = CounterCell.new(r, c, 150, 150, @css)
+      cell.register(self)
       grid_layout.attach(cell.widget, c, r, 1, 1)
       cell
     end

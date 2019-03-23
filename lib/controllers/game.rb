@@ -9,9 +9,10 @@ class Game
   end
 
   def game_loop
+    update_board
     until @done
       @players.each do |p|
-        process_action(p.take_turn(@gameboard))
+        process_action(p.take_turn(@gameboard, @ui))
         process_state
         update_board
       end

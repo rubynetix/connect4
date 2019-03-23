@@ -17,10 +17,10 @@ require_relative 'lib/models/counter'
 #
 # puts app.run
 
-players = [
-    LocalPlayer.new('player1', RedCounter.instance),
-    LocalPlayer.new('player2', RedCounter.instance)
-]
+# players = [
+#     LocalPlayer.new('player1', RedCounter.instance),
+#     LocalPlayer.new('player2', RedCounter.instance)
+# ]
 
 gameboard = GameBoard.new
 # game = Game.new(players, gameboard, RedWinCheck.new)
