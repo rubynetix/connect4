@@ -1,16 +1,19 @@
 require_relative 'game_stats'
-require_relative '../view/UI'
+require_relative '../views/ui'
 require_relative '../controllers/local_player'
+require_relative '../controllers/player'
 require_relative '../controllers/game'
 require_relative '../models/game_board'
 require_relative '../models/win_check'
+require_relative '../models/counter'
 
+# Class representing the application
 class Connect4
-  include GameStats
+
   def initialize(ui, stats)
     @ui = ui
     @game_stats = GameStats.new stats
-    @players = [LocalPlayer.new, LocalPlayer.new]
+    @players = [Player.new('p1', RedCounter.instance), Player.new('p2', YellowCounter.instance)]
     @gameboard = GameBoard.new
     @win_check = WinCheck.new 'YYYY', 'RRRR'
   end
@@ -18,7 +21,8 @@ class Connect4
   def app_loop
     # TODO: Implement a main menu
     loop do
-      launch_game @players, @gameboard, @win_check
+      puts "TIDapploop: " + Thread.current.object_id.to_s
+      launch_game
     end
   end
 
@@ -31,7 +35,7 @@ class Connect4
   end
 
   def launch_game
-    game = Game.new @players, @gameboard, @win_check
+    game = Game.new @players, @gameboard, @win_check, @ui
     game.game_loop
   end
 
@@ -40,3 +44,9 @@ class Connect4
     @game_stats.update update
   end
 end
+
+ui = UI.new
+Thread.new { Gtk.main }
+puts 'hello there'
+c4 = Connect4.new ui, nil
+c4.app_loop
