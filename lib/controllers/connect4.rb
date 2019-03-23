@@ -1,4 +1,4 @@
-require_relative 'game_stats'
+require_relative '../models/game_stats'
 require_relative '../views/ui'
 require_relative '../controllers/local_player'
 require_relative '../controllers/player'
@@ -20,10 +20,7 @@ class Connect4
 
   def app_loop
     # TODO: Implement a main menu
-    loop do
-      puts "TIDapploop: " + Thread.current.object_id.to_s
-      launch_game
-    end
+    loop(&method(:launch_game))
   end
 
   def load_stats
@@ -44,9 +41,3 @@ class Connect4
     @game_stats.update update
   end
 end
-
-ui = UI.new
-Thread.new { Gtk.main }
-puts 'hello there'
-c4 = Connect4.new ui, nil
-c4.app_loop
