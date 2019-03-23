@@ -15,11 +15,13 @@ class Player
     @waiting = true
     register(ui, nil)
     e = @event_que.deq
-    @board.place(@counter, e[1])
+    @board.place(@counter, e.col)
     ui.unregister self
     PlayerAction::PLACE_COUNTER
   end
 
+  # Event filter is a list of events we want
+  # to listen to.
   def register(ui, event_filter)
     @event_filter = event_filter
     ui.register(self)

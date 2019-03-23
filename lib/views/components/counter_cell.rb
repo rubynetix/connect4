@@ -1,5 +1,6 @@
 require 'gtk3'
 require_relative '../observable'
+require_relative '../events/cell_click_event'
 
 class CounterCell
   include Observable
@@ -15,7 +16,7 @@ class CounterCell
     @button.visible = true
     @button.style_context.add_provider(css)
     @button.signal_connect "clicked" do
-      notify_all([row, col])
+      notify_all(CellClickEvent.new(row, col))
     end
     @overlay.add_child(@button)
 
