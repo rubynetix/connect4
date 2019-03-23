@@ -5,7 +5,7 @@ class Player
   def initialize(name, counter)
     @name = name
     @counter = counter
-    @waiting = false
+    @event_que = Queue.new
   end
 
   # Waits for the player to make an
@@ -14,26 +14,19 @@ class Player
     @board = board
     @waiting = true
     register(ui, nil)
-    while @waiting; end
-    puts 'Done waiting'
+    e = @event_que.deq
+    @board.place(@counter, e[1])
     ui.unregister self
-    puts 'Unregistering ' + @name
-    puts "TID: " + Thread.current.object_id.to_s
     PlayerAction::PLACE_COUNTER
   end
 
   def register(ui, event_filter)
     @event_filter = event_filter
     ui.register(self)
-    puts 'Registering ' + @name
   end
 
   def notify(event)
-    puts @name + " placeing token"
-    @board.place(@counter, event[1])
-    @waiting = false
-    puts 'Waiting is false'
-    puts "TID: " + Thread.current.object_id.to_s
+    @event_que.enq event
   end
 
   def action
@@ -43,13 +36,4 @@ class Player
   def forfeit
     PlayerAction::FORFEIT
   end
-end
-
-class CLIPlayer < Player
- def take_turn(board, _)
-  puts 'enter a column; '
-  col = gets.chomp.to_i
-  board.place(@counter, col)
-  PlayerAction::PLACE_COUNTER
- end
 end

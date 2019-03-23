@@ -23,7 +23,7 @@ class YellowCounter
   include Counter
 
   @@symbol = "Y"
-  @@sprite = "#{File.expand_path(__dir__)}/../views/assets/y_counter.png"
+  @@sprite = "#{File.expand_path(__dir__)}/../views/assets/y_counter_50.png"
 end
 
 class TCounter
@@ -39,7 +39,7 @@ class RedCounter
   include Counter
 
   @@symbol = "R"
-  @@sprite = "#{File.expand_path(__dir__)}/../views/assets/r_counter.png"
+  @@sprite = "#{File.expand_path(__dir__)}/../views/assets/r_counter_50.png"
 end
 
 class OCounter

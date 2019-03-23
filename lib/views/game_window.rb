@@ -50,7 +50,7 @@ private
 
   def draw_board(grid_layout)
     @cells = Matrix.build(6, 7) do |r, c|
-      cell = CounterCell.new(r, c, 150, 150, @css)
+      cell = CounterCell.new(r, c, 75, 75, @css)
       cell.register(self)
       grid_layout.attach(cell.widget, c, r, 1, 1)
       cell

@@ -23,6 +23,8 @@ class CounterCell
     @image.visible = false
     @overlay.add_overlay(@image)
     @overlay.set_overlay_pass_through(@image, true)
+
+    @counter = nil
   end
 
   def widget
@@ -30,6 +32,8 @@ class CounterCell
   end
 
   def set_counter(counter)
+    return if counter == @counter
+
     if !counter.empty?
       @image.set_file(counter.sprite)
       @image.visible = true
