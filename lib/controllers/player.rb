@@ -1,4 +1,5 @@
 require_relative 'player_action'
+require_relative '../models/game_board'
 require_relative '../views/events/cell_click_event'
 require_relative '../views/events/forfeit_click_event'
 
@@ -16,8 +17,7 @@ class Player
     @board = board
     @waiting = true
     register(ui, [CellClickEvent, ForfeitClickEvent])
-    e = @event_que.deq
-    action = do_action(e)
+    action = do_action(@event_que.deq) until action
     ui.unregister self
     action
   end
@@ -48,7 +48,11 @@ class Player
   end
 
   def place_counter(col)
-    @board.place(@counter, col)
-    PlayerAction::PLACE_COUNTER
+    begin
+      @board.place(@counter, col)
+      PlayerAction::PLACE_COUNTER
+    rescue ColumnFullError, InvalidColumnError => exception
+      puts exception
+    end
   end
 end
