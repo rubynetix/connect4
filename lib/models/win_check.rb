@@ -11,7 +11,7 @@ class WinCheck
 
   class << self
       def connect4
-        WinCheck.new("YYYY", "RRRR")
+        WinCheck.new("RRRR", "YYYY")
       end
 
       def toot_otto
