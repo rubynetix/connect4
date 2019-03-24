@@ -39,7 +39,7 @@ module AlphaBetaPruning
 
     max = -MAX_SCORE
 
-    [2,3].each do |move|
+    board.possible_cols.each do |move|
       next_board = board.dup
       next_board.place counter(turn), move
       negamax_return = -negamax(next_board, -turn, alpha: -beta, beta: -alpha, depth: depth + 1)

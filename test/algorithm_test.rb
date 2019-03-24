@@ -21,18 +21,32 @@ class GameBoardTest < Test::Unit::TestCase
   end
 
   def empty_board(rows: rand(MIN_SIZE..MAX_SIZE), cols: rand(MIN_SIZE..MAX_SIZE))
-    GameBoard.new(rows, cols)
+    GameBoard.connect4
+  end
+
+  def placeRand(board, counters: (MIN_SIZE..MAX_SIZE))
+    while counters > 0
+      c = rand(0...board.cols)
+      unless board.col_full?(c)
+        board.place(@default_counter, c)
+        counters -= 1
+      end
+    end
+    board
   end
 
 
   def test_random
     TEST_ITER.times do
       board = empty_board
-      player = ComputerPlayer.new('name', RedCounter.instance).extend RandomAction
+      player = ComputerPlayer.new('p2',
+                                  [YellowCounter.instance],
+                                  "YYYY",
+                                  [RedCounter.instance]).extend RandomAction
 
       possible_moves = board.possible_cols.dup
 
-      move = player.get_move board
+      token, move = player.get_move board
 
       # Postconditions
       begin
@@ -45,11 +59,14 @@ class GameBoardTest < Test::Unit::TestCase
   def test_mcts
     TEST_ITER.times do
       board = empty_board
-      player = ComputerPlayer.new('name', RedCounter.instance).extend AlphaBetaPruning
+      player = ComputerPlayer.new('p2',
+                                  [YellowCounter.instance],
+                                  "YYYY",
+                                  [RedCounter.instance]).extend AlphaBetaPruning
 
       starting_board = board.to_s.dup
 
-      move = player.get_move board
+      token, move = player.get_move board
 
       # Postconditions
       begin
@@ -63,7 +80,10 @@ class GameBoardTest < Test::Unit::TestCase
   def test_alpha_beta_pruning
     TEST_ITER.times do
       board = empty_board
-      player = ComputerPlayer.new('name', RedCounter.instance).extend AlphaBetaPruning
+      player = ComputerPlayer.new('p2',
+                                  [YellowCounter.instance],
+                                  "YYYY",
+                                  [RedCounter.instance]).extend AlphaBetaPruning
 
       starting_board = board.to_s.dup
 
@@ -76,4 +96,40 @@ class GameBoardTest < Test::Unit::TestCase
       end
     end
   end
+
+  def test_alg_win_or_loss_col
+    TEST_ITER.times do
+      board = empty_board
+      rand_col = rand(0..board.cols)
+      player = ComputerPlayer.new('p2',
+                                  [YellowCounter.instance],
+                                  "YYYY",
+                                  [RedCounter.instance]).extend AlphaBetaPruning
+      board.place(RedCounter.instance, rand_col)
+      board.place(RedCounter.instance, rand_col)
+      board.place(RedCounter.instance, rand_col)
+
+      assert_equal player.get_move[1], rand_col
+
+    end
+  end
+
+  def test_alg_win_or_loss_row
+    TEST_ITER.times do
+      board = empty_board
+      rand_col = rand(1..board.cols - 2)
+      player = ComputerPlayer.new('p2',
+                                  [YellowCounter.instance],
+                                  "YYYY",
+                                  [RedCounter.instance]).extend AlphaBetaPruning
+      board.place(YellowCounter.instance, rand_col- 1)
+      board.place(RedCounter.instance, rand_col)
+      board.place(RedCounter.instance, rand_col + 1)
+      board.place(RedCounter.instance, rand_col + 2)
+
+      assert_equal player.get_move[1], rand_col + 3
+
+    end
+  end
+
 end
