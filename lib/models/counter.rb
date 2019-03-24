@@ -42,7 +42,8 @@ class TCounter
   include Counter
 
   @@symbol = "T"
-  @@sprite = "/Path/To/Sprite"
+  @@sprite = get_asset("t_counter_75.png")
+  @@icon = get_asset("t_counter_40.png")
 end
 
 class RedCounter
@@ -59,7 +60,8 @@ class OCounter
   include Counter
 
   @@symbol = "O"
-  @@sprite = "/Path/To/Sprite"
+  @@sprite = get_asset("o_counter_75.png")
+  @@icon = get_asset("o_counter_40.png")
 end
 
 class EmptyCounter
