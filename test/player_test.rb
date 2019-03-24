@@ -10,6 +10,8 @@ require_relative '../lib/views/events/cell_click_event'
 
 class PlayerTest < Test::Unit::TestCase
   TEST_ITER = 10
+  BOARD_ROWS = 6
+  BOARD_COLS = 7
 
   def setup
     @player = Player.new("Tester", YellowCounter.instance)
@@ -42,10 +44,13 @@ class PlayerTest < Test::Unit::TestCase
     # @player.register(ui, [CellClickEvent])
     action = Thread.new { @player.take_turn(board, ui) }
     sleep(1) # we sleep to give the player time to register itself to ui
-    ui.notify_all(CellClickEvent.new(0, 0)) # Simulate button click
+    col = rand(0...BOARD_COLS)
+    ui.notify_all(CellClickEvent.new(0, col)) # Simulate button click
 
     # Postconditions
     #  - A Place Counter Action is returned
+    #  - A counter is on the board at x y
     assert(action.value == PlayerAction::PLACE_COUNTER)
+    assert(board.at(BOARD_ROWS - 1, col).instance_of?(YellowCounter))
   end
 end

@@ -49,6 +49,11 @@ class GameBoard
     s
   end
 
+  # For testing only
+  def at(r, c)
+    @board[r][c]
+  end
+
   private
 
   # Get the row the counter will fall to if placed in column col
@@ -60,11 +65,6 @@ class GameBoard
       end
     end
     height
-  end
-
-  # For testing only
-  def at(r, c)
-    @board[r][c]
   end
 end
 
