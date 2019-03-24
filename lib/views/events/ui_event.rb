@@ -4,7 +4,9 @@ class UIEvent
   attr_reader :id
 
   COUNTER_SELECTED = 1
-  MENU_CLICKED = 2
+  MENU_CLICK = 2
+  CELL_CLICK = 3
+  FORFEIT_CLICK = 4
 
   def initialize(id)
     @id = id
