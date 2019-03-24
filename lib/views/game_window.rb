@@ -54,6 +54,12 @@ class GameWindow
 
     @game = builder["game_panel"]
 
+    fft_btn = builder["forfeit_btn"]
+    fft_btn.add_child(load_image(abs_path("/assets/forfeit.png")))
+    fft_btn.signal_connect "clicked" do
+      notify_all(ForfeitClickEvent.new)
+    end
+
     # Game configuration items
     @menu = builder["menu_panel"]
     @menu_start = builder["start_btn"]
