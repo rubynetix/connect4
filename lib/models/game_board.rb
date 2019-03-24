@@ -49,6 +49,22 @@ class GameBoard
     s
   end
 
+  def at(r, c)
+    @board[r][c]
+  end
+
+  def get_row(r)
+    @board[r]
+  end
+
+  def get_col(c)
+    col = []
+    @board.each do |r|
+      col.push(r[c])
+    end
+    col
+  end
+
   private
 
   # Get the row the counter will fall to if placed in column col
@@ -63,9 +79,6 @@ class GameBoard
   end
 
   # For testing only
-  def at(r, c)
-    @board[r][c]
-  end
 end
 
 class ColumnFullError < StandardError; end
