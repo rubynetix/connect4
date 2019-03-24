@@ -54,11 +54,11 @@ class GameWindow
     @menu_pvp = builder["pvp_btn"]
     @menu_pvc = builder["pvc_btn"]
 
-    @menu_start.signal_connect("clicked") {notify_all(MenuClickEvent::START)}
-    @menu_c4.signal_connect("clicked") {notify_all(MenuClickEvent::CONNECT4)}
-    @menu_to.signal_connect("clicked") {notify_all(MenuClickEvent::TOOT_OTTO)}
-    @menu_pvp.signal_connect("clicked") {notify_all(MenuClickEvent::PVP)}
-    @menu_pvc.signal_connect("clicked") {notify_all(MenuClickEvent::PVC)}
+    @menu_start.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::START))}
+    @menu_c4.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::CONNECT4))}
+    @menu_to.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::TOOT_OTTO))}
+    @menu_pvp.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::PVP))}
+    @menu_pvc.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::PVC))}
   end
 
   def show_menu

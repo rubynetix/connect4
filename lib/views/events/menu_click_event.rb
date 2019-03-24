@@ -1,4 +1,6 @@
-module MenuClickEvent
+require_relative 'ui_event'
+
+class MenuClickEvent < UIEvent
   # Launch the game
   START = 0
 
@@ -9,4 +11,11 @@ module MenuClickEvent
   # Opponent configuration events
   PVP = 3
   PVC = 4
+
+  attr_reader :click
+
+  def initialize(click_id)
+    super UIEvent::MENU_CLICK
+    @click = click_id
+  end
 end

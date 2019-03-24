@@ -47,7 +47,10 @@ class Connect4
   end
 
   def notify(event)
-    case event
+    # Only interested in menu clicks
+    return if event.id != UIEvent::MENU_CLICK
+
+    case event.click
     when MenuClickEvent::START
       @ready << true
       @ui.load_game
