@@ -30,7 +30,7 @@ class GameBoardTest < Test::Unit::TestCase
       board = empty_board
       player = ComputerPlayer.new('name', RedCounter.instance).extend RandomAction
 
-      possible_moves = board.possible_moves.dup
+      possible_moves = board.possible_cols.dup
 
       move = player.get_move board
 
@@ -54,7 +54,7 @@ class GameBoardTest < Test::Unit::TestCase
       # Postconditions
       begin
         assert_equal board.to_s, starting_board, 'The board should not be modified.'
-        assert_include board.possible_moves, move, 'Move must be in the set of possible moves.'
+        assert_include board.possible_cols, move, 'Move must be in the set of possible moves.'
       end
     end
   end
@@ -72,7 +72,7 @@ class GameBoardTest < Test::Unit::TestCase
       # Postconditions
       begin
         assert_equal board.to_s, starting_board, 'The board should not be modified.'
-        assert_include board.possible_moves, move, 'Move must be in the set of possible moves.'
+        assert_include board.possible_cols, move, 'Move must be in the set of possible moves.'
       end
     end
   end

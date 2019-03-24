@@ -3,7 +3,7 @@ require_relative 'observable'
 require_relative 'game_window'
 
 class UI
-  include Observable
+  include PassthroughObservable
 
   def initialize(width: 300, height: 300)
     @ui_jobs = Queue.new
@@ -14,21 +14,25 @@ class UI
       end
     end
 
-    @observers = []
-
     @game_window = GameWindow.new
     @game_window.build
+    @game_window.register(self)
+
+    @active_window = @game_window
   end
 
-  def draw_gameboard(gb)
+  def load_menu
+    @game_window.show_menu
+  end
+
+  def load_game
+    @game_window.show_game
+  end
+
+  def method_missing(m, *args, &block)
+    # Delegate calls to active window on UI thread
     on_ui_thread do
-      @game_window.draw_game(gb)
-    end
-  end
-
-  def draw_bitmap(x, y, bitmap)
-    on_ui_thread do |ui|
-      ui.draw_bitmap_impl(x, y, bitmap)
+      @active_window.send(m, *args, &block)
     end
   end
 
@@ -42,7 +46,4 @@ private
     @ui_jobs.enq([self, block])
   end
 
-  def draw_bitmap_impl(x, y, bitmap)
-    puts "hello world!"
-  end
 end

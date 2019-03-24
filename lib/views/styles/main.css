@@ -1,0 +1,7 @@
+* {
+    font-size: 2em;
+}
+
+GtkButton {
+    background-image: none;
+}

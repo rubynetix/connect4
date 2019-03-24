@@ -1,3 +1,0 @@
-class Window
-
-end

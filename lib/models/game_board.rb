@@ -6,12 +6,23 @@ class GameBoard
   attr_accessor :rows, :cols
   attr_reader :last_counter_pos
 
-  def initialize(rows = 6, cols = 7, board = nil)
+  class << self
+      def connect4
+        GameBoard.new(legal_counters: [RedCounter.instance, YellowCounter.instance])
+      end
+
+      def toot_otto
+        GameBoard.new(rows: 6, cols: 6, legal_counters: [TCounter.instance, OCounter.instance])
+      end
+  end
+
+  def initialize(rows: 6, cols: 7, legal_counters: [RedCounter.instance, YellowCounter.instance], board: nil)
     @rows = rows
     @cols = cols
     @board = Array.new(@rows) {Array.new(@cols, EmptyCounter.instance)}
     @board = board unless board.nil?
     @last_counter_pos = nil
+    @legal_counters =legal_counters
   end
 
   def dup(*)
@@ -43,20 +54,19 @@ class GameBoard
     row(col) == INVALID_ROW
   end
 
-  def possible_moves
+  def possible_cols
     moves = []
     (0..@cols - 1).each {|col| moves.push(col) unless col_full? col}
     moves
   end
 
-  def ended?
-    return true if possible_moves.size.zero?
-
-    false
-  end
-
-  def winner?
-    #
+  def full?
+    (0...@cols).each do |col|
+      if row(col) != INVALID_ROW
+        return false
+      end
+    end
+    true
   end
 
   def map
@@ -78,6 +88,22 @@ class GameBoard
     s
   end
 
+  def at(r, c)
+    @board[r][c]
+  end
+
+  def get_row(r)
+    @board[r]
+  end
+
+  def get_col(c)
+    col = []
+    @board.each do |r|
+      col.push(r[c])
+    end
+    col
+  end
+
   private
 
   # Get the row the counter will fall to if placed in column col
@@ -91,10 +117,6 @@ class GameBoard
     height
   end
 
-  # For testing only
-  def at(r, c)
-    @board[r][c]
-  end
 end
 
 class ColumnFullError < StandardError;

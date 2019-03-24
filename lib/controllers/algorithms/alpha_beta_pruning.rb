@@ -28,7 +28,7 @@ module AlphaBetaPruning
 
     max = -MAX_SCORE
 
-    board.possible_moves.each do |move|
+    board.possible_cols.each do |move|
       next_board = board.dup
       next_board.place turn, move
       turn = counter turn

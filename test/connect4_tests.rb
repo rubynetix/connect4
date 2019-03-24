@@ -1,5 +1,5 @@
 require_relative 'helper'
-require_relative '../lib/models/connect4'
+require_relative '../lib/models/lers/connect4'
 require_relative '../lib/controllers/computer_player'
 
 class Connect4Tests < Helper

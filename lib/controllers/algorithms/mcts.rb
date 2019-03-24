@@ -4,7 +4,7 @@ module MCTS
 
   def random_turn(board, turn)
     next_board = board.dup
-    next_board.place(counter(turn), board.possible_moves.sample)
+    next_board.place(counter(turn), board.possible_cols.sample)
   end
 
   def counter(turn)
@@ -37,7 +37,7 @@ module MCTS
     end
 
     def fully_explored?
-      return true if @children.size == @board.possible_moves.size
+      return true if @children.size == @board.possible_cols.size
 
       false
     end
@@ -76,7 +76,7 @@ module MCTS
 
   def expand(node, turn)
     tried_moves = node.children_move.dup
-    possible_moves = node.state.possible_moves
+    possible_moves = node.state.possible_cols
 
     possible_moves.each do |move|
       unless tried_moves.include? move
