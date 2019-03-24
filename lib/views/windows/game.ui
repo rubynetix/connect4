@@ -28,18 +28,40 @@
 
             <child>
               <object id="connect4_btn" class="GtkRadioButton">
-                <property name="label">Connect4</property>
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
+                <child>
+                  <object id="connect4_btn_widget" class="GtkHBox">
+                    <property name="visible">True</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="label">Connect4</property>
+                        <property name="halign">GTK_ALIGN_START</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
               </object>
             </child>
 
             <child>
               <object id="toot_otto_btn" class="GtkRadioButton">
-                <property name="label" >Toot and Otto</property>
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
                 <property name="group">connect4_btn</property>
+                <child>
+                  <object id="toot_otto_btn_widget" class="GtkHBox">
+                    <property name="visible">True</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="label">TOOT OTTO</property>
+                        <property name="halign">GTK_ALIGN_START</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
               </object>
             </child>
 
@@ -102,7 +124,7 @@
             <child>
               <object class="GtkHBox">
                 <property name="visible">True</property>
-                <property name="halign">2</property>
+                <property name="halign">GTK_ALIGN_END</property>
                 <child>
                   <object id="lb_turn" class="GtkLabel">
                     <property name="visible">True</property>
@@ -157,7 +179,7 @@
             <child>
               <object class="GtkHBox">
                 <property name="visible">True</property>
-                <property name="halign">3</property>
+                <property name="halign">GTK_ALIGN_CENTER</property>
                 <child>
                   <object id="bt_new_game" class="GtkButton">
                     <property name="visible">False</property>
