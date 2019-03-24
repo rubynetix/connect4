@@ -2,11 +2,11 @@ require_relative 'ui_event'
 
 class CounterSelectedEvent < UIEvent
 
-  attr_accessor :counter
+  attr_accessor :index
 
-  def initialize(counter)
+  def initialize(index)
     super UIEvent::COUNTER_SELECTED
-    @counter = counter
+    @index = index
   end
 
 end

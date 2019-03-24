@@ -54,15 +54,15 @@ class Connect4
     when MenuClickEvent::PVC
       @config.players[1] = ComputerPlayer.new
     when MenuClickEvent::PVP
-      @config.players[1] = Player.new('p2', YellowCounter.instance)
+      @config.players[1] = Player.new('p2', [YellowCounter.instance])
     when MenuClickEvent::CONNECT4
       @config.win_check = WinCheck.connect4
-      @config.players[0].counter = RedCounter.instance
-      @config.players[1].counter = YellowCounter.instance
+      @config.players[0].counters = [RedCounter.instance]
+      @config.players[1].counters = [YellowCounter.instance]
     when MenuClickEvent::TOOT_OTTO
-      @config.win_check = WinCheck.connect4
-      @config.players[0].counter = TCounter.instance
-      @config.players[1].counter = OCounter.instance
+      @config.win_check = WinCheck.toot_otto
+      @config.players[0].counters = [TCounter.instance, OCounter.instance]
+      @config.players[1].counters = [TCounter.instance, OCounter.instance]
     end
   end
 end
