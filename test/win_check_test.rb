@@ -199,7 +199,6 @@ class WinCheckTest < Test::Unit::TestCase
     begin
       assert_equal(WinEnum::DRAW, result, "Wincheck found incorrect result on full board. Expected: #{WinEnum::NEUTRAL}. Actual: #{result}")
     end
-
   end
 
   def test_ot_neutral

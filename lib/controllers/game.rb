@@ -1,9 +1,9 @@
 class Game
-  def initialize(players, gameboard, win_check, ui)
-    @players = players
-    @gameboard = gameboard
-    @win_check = win_check
-    @ui = ui
+  def initialize(config)
+    @players = config.players
+    @gameboard = config.gameboard
+    @win_check = config.win_check
+    @ui = config.ui
     @done = false
     @winner = nil
   end

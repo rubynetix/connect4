@@ -21,15 +21,15 @@ class UI
     @game_window.register(self)
   end
 
-  def draw_gameboard(gb)
+  def set_turn(player)
     on_ui_thread do
-      @game_window.draw_game(gb)
+      @game_window.set_turn(player)
     end
   end
 
-  def draw_bitmap(x, y, bitmap)
-    on_ui_thread do |ui|
-      ui.draw_bitmap_impl(x, y, bitmap)
+  def draw_gameboard(gb)
+    on_ui_thread do
+      @game_window.draw_game(gb)
     end
   end
 
@@ -47,7 +47,4 @@ private
     @ui_jobs.enq([self, block])
   end
 
-  def draw_bitmap_impl(x, y, bitmap)
-    puts "hello world!"
-  end
 end
