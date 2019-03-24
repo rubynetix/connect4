@@ -2,6 +2,7 @@ require 'gtk3'
 require 'matrix'
 require_relative 'observable'
 require_relative 'components/counter_cell'
+require_relative '../views/events/menu_click_event'
 
 class GameWindow
   include Observable
@@ -30,6 +31,9 @@ class GameWindow
     game_layout = builder.get_object("game_board")
     game_layout.style_context.add_provider(@css, Gtk::StyleProvider::PRIORITY_USER)
     draw_board(game_layout)
+
+    # TODO: Replace with actual event generated from user button click
+    mock_click_events
   end
 
   def draw_game(gb)
@@ -57,4 +61,11 @@ class GameWindow
     end
   end
 
+  # Mock UI events from the configuration menu until a menu UI is built
+  def mock_click_events
+    Thread.new do
+      sleep(2)
+      notify(MenuClickEvent::START)
+    end
+  end
 end
