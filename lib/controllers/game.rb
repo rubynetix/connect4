@@ -21,6 +21,7 @@ class Game
         process_action(p.take_turn(@gameboard, @ui))
         process_state
         update_board
+        break if @done
       end
     end
     @ui.game_over(@winner)
