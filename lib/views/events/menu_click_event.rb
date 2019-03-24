@@ -12,6 +12,9 @@ class MenuClickEvent < UIEvent
   PVP = 3
   PVC = 4
 
+  # Restart the game
+  NEW_GAME = 5
+
   attr_reader :click
 
   def initialize(click_id)
