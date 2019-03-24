@@ -5,6 +5,9 @@ require_relative '../views/events/forfeit_click_event'
 
 class Player
   include PlayerAction
+
+  attr_accessor :name, :counter
+
   def initialize(name, counter)
     @name = name
     @counter = counter

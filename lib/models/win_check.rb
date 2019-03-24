@@ -9,6 +9,16 @@ end
 
 class WinCheck
 
+  class << self
+      def connect4
+        WinCheck.new("YYYY", "RRRR")
+      end
+
+      def toot_otto
+        WinCheck.new("TOOT", "OTTO")
+      end
+  end
+
   def initialize(win_string1, win_string2)
     @win1_string = win_string1
     @win2_string = win_string2
