@@ -1,8 +1,17 @@
 require 'singleton'
 
+def get_asset(assert_path)
+  "#{File.expand_path(__dir__)}/../views/assets/#{assert_path}"
+end
+
 module Counter
+
   def sprite
     self.class.class_variable_get(:@@sprite)
+  end
+
+  def icon
+    self.class.class_variable_get(:@@icon)
   end
 
   def symbol
@@ -16,6 +25,7 @@ module Counter
   def to_s
     self.class.class_variable_get(:@@symbol)
   end
+
 end
 
 class YellowCounter
@@ -23,7 +33,8 @@ class YellowCounter
   include Counter
 
   @@symbol = "Y"
-  @@sprite = "#{File.expand_path(__dir__)}/../views/assets/y_counter_75.png"
+  @@sprite = get_asset("y_counter_75.png")
+  @@icon = get_asset("y_counter_40.png")
 end
 
 class TCounter
@@ -39,7 +50,8 @@ class RedCounter
   include Counter
 
   @@symbol = "R"
-  @@sprite = "#{File.expand_path(__dir__)}/../views/assets/r_counter_75.png"
+  @@sprite = get_asset("r_counter_75.png")
+  @@icon = get_asset("r_counter_40.png")
 end
 
 class OCounter

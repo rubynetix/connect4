@@ -6,7 +6,6 @@ class CounterCell
   include Observable
 
   def initialize(row, col, width, height, css)
-    @observers = []
 
     @overlay = Gtk::Overlay.new
     @overlay.visible = true

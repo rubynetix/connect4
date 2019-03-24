@@ -3,7 +3,7 @@ require_relative 'observable'
 require_relative 'game_window'
 
 class UI
-  include Observable
+  include PassthroughObservable
 
   def initialize(width: 300, height: 300)
     @ui_jobs = Queue.new
@@ -14,31 +14,22 @@ class UI
       end
     end
 
-    @observers = []
-
     @game_window = GameWindow.new
     @game_window.build
     @game_window.register(self)
+
+    @active_window = @game_window
   end
 
-  def set_turn(player)
+  def method_missing(m, *args, &block)
+    # Delegate calls to active window on UI thread
     on_ui_thread do
-      @game_window.set_turn(player)
-    end
-  end
-
-  def draw_gameboard(gb)
-    on_ui_thread do
-      @game_window.draw_game(gb)
+      @active_window.send(m, *args, &block)
     end
   end
 
   def shutdown
     @ui_thread.kill
-  end
-
-  def notify(event)
-    notify_all(event)
   end
 
 private

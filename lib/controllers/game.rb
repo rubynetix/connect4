@@ -6,6 +6,12 @@ class Game
     @ui = config.ui
     @done = false
     @winner = nil
+
+    counters = @players.map do |p|
+      p.counter
+    end
+
+    @ui.set_counters(counters)
   end
 
   def game_loop

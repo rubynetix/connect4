@@ -2,10 +2,11 @@ require 'gtk3'
 require 'matrix'
 require_relative 'observable'
 require_relative 'components/counter_cell'
-require_relative '../views/events/menu_click_event'
+require_relative 'events/menu_click_event'
+require_relative 'events/counter_selected_event'
 
 class GameWindow
-  include Observable
+  include PassthroughObservable
 
   def initialize
     @builder_file = "#{File.expand_path(__dir__)}/windows/game.ui"
@@ -14,12 +15,10 @@ class GameWindow
 
     @cells = nil
     @lb_turn = nil
+    @counter_bar = nil
 
-    @observers = []
     @css = Gtk::CssProvider.new
     @css.load(:path => "#{File.expand_path(__dir__)}/styles/main.css")
-
-
   end
 
   def build
@@ -37,11 +36,13 @@ class GameWindow
     game_layout.style_context.add_provider(@css, Gtk::StyleProvider::PRIORITY_USER)
     draw_board(game_layout)
 
+    @counter_bar = builder.get_object("counter_bar")
+
     # TODO: Replace with actual event generated from user button click
     mock_click_events
   end
 
-  def draw_game(gb)
+  def draw_gameboard(gb)
     gb.iter do |r, c, counter|
       @cells[r, c].set_counter(counter)
     end
@@ -51,12 +52,8 @@ class GameWindow
     @lb_turn.set_text("#{player.name}'s turn")
   end
 
-  def on_click(event)
-    notify_all(event)
-  end
-
-  def notify(event)
-    on_click(event)
+  def set_counters(counters)
+    draw_counter_bar(@counter_bar, counters)
   end
 
   private
@@ -70,11 +67,46 @@ class GameWindow
     end
   end
 
+  def draw_counter_bar(bar_layout, counters)
+    return if counters.empty?
+
+    root_sel = Gtk::RadioButton.new
+    root_sel.mode = false
+    root_sel.visible = true
+    root_sel.add_child(load_image(counters[0].icon))
+    bar_layout.pack_start(root_sel)
+
+    selectors = [root_sel]
+
+    if counters.size > 1
+      selectors += counters[1..-1].map do |c|
+        c_sel = Gtk::RadioButton.new(:member => root_sel)
+        c_sel.mode = false
+        c_sel.visible = true
+        c_sel.add_child(load_image(c.icon))
+        bar_layout.pack_start(c_sel)
+        c_sel
+      end
+    end
+
+    selectors.each do |s, c|
+      s.signal_connect "toggled" do
+        notify_all(CounterSelectedEvent.new(c))
+      end
+    end
+  end
+
   # Mock UI events from the configuration menu until a menu UI is built
   def mock_click_events
     Thread.new do
       sleep(2)
       notify(MenuClickEvent::START)
     end
+  end
+
+  def load_image(path)
+    img = Gtk::Image.new(:file => path)
+    img.visible = true
+    img
   end
 end
