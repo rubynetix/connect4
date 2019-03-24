@@ -30,6 +30,15 @@ class GameBoard
     row(col) == INVALID_ROW
   end
 
+  def full?
+    (0...@cols).each do |col|
+      if row(col) != INVALID_ROW
+        return false
+      end
+    end
+    true
+  end
+
   def map
     iter {|r, c, counter| @board[r][c] = yield(r, c, counter)}
   end
