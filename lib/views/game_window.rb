@@ -43,6 +43,10 @@ class GameWindow
 
     @counter_bar = builder["counter_bar"]
     @bt_new_game = builder["bt_new_game"]
+    @bt_new_game.signal_connect("clicked") do
+      clear_gameboard
+      notify_all(MenuClickEvent.new(MenuClickEvent::NEW_GAME))
+    end
 
     @game = builder["game_panel"]
 
@@ -98,6 +102,11 @@ class GameWindow
     
     @lb_win.visible = true
     @bt_new_game.visible = true
+  end
+
+  def clear_gameboard
+    @lb_win.visible = false
+    @bt_new_game.visible = false
   end
 
   private

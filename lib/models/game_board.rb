@@ -59,6 +59,11 @@ class GameBoard
     end
   end
 
+  def initialize_copy(*)
+    clear
+    @last_counter_pos = nil
+  end
+
   def to_s
     s = ''
     @board.each do |r|
