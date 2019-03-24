@@ -23,6 +23,7 @@ class Game
         update_board
       end
     end
+    @ui.game_over(@winner)
   end
 
   private
@@ -35,9 +36,12 @@ class Game
     case @win_check.check(@gameboard)
     when WinEnum::DRAW
       @done = true
-    when WinEnum::WIN1 || WinEnum::WIN2
+    when WinEnum::WIN1
       @done = true
       @winner = @players[0]
+    when WinEnum::WIN2
+      @done = true
+      @winner = @players[1]
     end
   end
 

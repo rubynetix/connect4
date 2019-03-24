@@ -15,6 +15,7 @@ class GameWindow
 
     @cells = nil
     @lb_turn = nil
+    @lb_win = nil
     @counter_bar = nil
 
     @css = Gtk::CssProvider.new
@@ -26,17 +27,22 @@ class GameWindow
     builder = Gtk::Builder.new(:file => @builder_file)
 
     # Connect signal handlers to the constructed widgets
-    window = builder.get_object("window")
+    window = builder["window"]
     window.signal_connect("destroy") { Gtk.main_quit }
     window.style_context.add_provider(@css, Gtk::StyleProvider::PRIORITY_USER)
 
-    @lb_turn = builder.get_object("lb_turn")
+    @lb_turn = builder["lb_turn"]
 
-    game_layout = builder.get_object("game_board")
+    game_layout = builder["game_board"]
     game_layout.style_context.add_provider(@css, Gtk::StyleProvider::PRIORITY_USER)
     draw_board(game_layout)
 
-    @counter_bar = builder.get_object("counter_bar")
+    game_overlay = builder["game_board_overlay"]
+    @lb_win = Gtk::Label.new("Player wins!")
+    game_overlay.add_overlay(@lb_win)
+
+    @counter_bar = builder["counter_bar"]
+    @bt_new_game = builder["bt_new_game"]
 
     # TODO: Replace with actual event generated from user button click
     mock_click_events
@@ -54,6 +60,17 @@ class GameWindow
 
   def set_counters(counters)
     draw_counter_bar(@counter_bar, counters)
+  end
+
+  def game_over(winner)
+    if !winner.nil?
+      @lb_win.set_text("#{winner.name} wins!")
+    else
+      @lb_win.set_text("Draw")
+    end
+    
+    @lb_win.visible = true
+    @bt_new_game.visible = true
   end
 
   private
