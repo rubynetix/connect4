@@ -1,6 +1,7 @@
 require_relative '../models/game_stats'
 require_relative '../views/ui'
 require_relative '../controllers/local_player'
+require_relative 'computer_player'
 require_relative '../controllers/player'
 require_relative '../controllers/game'
 require_relative '../models/game_board'
@@ -46,10 +47,10 @@ class Connect4
   end
 
   def notify(event)
-    puts "[CONNECT4] -- Notified of #{event}"
     case event
     when MenuClickEvent::START
       @ready << true
+      @ui.load_game
     when MenuClickEvent::PVC
       @config.players[1] = ComputerPlayer.new
     when MenuClickEvent::PVP
