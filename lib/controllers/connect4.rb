@@ -40,6 +40,7 @@ class Connect4
   end
 
   def launch_game
+    puts "Launch game"
     game = Game.new(@config)
     game.game_loop
   end
@@ -55,17 +56,20 @@ class Connect4
       @ready << true
       @ui.load_game
     when MenuClickEvent::PVC
-      @config.players[1] = ComputerPlayer.new('p2', YellowCounter.instance).extend RandomAction
+      @config.players[1] = ComputerPlayer.new('p2',
+                                              [YellowCounter.instance],
+                                              "YYYY",
+                                              [RedCounter.instance]).extend AlphaBetaPruning
     when MenuClickEvent::PVP
-      @config.players[1] = Player.new('p2', YellowCounter.instance)
+      @config.players[1] = Player.new('p2', [YellowCounter.instance])
     when MenuClickEvent::CONNECT4
       @config.win_check = WinCheck.connect4
-      @config.players[0].counter = RedCounter.instance
-      @config.players[1].counter = YellowCounter.instance
+      @config.players[0].counters = [RedCounter.instance]
+      @config.players[1].counters = [YellowCounter.instance]
     when MenuClickEvent::TOOT_OTTO
-      @config.win_check = WinCheck.connect4
-      @config.players[0].counter = TCounter.instance
-      @config.players[1].counter = OCounter.instance
+      @config.win_check = WinCheck.toot_otto
+      @config.players[0].counters = [TCounter.instance, OCounter.instance]
+      @config.players[1].counters = [TCounter.instance, OCounter.instance]
     end
   end
 end
@@ -75,8 +79,11 @@ class GameConfig
 
   def initialize(ui)
     @ui = ui
-    @players = [Player.new('p1', RedCounter.instance), Player.new('p2', YellowCounter.instance)]
-    @gameboard = GameBoard.connect4
+    @players = [
+        Player.new('p1', [RedCounter.instance]),
+        Player.new('p2', [YellowCounter.instance])
+    ]
     @win_check = WinCheck.connect4
+    @gameboard = GameBoard.connect4
   end
 end

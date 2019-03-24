@@ -79,10 +79,14 @@ class GameWindow
 
   def set_turn(player)
     @lb_turn.set_text("#{player.name}'s turn")
-  end
 
-  def set_counters(counters)
-    draw_counter_bar(@counter_bar, counters)
+    if player.counters.size > 1
+      draw_counter_bar(@counter_bar, player.counters, player.counter_select)
+      @counter_bar.visible = true
+    else
+      @counter_bar.visible = false
+    end
+
   end
 
   def game_over(winner)
@@ -107,8 +111,12 @@ class GameWindow
     end
   end
 
-  def draw_counter_bar(bar_layout, counters)
+  def draw_counter_bar(bar_layout, counters, select_index)
     return if counters.empty?
+
+    bar_layout.children.each do |c|
+        bar_layout.remove_child(c)
+    end
 
     root_sel = Gtk::RadioButton.new
     root_sel.mode = false
@@ -129,9 +137,11 @@ class GameWindow
       end
     end
 
-    selectors.each do |s, c|
+    selectors[select_index].active = true
+
+    selectors.each_with_index do |s, i|
       s.signal_connect "toggled" do
-        notify_all(CounterSelectedEvent.new(c))
+        notify_all(CounterSelectedEvent.new(i))
       end
     end
   end

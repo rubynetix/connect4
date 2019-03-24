@@ -10,18 +10,35 @@ end
 class WinCheck
 
   class << self
-      def connect4
-        WinCheck.new("RRRR", "YYYY")
-      end
+    def connect4
+      WinCheck.new("RRRR", "YYYY")
+    end
 
-      def toot_otto
-        WinCheck.new("TOOT", "OTTO")
-      end
+    def toot_otto
+      WinCheck.new("TOOT", "OTTO")
+    end
   end
 
   def initialize(win_string1, win_string2)
     @win1_string = win_string1
     @win2_string = win_string2
+  end
+
+  def winner?(board, playerString)
+    win1, win2 = check_for_wins(board)
+    return win1 if @win1_string == playerString
+    win2
+  end
+
+  def check_for_wins(board)
+    win1 = false
+    win2 = false
+
+    create_strings(board).each do |string|
+      win1 = (win1 or string.include? @win1_string)
+      win2 = (win2 or string.include? @win2_string)
+    end
+    [win1, win2]
   end
 
 
@@ -30,15 +47,7 @@ class WinCheck
       return WinEnum::NEUTRAL
     end
 
-    win1 = false
-    win2 = false
-
-    create_strings(board).each do | string |
-      puts string, string.include?(@win1_string), string.include?(@win2_string), ""
-      win1 = (win1 or string.include? @win1_string)
-      win2 = (win2 or string.include? @win2_string)
-    end
-    puts win1, win2
+    win1, win2 = check_for_wins(board)
 
     if (win1 and win2) or board.full?
       result = WinEnum::DRAW

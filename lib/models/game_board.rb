@@ -1,28 +1,29 @@
-require_relative '../../lib/models/counter'
+require_relative '../models/counter'
+require_relative '../models/win_check'
 
 class GameBoard
   INVALID_ROW = -1
 
   attr_accessor :rows, :cols
-  attr_reader :last_counter_pos
+  attr_reader :last_counter_pos, :win_check
 
   class << self
-      def connect4
-        GameBoard.new(legal_counters: [RedCounter.instance, YellowCounter.instance])
-      end
+    def connect4
+      GameBoard.new
+    end
 
-      def toot_otto
-        GameBoard.new(rows: 6, cols: 6, legal_counters: [TCounter.instance, OCounter.instance])
-      end
+    def toot_otto
+      GameBoard.new(rows: 6, cols: 6)
+    end
   end
 
-  def initialize(rows: 6, cols: 7, legal_counters: [RedCounter.instance, YellowCounter.instance], board: nil)
+  def initialize(rows: 6, cols: 7, board: nil, win_check: WinCheck.connect4, last_move: nil)
     @rows = rows
     @cols = cols
     @board = Array.new(@rows) {Array.new(@cols, EmptyCounter.instance)}
     @board = board unless board.nil?
-    @last_counter_pos = nil
-    @legal_counters =legal_counters
+    @last_counter_pos = last_move
+    @win_check = win_check
   end
 
   def dup(*)
@@ -33,7 +34,7 @@ class GameBoard
 
     board = Array.new(@rows) {Array.new(@cols, EmptyCounter.instance)}
     iter {|r, c, counter| board[r][c] = counter}
-    self.class.new @rows.dup, @cols.dup, board.dup
+    self.class.new rows: @rows.dup, cols: @cols.dup, board: board.dup, last_move: @last_counter_pos.dup
 
   end
 
@@ -58,6 +59,15 @@ class GameBoard
     moves = []
     (0..@cols - 1).each {|col| moves.push(col) unless col_full? col}
     moves
+  end
+
+
+  def check
+    @win_check.check self
+  end
+
+  def over?
+    full? || check != WinEnum::NEUTRAL
   end
 
   def full?

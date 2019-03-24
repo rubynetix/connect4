@@ -6,12 +6,6 @@ class Game
     @ui = config.ui
     @done = false
     @winner = nil
-
-    counters = @players.map do |p|
-      p.counter
-    end
-
-    @ui.set_counters(counters)
   end
 
   def game_loop
@@ -34,7 +28,7 @@ class Game
   end
 
   def process_state
-    case @win_check.check(@gameboard)
+    case @win_check.check @gameboard
     when WinEnum::DRAW
       @done = true
     when WinEnum::WIN1

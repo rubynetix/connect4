@@ -4,6 +4,8 @@ require_relative '../../../lib/models/game_board'
 module RandomAction
 
   def get_move(board)
-    [board.possible_cols.sample, @counters.sample]
+    return :FORFEIT if board.possible_cols.size.zero?
+
+    [@counters.sample, board.possible_cols.sample]
   end
 end

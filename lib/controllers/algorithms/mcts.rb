@@ -44,7 +44,7 @@ module MCTS
   end
 
   def get_reward(board, turn)
-    while not board.draw? and not board.winner?
+    while not board.over?
       board = random_turn(board, turn)
       turn *= -1
     end
@@ -113,5 +113,22 @@ module MCTS
 
   def get_move(board)
     mcts MAX_ITERATIONS, Node(board), EXPLORE_FACTOR
+  end
+
+  # We want to win and
+  # we want to win quickly (or lose slowly)
+  def scoring(board, depth)
+    depth += 1
+    return 0 if board.check == WinEnum::DRAW
+    return MAX_SCORE / depth if board.win_check.winner? board, @my_win
+
+    -MAX_SCORE / depth
+  end
+
+  def get_score(board, depth, player)
+    puts "Get score"
+    puts board
+    puts player * scoring(board, depth)
+    player * scoring(board, depth)
   end
 end
