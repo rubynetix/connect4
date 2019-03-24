@@ -38,15 +38,12 @@ class Game
     when WinEnum::DRAW
       @done = true
     when WinEnum::WIN1
-      puts "P1 win"
       @done = true
       @winner = @players[0]
     when WinEnum::WIN2
-      puts "P2 win"
       @done = true
       @winner = @players[1]
     end
-    puts "Win checked"
   end
 
   def update_board
