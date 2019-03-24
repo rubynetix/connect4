@@ -6,6 +6,16 @@ class GameBoard
   attr_accessor :rows, :cols
   attr_reader :last_counter_pos
 
+  class << self
+      def connect4
+        GameBoard.new
+      end
+
+      def toot_otto
+        GameBoard.new(rows: 6, cols: 6)
+      end
+  end
+
   def initialize(rows = 6, cols = 7)
     @rows = rows
     @cols = cols
