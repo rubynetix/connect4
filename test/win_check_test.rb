@@ -180,6 +180,27 @@ class WinCheckTest < Test::Unit::TestCase
     end
   end
 
+  def test_full_board
+    full_board = GameBoard.new(1,1)
+    full_board.place(OCounter.instance, 0)
+    last_counter_pos = full_board.last_counter_pos
+
+    win_check = WinCheck.new("TOOT", "OTTO")
+
+    begin
+      assert_true(last_counter_pos.is_a?(Array))
+      assert_true(last_counter_pos[0].is_a?(Integer))
+      assert_true(last_counter_pos[1].is_a?(Integer))
+      assert_true(board_counter_check(full_board, [EmptyCounter.instance, OCounter.instance, TCounter.instance]), "GameBoard contains invalid counter types")
+    end
+
+    result = win_check.check(full_board)
+
+    begin
+      assert_equal(WinEnum::DRAW, result, "Wincheck found incorrect result on full board. Expected: #{WinEnum::NEUTRAL}. Actual: #{result}")
+    end
+  end
+
   def test_ot_neutral
     ot_neutral_board = GameBoard.new(5)
     ot_neutral_board.place(OCounter.instance, 1)

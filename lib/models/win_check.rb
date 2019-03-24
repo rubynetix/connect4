@@ -38,7 +38,7 @@ class WinCheck
       win2 = (win2 or string.include? @win2_string)
     end
 
-    if win1 and win2 #or board.full?
+    if (win1 and win2) or board.full?
       result = WinEnum::DRAW
     elsif win1
       result = WinEnum::WIN1
