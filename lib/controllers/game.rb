@@ -41,6 +41,8 @@ class Game
   end
 
   def update_board
+    puts "\n--------- GAMESTATE ---------"
+    puts @gameboard.to_s
     @ui.draw_gameboard(@gameboard)
   end
 end

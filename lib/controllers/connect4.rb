@@ -42,6 +42,7 @@ class Connect4
   def launch_game
     puts "Launch game"
     game = Game.new(@config)
+    @ui.load_game
     game.game_loop
   end
 
@@ -51,10 +52,12 @@ class Connect4
   end
 
   def notify(event)
-    case event
+    # Only interested in menu clicks
+    return if event.id != UIEvent::MENU_CLICK
+
+    case event.click
     when MenuClickEvent::START
       @ready << true
-      @ui.load_game
     when MenuClickEvent::PVC
       @config.players[1] = ComputerPlayer.new('p2',
                                               [YellowCounter.instance],
@@ -70,6 +73,9 @@ class Connect4
       @config.win_check = WinCheck.toot_otto
       @config.players[0].counters = [TCounter.instance, OCounter.instance]
       @config.players[1].counters = [TCounter.instance, OCounter.instance]
+    when MenuClickEvent::NEW_GAME
+      @config.reset
+      @ready << true
     end
   end
 end
@@ -85,5 +91,9 @@ class GameConfig
     ]
     @win_check = WinCheck.connect4
     @gameboard = GameBoard.connect4
+  end
+
+  def reset
+    @gameboard = @gameboard.dup
   end
 end

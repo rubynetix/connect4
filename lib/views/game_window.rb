@@ -5,11 +5,15 @@ require_relative 'components/counter_cell'
 require_relative 'events/menu_click_event'
 require_relative 'events/counter_selected_event'
 
+def abs_path(path)
+  "#{File.expand_path(__dir__)}#{path}"
+end
+
 class GameWindow
   include PassthroughObservable
 
   def initialize
-    @builder_file = "#{File.expand_path(__dir__)}/windows/game.ui"
+    @builder_file = abs_path("/windows/game.ui")
     @counter_width = 50
     @counter_height = 50
 
@@ -19,7 +23,7 @@ class GameWindow
     @counter_bar = nil
 
     @css = Gtk::CssProvider.new
-    @css.load(:path => "#{File.expand_path(__dir__)}/styles/main.css")
+    @css.load(:path => abs_path("/styles/main.css"))
   end
 
   def build
@@ -43,22 +47,41 @@ class GameWindow
 
     @counter_bar = builder["counter_bar"]
     @bt_new_game = builder["bt_new_game"]
+    @bt_new_game.signal_connect("clicked") do
+      clear_gameboard
+      notify_all(MenuClickEvent.new(MenuClickEvent::NEW_GAME))
+    end
 
     @game = builder["game_panel"]
 
     # Game configuration items
     @menu = builder["menu_panel"]
     @menu_start = builder["start_btn"]
-    @menu_c4 = builder["connect4_btn"]
-    @menu_to = builder["toot_otto_btn"]
-    @menu_pvp = builder["pvp_btn"]
-    @menu_pvc = builder["pvc_btn"]
 
-    @menu_start.signal_connect("clicked") {notify_all(MenuClickEvent::START)}
-    @menu_c4.signal_connect("clicked") {notify_all(MenuClickEvent::CONNECT4)}
-    @menu_to.signal_connect("clicked") {notify_all(MenuClickEvent::TOOT_OTTO)}
-    @menu_pvp.signal_connect("clicked") {notify_all(MenuClickEvent::PVP)}
-    @menu_pvc.signal_connect("clicked") {notify_all(MenuClickEvent::PVC)}
+    @menu_c4 = builder["connect4_btn"]
+    @menu_c4.mode = false
+
+    c4_btn = builder["connect4_btn_widget"]
+    c4_btn.pack_start(load_image(RedCounter.instance.icon))
+    c4_btn.pack_start(load_image(YellowCounter.instance.icon))
+
+    @menu_to = builder["toot_otto_btn"]
+    @menu_to.mode = false
+
+    to_btn = builder["toot_otto_btn_widget"]
+    to_btn.pack_start(load_image(TCounter.instance.icon))
+    to_btn.pack_start(load_image(OCounter.instance.icon))
+
+    @menu_pvp = builder["pvp_btn"]
+    @menu_pvp.mode = false
+    @menu_pvc = builder["pvc_btn"]
+    @menu_pvc.mode = false
+
+    @menu_start.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::START))}
+    @menu_c4.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::CONNECT4))}
+    @menu_to.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::TOOT_OTTO))}
+    @menu_pvp.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::PVP))}
+    @menu_pvc.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::PVC))}
   end
 
   def show_menu
@@ -98,6 +121,11 @@ class GameWindow
     
     @lb_win.visible = true
     @bt_new_game.visible = true
+  end
+
+  def clear_gameboard
+    @lb_win.visible = false
+    @bt_new_game.visible = false
   end
 
   private

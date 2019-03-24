@@ -1,4 +1,8 @@
+require_relative 'ui_event'
+
 # Event for when the forfeit button is clicked
-class ForfeitClickEvent
-  def initialize; end
+class ForfeitClickEvent < UIEvent
+  def initialize
+    super UIEvent::FORFEIT_CLICK
+  end
 end
