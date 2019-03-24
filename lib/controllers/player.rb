@@ -17,6 +17,7 @@ class Player
   # Waits for the player to make an
   # action and returns it.
   def take_turn(board, ui)
+    ui.set_turn(self)
     @board = board
     @waiting = true
     register(ui, [CellClickEvent, ForfeitClickEvent])
