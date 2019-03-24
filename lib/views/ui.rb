@@ -14,8 +14,6 @@ class UI
       end
     end
 
-    @observers = []
-
     @game_window = GameWindow.new
     @game_window.build
     @game_window.register(self)

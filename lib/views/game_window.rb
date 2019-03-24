@@ -17,7 +17,6 @@ class GameWindow
     @lb_turn = nil
     @counter_bar = nil
 
-    @observers = []
     @css = Gtk::CssProvider.new
     @css.load(:path => "#{File.expand_path(__dir__)}/styles/main.css")
   end
