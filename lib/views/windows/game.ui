@@ -186,6 +186,13 @@
                     <property name="label">New Game</property>
                   </object>
                 </child>
+
+                <child>
+                  <object id="main_menu_btn" class="GtkButton">
+                    <property name="visible">False</property>
+                    <property name="label">Main menu</property>
+                  </object>
+                </child>
               </object>
               <packing>
                 <property name="left-attach">0</property>
