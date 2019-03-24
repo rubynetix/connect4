@@ -21,7 +21,7 @@
             <child>
               <object id="gamemode_lbl" class="GtkLabel">
                 <property name="visible">True</property>
-                <property name="label">Game mode:</property>
+                <property name="label">Game type:</property>
                 <property name="halign">GTK_ALIGN_START</property>
               </object>
             </child>
@@ -54,7 +54,7 @@
             <child>
               <object id="opponent_lbl" class="GtkLabel">
                 <property name="visible">True</property>
-                <property name="label">Select an opponent:</property>
+                <property name="label">Opponent type:</property>
                 <property name="halign">GTK_ALIGN_START</property>
               </object>
             </child>
