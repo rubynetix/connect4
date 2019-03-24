@@ -37,7 +37,6 @@ class GameWindow
     draw_board(game_layout)
 
     @counter_bar = builder.get_object("counter_bar")
-    # draw_counter_bar(counter_bar, [RedCounter.instance, YellowCounter.instance])
 
     # TODO: Replace with actual event generated from user button click
     mock_click_events
