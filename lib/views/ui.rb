@@ -18,6 +18,7 @@ class UI
 
     @game_window = GameWindow.new
     @game_window.build
+    @game_window.register(self)
   end
 
   def draw_gameboard(gb)
@@ -34,6 +35,10 @@ class UI
 
   def shutdown
     @ui_thread.kill
+  end
+
+  def notify(event)
+    notify_all(event)
   end
 
 private
