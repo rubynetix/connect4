@@ -69,6 +69,9 @@ class Connect4
     when MenuClickEvent::NEW_GAME
       @config.reset
       @ready << true
+    when MenuClickEvent::RETURN_MAIN_MENU
+      @config.reset
+      @ui.load_menu
     end
   end
 end
