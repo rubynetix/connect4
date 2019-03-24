@@ -44,8 +44,31 @@ class GameWindow
     @counter_bar = builder["counter_bar"]
     @bt_new_game = builder["bt_new_game"]
 
-    # TODO: Replace with actual event generated from user button click
-    mock_click_events
+    @game = builder["game_panel"]
+
+    # Game configuration items
+    @menu = builder["menu_panel"]
+    @menu_start = builder["start_btn"]
+    @menu_c4 = builder["connect4_btn"]
+    @menu_to = builder["toot_otto_btn"]
+    @menu_pvp = builder["pvp_btn"]
+    @menu_pvc = builder["pvc_btn"]
+
+    @menu_start.signal_connect("clicked") {notify_all(MenuClickEvent::START)}
+    @menu_c4.signal_connect("clicked") {notify_all(MenuClickEvent::CONNECT4)}
+    @menu_to.signal_connect("clicked") {notify_all(MenuClickEvent::TOOT_OTTO)}
+    @menu_pvp.signal_connect("clicked") {notify_all(MenuClickEvent::PVP)}
+    @menu_pvc.signal_connect("clicked") {notify_all(MenuClickEvent::PVC)}
+  end
+
+  def show_menu
+    @menu.visible = true
+    @game.visible = false
+  end
+
+  def show_game
+    @menu.visible = false
+    @game.visible = true
   end
 
   def draw_gameboard(gb)
@@ -110,14 +133,6 @@ class GameWindow
       s.signal_connect "toggled" do
         notify_all(CounterSelectedEvent.new(c))
       end
-    end
-  end
-
-  # Mock UI events from the configuration menu until a menu UI is built
-  def mock_click_events
-    Thread.new do
-      sleep(2)
-      notify(MenuClickEvent::START)
     end
   end
 

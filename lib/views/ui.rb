@@ -21,6 +21,14 @@ class UI
     @active_window = @game_window
   end
 
+  def load_menu
+    @game_window.show_menu
+  end
+
+  def load_game
+    @game_window.show_game
+  end
+
   def method_missing(m, *args, &block)
     # Delegate calls to active window on UI thread
     on_ui_thread do

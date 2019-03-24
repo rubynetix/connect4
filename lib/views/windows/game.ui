@@ -7,81 +7,170 @@
     <property name="default_height">300</property>
     <property name="default_width">300</property>
     <property name="resizable">False</property>
+
     <child>
-      <object id="main" class="GtkGrid">
+      <object id="game" class="GtkVBox">
         <property name="visible">True</property>
-        <property name="column-spacing">18</property>
-        <property name="row-spacing">12</property>
+
+        <!-- Game configuration widgets -->
         <child>
-          <object class="GtkHBox">
+          <object id="menu_panel" class="GtkVBox">
             <property name="visible">True</property>
-            <property name="halign">2</property>
+
+            <!-- Game mode selection-->
             <child>
-              <object id="lb_turn" class="GtkLabel">
+              <object id="gamemode_lbl" class="GtkLabel">
                 <property name="visible">True</property>
-                <property name="label">Loading...</property>
-                <attributes>
-                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                </attributes>
+                <property name="label">Game mode:</property>
+                <property name="halign">GTK_ALIGN_START</property>
+              </object>
+            </child>
+
+            <child>
+              <object id="connect4_btn" class="GtkRadioButton">
+                <property name="label">Connect4</property>
+                <property name="visible">True</property>
+                <property name="xalign">0</property>
+              </object>
+            </child>
+
+            <child>
+              <object id="toot_otto_btn" class="GtkRadioButton">
+                <property name="label" >Toot and Otto</property>
+                <property name="visible">True</property>
+                <property name="xalign">0</property>
+                <property name="group">connect4_btn</property>
+              </object>
+            </child>
+
+            <!-- Spacing -->
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+              </object>
+            </child>
+
+            <!-- Opponent selection -->
+            <child>
+              <object id="opponent_lbl" class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="label">Select an opponent:</property>
+                <property name="halign">GTK_ALIGN_START</property>
+              </object>
+            </child>
+
+            <child>
+              <object id="pvp_btn" class="GtkRadioButton">
+                <property name="label">Single-player</property>
+                <property name="visible">True</property>
+                <property name="xalign">0</property>
+              </object>
+            </child>
+
+            <child>
+              <object id="pvc_btn" class="GtkRadioButton">
+                <property name="label" translatable="yes">Multi-player</property>
+                <property name="visible">True</property>
+                <property name="xalign">0</property>
+                <property name="group">pvp_btn</property>
+              </object>
+            </child>
+
+            <!-- Spacing -->
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+              </object>
+            </child>
+
+            <!-- Start the game -->
+            <child>
+              <object id="start_btn" class="GtkButton">
+                <property name="visible">True</property>
+                <property name="label">Start!</property>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <!-- Game play widgets -->
+        <child>
+          <object id="game_panel" class="GtkGrid">
+            <property name="visible">False</property>
+            <property name="column-spacing">18</property>
+            <property name="row-spacing">12</property>
+            <child>
+              <object class="GtkHBox">
+                <property name="visible">True</property>
+                <property name="halign">2</property>
+                <child>
+                  <object id="lb_turn" class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="label">Loading...</property>
+                    <attributes>
+                      <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                    </attributes>
+                  </object>
+                  <packing>
+                    <property name="pack-type">1</property>
+                  </packing>
+                </child>
               </object>
               <packing>
-                <property name="pack-type">1</property>
+                <property name="left-attach">0</property>
+                <property name="top-attach">0</property>
+                <property name="width">2</property>
+              </packing>
+            </child>
+
+            <child>
+              <object id="game_board_overlay" class="GtkOverlay">
+                <property name="visible">True</property>
+                <child>
+                  <object id="game_board" class="GtkGrid">
+                    <property name="visible">True</property>
+                    <property name="column-homogeneous">True</property>
+                    <property name="row-homogeneous">True</property>
+                  </object>
+                  <packing>
+                    <property name="index">-1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">1</property>
+              </packing>
+            </child>
+
+            <child>
+              <object id="counter_bar" class="GtkVBox">
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">1</property>
+                <property name="height">2</property>
+              </packing>
+            </child>
+
+            <child>
+              <object class="GtkHBox">
+                <property name="visible">True</property>
+                <property name="halign">3</property>
+                <child>
+                  <object id="bt_new_game" class="GtkButton">
+                    <property name="visible">False</property>
+                    <property name="label">New Game</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">2</property>
               </packing>
             </child>
           </object>
-          <packing>
-            <property name="left-attach">0</property>
-            <property name="top-attach">0</property>
-            <property name="width">2</property>
-          </packing>
-        </child>
-
-        <child>
-          <object id="game_board_overlay" class="GtkOverlay">
-            <property name="visible">True</property>
-            <child>
-              <object id="game_board" class="GtkGrid">
-                <property name="visible">True</property>
-                <property name="column-homogeneous">True</property>
-                <property name="row-homogeneous">True</property>
-              </object>
-              <packing>
-                <property name="index">-1</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="left-attach">0</property>
-            <property name="top-attach">1</property>
-          </packing>
-        </child>
-
-        <child>
-          <object id="counter_bar" class="GtkVBox">
-            <property name="visible">True</property>
-          </object>
-          <packing>
-            <property name="left-attach">1</property>
-            <property name="top-attach">1</property>
-            <property name="height">2</property>
-          </packing>
-        </child>
-
-        <child>
-          <object class="GtkHBox">
-            <property name="visible">True</property>
-            <property name="halign">3</property>
-            <child>
-              <object id="bt_new_game" class="GtkButton">
-                <property name="visible">False</property>
-                <property name="label">New Game</property>
-              </object>
-            </child>
-          </object>
-          <packing>
-            <property name="left-attach">0</property>
-            <property name="top-attach">2</property>
-          </packing>
         </child>
 
       </object>
