@@ -2,15 +2,17 @@ require_relative 'player_action'
 require_relative '../models/game_board'
 require_relative '../views/events/cell_click_event'
 require_relative '../views/events/forfeit_click_event'
+require_relative '../views/events/counter_selected_event'
 
 class Player
   include PlayerAction
 
-  attr_accessor :name, :counter
+  attr_accessor :name, :counters, :counter_select
 
-  def initialize(name, counter)
+  def initialize(name, counters)
     @name = name
-    @counter = counter
+    @counters = counters
+    @counter_select = 0
     @event_que = Queue.new
   end
 
@@ -20,7 +22,7 @@ class Player
     ui.set_turn(self)
     @board = board
     @waiting = true
-    register(ui, [CellClickEvent, ForfeitClickEvent])
+    register(ui, [CellClickEvent, ForfeitClickEvent, CounterSelectedEvent])
     action = do_action(@event_que.deq) until action
     ui.unregister self
     action
@@ -44,6 +46,11 @@ class Player
       place_counter(event.col)
     when 'ForfeitClickEvent'
       forfeit
+    when 'CounterSelectedEvent'
+      @counter_select = event.index
+      false
+    else
+      false
     end
   end
 
@@ -53,7 +60,7 @@ class Player
 
   def place_counter(col)
     begin
-      @board.place(@counter, col)
+      @board.place(@counters[@counter_select], col)
       PlayerAction::PLACE_COUNTER
     rescue ColumnFullError, InvalidColumnError => exception
       puts exception
