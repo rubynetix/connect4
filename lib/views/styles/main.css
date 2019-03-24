@@ -1,12 +1,7 @@
-GtkGrid#game_board {
-    margin: 30px;
-    background-color: aquamarine;
-    padding: 50px;
+* {
+    font-size: 2em;
 }
 
 GtkButton {
     background-image: none;
-    margin-left: 50px;
-    margin-right: 50px;
 }
-
