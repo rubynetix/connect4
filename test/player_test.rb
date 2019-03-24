@@ -49,7 +49,7 @@ class PlayerTest < Test::Unit::TestCase
 
     # Postconditions
     #  - A Place Counter Action is returned
-    #  - A counter is on the board at x y
+    #  - A counter is on the board at bottom row, and column col
     assert(action.value == PlayerAction::PLACE_COUNTER)
     assert(board.at(BOARD_ROWS - 1, col).instance_of?(YellowCounter))
   end
