@@ -14,7 +14,7 @@ class PlayerTest < Test::Unit::TestCase
   BOARD_COLS = 7
 
   def setup
-    @player = Player.new("Tester", YellowCounter.instance)
+    @player = Player.new("Tester", [YellowCounter.instance])
   end
 
   def teardown; end

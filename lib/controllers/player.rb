@@ -2,6 +2,7 @@ require_relative 'player_action'
 require_relative '../models/game_board'
 require_relative '../views/events/cell_click_event'
 require_relative '../views/events/forfeit_click_event'
+require_relative '../views/events/counter_selected_event'
 
 class Player
   include PlayerAction
