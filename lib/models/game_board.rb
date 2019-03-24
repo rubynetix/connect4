@@ -49,9 +49,20 @@ class GameBoard
     s
   end
 
-  # For testing only
   def at(r, c)
     @board[r][c]
+  end
+
+  def get_row(r)
+    @board[r]
+  end
+
+  def get_col(c)
+    col = []
+    @board.each do |r|
+      col.push(r[c])
+    end
+    col
   end
 
   private
