@@ -13,3 +13,11 @@ module Observable
     end
   end
 end
+
+module PassthroughObservable
+  include Observable
+
+  def notify(event)
+    notify_all(event)
+  end
+end
