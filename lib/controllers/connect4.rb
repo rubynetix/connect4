@@ -72,7 +72,10 @@ class GameConfig
 
   def initialize(ui)
     @ui = ui
-    @players = [Player.new('p1', RedCounter.instance), Player.new('p2', YellowCounter.instance)]
+    @players = [
+        Player.new('p1', [RedCounter.instance]),
+        Player.new('p2', [YellowCounter.instance])
+    ]
     @gameboard = GameBoard.connect4
     @win_check = WinCheck.connect4
   end
