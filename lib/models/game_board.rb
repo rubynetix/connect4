@@ -77,8 +77,6 @@ class GameBoard
     end
     height
   end
-
-  # For testing only
 end
 
 class ColumnFullError < StandardError; end
