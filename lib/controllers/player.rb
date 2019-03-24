@@ -5,6 +5,9 @@ require_relative '../views/events/forfeit_click_event'
 
 class Player
   include PlayerAction
+
+  attr_accessor :name
+
   def initialize(name, counter)
     @name = name
     @counter = counter
@@ -14,6 +17,7 @@ class Player
   # Waits for the player to make an
   # action and returns it.
   def take_turn(board, ui)
+    ui.set_turn(self)
     @board = board
     @waiting = true
     register(ui, [CellClickEvent, ForfeitClickEvent])

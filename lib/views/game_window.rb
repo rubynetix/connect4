@@ -12,10 +12,13 @@ class GameWindow
     @counter_height = 50
 
     @cells = nil
+    @lb_turn = nil
 
     @observers = []
     @css = Gtk::CssProvider.new
     @css.load(:path => "#{File.expand_path(__dir__)}/styles/main.css")
+
+
   end
 
   def build
@@ -27,6 +30,8 @@ class GameWindow
     window.signal_connect("destroy") { Gtk.main_quit }
     window.style_context.add_provider(@css, Gtk::StyleProvider::PRIORITY_USER)
 
+    @lb_turn = builder.get_object("lb_turn")
+
     game_layout = builder.get_object("game_board")
     game_layout.style_context.add_provider(@css, Gtk::StyleProvider::PRIORITY_USER)
     draw_board(game_layout)
@@ -36,6 +41,10 @@ class GameWindow
     gb.iter do |r, c, counter|
       @cells[r, c].set_counter(counter)
     end
+  end
+
+  def set_turn(player)
+    @lb_turn.set_text("#{player.name}'s turn")
   end
 
   def on_click(event)
