@@ -274,6 +274,36 @@ class WinCheckTest < Test::Unit::TestCase
     end
   end
 
+  def test_toot_otto_draw
+    ot_draw_board = GameBoard.new
+    ot_draw_board.place(OCounter.instance, 0)
+    ot_draw_board.place(TCounter.instance, 1)
+    ot_draw_board.place(OCounter.instance, 3)
+    ot_draw_board.place(OCounter.instance, 4)
+    ot_draw_board.place(TCounter.instance, 5)
+
+    last_counter_pos = ot_draw_board.last_counter_pos
+
+    win_check = WinCheck.new("TOOT", "OTTO")
+    pre_check = win_check.check(ot_draw_board)
+
+    # Preconditions
+    begin
+      assert_true(last_counter_pos.is_a?(Array))
+      assert_true(last_counter_pos[0].is_a?(Integer))
+      assert_true(last_counter_pos[1].is_a?(Integer))
+      assert_true(board_counter_check(ot_draw_board, [EmptyCounter.instance, OCounter.instance, TCounter.instance]), "GameBoard contains invalid counter types")
+      assert_equal(WinEnum::NEUTRAL, pre_check, "Wincheck found incorrect result. Expected: #{WinEnum::NEUTRAL}. Actual: #{pre_check}")
+    end
+
+    ot_draw_board.place(TCounter.instance, 2)
+    result = win_check.check(ot_draw_board)
+
+    begin
+      assert_equal(WinEnum::DRAW, result, "Wincheck found incorrect result. Expected: #{WinEnum::NEUTRAL}. Actual: #{result}")
+    end
+  end
+
 
   def test_red_yellow_neutral
     ry_neutral_boards = generate_red_yellow_neutral_board(RedCounter.instance, YellowCounter.instance)
