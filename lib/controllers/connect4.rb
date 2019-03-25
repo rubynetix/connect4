@@ -61,7 +61,9 @@ class Connect4
         puts @config.gameboard.win_check.wins
       end
       @ready << true
-    when MenuClickEvent::PVC
+    when MenuClickEvent::PVC_EASY
+      configure_bot
+    when MenuClickEvent::PVC_HARD
       configure_bot
     when MenuClickEvent::PVP
       @config.players[1] = Player.new('p2', @game_counters[@game][0])
