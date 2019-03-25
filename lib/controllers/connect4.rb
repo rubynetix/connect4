@@ -93,7 +93,6 @@ class Connect4
         @config.players[1].counters = [TCounter.instance, OCounter.instance]
       end
     when MenuClickEvent::NEW_GAME
-      puts "New game"
       @config.reset
       @ready << true
     when MenuClickEvent::RETURN_MAIN_MENU
