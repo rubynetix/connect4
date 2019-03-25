@@ -5,6 +5,15 @@ require_relative 'lib/models/game_board'
 require_relative 'lib/controllers/local_player'
 require_relative 'lib/models/counter'
 
+
+# Group No. 6 Members:
+#   - Fraser Bulbuc
+#   - James Hryniw
+#   - Jordan Lane
+#   - Ryan Furrer
+#   - Tim Tran
+#
+
 ui = UI.new
 c4 = Connect4.new ui
 Thread.new do

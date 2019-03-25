@@ -25,8 +25,8 @@ class Connect4Test < Helper
     ui = MockUI.new
     c4 = Connect4.new ui
 
-    p1 = c4.make_bot('p1', AlphaBetaPruning)
-    p2 = c4.make_bot('p2', AlphaBetaPruning)
+    p1 = c4.make_bot('p1', :AlphaBetaPruning)
+    p2 = c4.make_bot('p2', :AlphaBetaPruning)
 
     cvc_config = GameConfig.new ui
     cvc_config.players = [p1, p2]
@@ -42,6 +42,7 @@ class Connect4Test < Helper
 
       sink_stdout do
         c4.launch_game
+        @config.reset
       end
 
       # Postconditions

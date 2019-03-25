@@ -63,3 +63,4 @@ class Game
 end
 
 class NotTwoPlayersError < StandardError; end
+class GameAlreadyOverError < StandardError; end
