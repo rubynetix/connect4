@@ -14,12 +14,6 @@ class GameBoardTest < Test::Unit::TestCase
   MAX_SIZE = 10
   STRAT = [:AlphaBetaPruning]
 
-  def setup
-    @win_squence = [YellowCounter.instance]
-  end
-
-  def teardown;
-  end
 
   def empty_board
     GameBoard.connect4
@@ -34,8 +28,8 @@ class GameBoardTest < Test::Unit::TestCase
       @win_squence = "YYYY"
       return GameBoard.connect4
     end
-    @near_win_squence = [TCounter.instance, OCounter.instance, OCounter.instance]
-    @near_loss_squence = [OCounter.instance, OCounter.instance, TCounter.instance]
+    @near_win_squence = [OCounter.instance, OCounter.instance, TCounter.instance]
+    @near_loss_squence = [TCounter.instance, TCounter.instance, OCounter.instance]
     @my_tokens = [TCounter.instance, OCounter.instance]
     @op_tokens = [TCounter.instance, OCounter.instance]
     @win_squence = "TOOT"
@@ -109,7 +103,7 @@ class GameBoardTest < Test::Unit::TestCase
       rand_col = rand(0..board.cols-4)
       player = ComputerPlayer.new('p2',
                                   @my_tokens,
-                                  "YYYY",
+                                  @win_squence,
                                   @op_tokens)
       player.algorithm = STRAT.sample
       board.place(@near_loss_squence.pop, rand_col + 1)
