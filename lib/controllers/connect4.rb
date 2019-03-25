@@ -104,7 +104,7 @@ class Connect4
   private
 
   def configure_bot
-    @config.players[1] = make_bot('p2', AlphaBetaPruning)
+    @config.players[1] = make_bot('p2', :AlphaBetaPruning)
   end
 end
 
