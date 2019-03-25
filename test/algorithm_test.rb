@@ -20,7 +20,7 @@ class GameBoardTest < Test::Unit::TestCase
   end
 
   def make_game
-    if rand(0..1) > 0.5
+    if rand(0..1) > 1.5
       @near_win_squence = [YellowCounter.instance, YellowCounter.instance, YellowCounter.instance]
       @near_loss_squence = [RedCounter.instance, RedCounter.instance, RedCounter.instance]
       @my_tokens = [YellowCounter.instance]
@@ -37,7 +37,7 @@ class GameBoardTest < Test::Unit::TestCase
   end
 
 
-  def test_random
+  def tst_random
     TEST_ITER.times do
       board = make_game
       player = ComputerPlayer.new('p2',
@@ -57,7 +57,7 @@ class GameBoardTest < Test::Unit::TestCase
   end
 
 
-  def test_strat
+  def tst_strat
     TEST_ITER.times do
       board = make_game
       player = ComputerPlayer.new('p2',
@@ -91,6 +91,7 @@ class GameBoardTest < Test::Unit::TestCase
       board.place(@near_loss_squence.pop, rand_col)
       board.place(@near_loss_squence.pop, rand_col)
       board.place(@near_loss_squence.pop, rand_col)
+      puts "Board: #{TEST_ITER}", board
 
       assert_equal player.get_move(board)[1], rand_col
 
@@ -112,6 +113,7 @@ class GameBoardTest < Test::Unit::TestCase
       board.place(@near_win_squence.pop, rand_col)
       board.place(@near_win_squence.pop, rand_col)
       board.place(@near_win_squence.pop, rand_col)
+      puts board
 
       assert_equal player.get_move(board)[1], rand_col
 

@@ -8,7 +8,7 @@ class ComputerPlayer < Player
   def initialize(name, counters, my_win, op_counters)
     super name, counters
     @my_win = my_win
-    @op_counters = op_counters
+    # puts counters, my_win, op_counters
   end
 
   def algorithm=(algorithm)

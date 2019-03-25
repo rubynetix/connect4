@@ -16,6 +16,12 @@ require_relative 'algorithms/random'
 class Connect4
 
   def initialize(ui, stats)
+    @game_counters = [
+        [[YellowCounter.instance], [RedCounter.instance]],
+        [[TCounter.instance, OCounter.instance], [TCounter.instance, OCounter.instance]]
+    ]
+    @game_wins = [%w(YYYY RRRR), %w(OTTO TOOT)]
+    @game = 0
     @ui = ui
     @config = GameConfig.new(ui)
     @game_stats = GameStats.new stats
@@ -59,17 +65,16 @@ class Connect4
     when MenuClickEvent::START
       @ready << true
     when MenuClickEvent::PVC
-      @config.players[1] = ComputerPlayer.new('p2',
-                                              [YellowCounter.instance],
-                                              "YYYY",
-                                              [RedCounter.instance]).extend AlphaBetaPruning
+      configure_bot
     when MenuClickEvent::PVP
-      @config.players[1] = Player.new('p2', [YellowCounter.instance])
+      @config.players[1] = Player.new('p2', @game_counters[@game][0])
     when MenuClickEvent::CONNECT4
+      @game = 0
       @config.win_check = WinCheck.connect4
       @config.players[0].counters = [RedCounter.instance]
       @config.players[1].counters = [YellowCounter.instance]
     when MenuClickEvent::TOOT_OTTO
+      @game = 1
       @config.win_check = WinCheck.toot_otto
       @config.players[0].counters = [TCounter.instance, OCounter.instance]
       @config.players[1].counters = [TCounter.instance, OCounter.instance]
@@ -77,6 +82,15 @@ class Connect4
       @config.reset
       @ready << true
     end
+  end
+
+  private
+
+  def configure_bot
+    @config.players[1] = ComputerPlayer.new('p2',
+                                            @game_counters[@game][0],
+                                            @game_wins[@game][0],
+                                            @game_counters[@game][1]).extend AlphaBetaPruning
   end
 end
 

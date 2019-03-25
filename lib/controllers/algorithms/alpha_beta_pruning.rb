@@ -10,7 +10,7 @@ module AlphaBetaPruning
     @@best_scores = {}
   end
 
-  def counters(turn)
+  def turn_counters(turn)
     return @counters if turn == 1
     @op_counters
   end
@@ -20,8 +20,9 @@ module AlphaBetaPruning
     negamax board.dup, 1
 
 
-    best_col = BestScores.instance.best_scores.max_by {|_, value| value}[0]
-    [@counters.sample, best_col]
+    best_col = BestScores.instance.best_scores.max_by {|_, value| value[1]}[0]
+    best_counter = BestScores.instance.best_scores[best_col][0]
+    [best_counter, best_col]
   end
 
   def negamax(board, turn, alpha: -MAX_SCORE, beta: MAX_SCORE, depth: 0, max_depth: MAX_DEPTH)
@@ -30,14 +31,16 @@ module AlphaBetaPruning
 
     my_max = -MAX_SCORE
 
+    puts "#{board.possible_cols}"
     board.possible_cols.each do |col|
-      counters(turn).each do |counter|
+      puts turn_counters(turn)
+      turn_counters(turn).each do |counter|
         next_board = board.dup
         next_board.place counter, col
         negamax_return = -negamax(next_board, -turn, alpha: -beta, beta: -alpha, depth: depth + 1)
 
         alpha = [negamax_return, alpha].max
-        BestScores.instance.best_scores[col] = negamax_return if depth.zero?
+        BestScores.instance.best_scores[col] = [counter, negamax_return] if depth.zero?
         my_max = [my_max, negamax_return].max
         return alpha if alpha >= beta
       end
