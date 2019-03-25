@@ -12,9 +12,10 @@ class GameBoardTest < Test::Unit::TestCase
   TEST_ITER = 100
   MIN_SIZE = 3
   MAX_SIZE = 10
+  STRAT = [:AlphaBetaPruning]
 
   def setup
-    @default_counter = RedCounter.instance
+    @win_squence = [YellowCounter.instance]
   end
 
   def teardown;
@@ -24,25 +25,31 @@ class GameBoardTest < Test::Unit::TestCase
     GameBoard.connect4
   end
 
-  def place_rand(board, counters: (MIN_SIZE..MAX_SIZE))
-    while counters > 0
-      c = rand(0...board.cols)
-      unless board.col_full?(c)
-        board.place(@default_counter, c)
-        counters -= 1
-      end
+  def make_game
+    if rand(0..1) > 0.5
+      @near_win_squence = [YellowCounter.instance, YellowCounter.instance, YellowCounter.instance]
+      @near_loss_squence = [RedCounter.instance, RedCounter.instance, RedCounter.instance]
+      @my_tokens = [YellowCounter.instance]
+      @op_tokens = [RedCounter.instance]
+      @win_squence = "YYYY"
+      return GameBoard.connect4
     end
-    board
+    @near_win_squence = [TCounter.instance, OCounter.instance, OCounter.instance]
+    @near_loss_squence = [OCounter.instance, OCounter.instance, TCounter.instance]
+    @my_tokens = [TCounter.instance, OCounter.instance]
+    @op_tokens = [TCounter.instance, OCounter.instance]
+    @win_squence = "TOOT"
+    GameBoard.toot_otto
   end
 
 
   def test_random
     TEST_ITER.times do
-      board = empty_board
+      board = make_game
       player = ComputerPlayer.new('p2',
-                                  [YellowCounter.instance],
+                                  @my_tokens,
                                   "YYYY",
-                                  [RedCounter.instance]).extend RandomAction
+                                  @op_tokens).extend RandomAction
 
       possible_moves = board.possible_cols.dup
 
@@ -56,34 +63,15 @@ class GameBoardTest < Test::Unit::TestCase
   end
 
 
-  def tst_mcts
+  def test_strat
     TEST_ITER.times do
-      board = empty_board
+      board = make_game
       player = ComputerPlayer.new('p2',
-                                  [YellowCounter.instance],
-                                  "YYYY",
-                                  [RedCounter.instance]).extend MCTS
+                                  @my_tokens,
+                                  @win_squence,
+                                  @op_tokens)
 
-      starting_board = board.to_s.dup
-
-      token, move = player.get_move board
-
-      # Postconditions
-      begin
-        assert_equal board.to_s, starting_board, 'The board should not be modified.'
-        assert_include board.possible_cols, move, 'Move must be in the set of possible moves.'
-      end
-    end
-  end
-
-
-  def test_alpha_beta_pruning
-    TEST_ITER.times do
-      board = empty_board
-      player = ComputerPlayer.new('p2',
-                                  [YellowCounter.instance],
-                                  "YYYY",
-                                  [RedCounter.instance]).extend AlphaBetaPruning
+      player.algorithm = STRAT.sample
 
       starting_board = board.to_s.dup
 
@@ -99,15 +87,16 @@ class GameBoardTest < Test::Unit::TestCase
 
   def test_alg_loss_col
     TEST_ITER.times do
-      board = empty_board
+      board = make_game
       rand_col = rand(0..board.cols-1)
       player = ComputerPlayer.new('p2',
-                                  [YellowCounter.instance],
-                                  "YYYY",
-                                  [RedCounter.instance]).extend AlphaBetaPruning
-      board.place(RedCounter.instance, rand_col)
-      board.place(RedCounter.instance, rand_col)
-      board.place(RedCounter.instance, rand_col)
+                                  @my_tokens,
+                                  @win_squence,
+                                  @op_tokens)
+      player.algorithm = STRAT.sample
+      board.place(@near_loss_squence.pop, rand_col)
+      board.place(@near_loss_squence.pop, rand_col)
+      board.place(@near_loss_squence.pop, rand_col)
 
       assert_equal player.get_move(board)[1], rand_col
 
@@ -116,18 +105,19 @@ class GameBoardTest < Test::Unit::TestCase
 
   def test_alg_win_precedence
     TEST_ITER.times do
-      board = empty_board
-      rand_col = rand(0..board.cols - 4)
+      board = make_game
+      rand_col = rand(0..board.cols-4)
       player = ComputerPlayer.new('p2',
-                                  [YellowCounter.instance],
+                                  @my_tokens,
                                   "YYYY",
-                                  [RedCounter.instance]).extend AlphaBetaPruning
-      board.place(RedCounter.instance, rand_col + 1)
-      board.place(RedCounter.instance, rand_col + 2)
-      board.place(RedCounter.instance, rand_col + 3)
-      board.place(YellowCounter.instance, rand_col)
-      board.place(YellowCounter.instance, rand_col)
-      board.place(YellowCounter.instance, rand_col)
+                                  @op_tokens)
+      player.algorithm = STRAT.sample
+      board.place(@near_loss_squence.pop, rand_col + 1)
+      board.place(@near_loss_squence.pop, rand_col + 2)
+      board.place(@near_loss_squence.pop, rand_col + 3)
+      board.place(@near_win_squence.pop, rand_col)
+      board.place(@near_win_squence.pop, rand_col)
+      board.place(@near_win_squence.pop, rand_col)
 
       assert_equal player.get_move(board)[1], rand_col
 
