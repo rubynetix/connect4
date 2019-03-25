@@ -24,6 +24,10 @@ class WinCheck
     @win2_string = win_string2
   end
 
+  def wins
+    [@win1_string, @win2_string]
+  end
+
   def winner?(board, playerString)
     win1, win2 = check_for_wins(board)
     return win1 if @win1_string == playerString

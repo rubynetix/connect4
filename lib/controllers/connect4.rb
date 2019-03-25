@@ -63,12 +63,14 @@ class Connect4
 
     case event.click
     when MenuClickEvent::START
-      @ready << true
       if @game.zero?
-        @gameboard = GameBoard.connect4
+        @config.gameboard = GameBoard.connect4
+        puts @config.gameboard.win_check.wins
       else
-        @gameboard = GameBoard.toot_otto
+        @config.gameboard = GameBoard.toot_otto
+        puts @config.gameboard.win_check.wins
       end
+      @ready << true
     when MenuClickEvent::PVC
       configure_bot
     when MenuClickEvent::PVP

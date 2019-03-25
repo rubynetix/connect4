@@ -13,7 +13,7 @@ class GameBoard
     end
 
     def toot_otto
-      GameBoard.new(rows: 6, cols: 6, win_check: WinCheck.toot_otto)
+      GameBoard.new(rows: 6, cols: 7, win_check: WinCheck.toot_otto)
     end
   end
 
@@ -27,7 +27,10 @@ class GameBoard
   end
 
   def dup(*)
-    initialize_copy
+    puts "Duplicating: ", @win_check.wins
+    cp = initialize_copy
+    puts "Duplicated: ", cp.win_check.wins
+    cp
   end
 
   def initialize_copy(*)

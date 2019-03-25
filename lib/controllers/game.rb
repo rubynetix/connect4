@@ -1,6 +1,7 @@
 class Game
   def initialize(config)
     @players = config.players
+    puts config.gameboard.win_check.wins
     @gameboard = config.gameboard
     @win_check = config.win_check
     @ui = config.ui

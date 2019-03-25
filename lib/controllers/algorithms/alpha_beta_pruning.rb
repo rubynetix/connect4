@@ -1,6 +1,6 @@
 module AlphaBetaPruning
   MAX_SCORE = 10_000
-  MAX_DEPTH = 3
+  MAX_DEPTH = 2
 
   class BestScores
     include Singleton
