@@ -1,4 +1,3 @@
-require_relative '../models/game_stats'
 require_relative '../views/ui'
 require_relative '../controllers/local_player'
 require_relative 'computer_player'
@@ -15,7 +14,9 @@ require_relative 'algorithms/random'
 # Class representing the application
 class Connect4
 
-  def initialize(ui, stats)
+  attr_accessor :config
+
+  def initialize(ui)
     @game_counters = [
         [[YellowCounter.instance], [RedCounter.instance]],
         [[TCounter.instance, OCounter.instance], [TCounter.instance, OCounter.instance]]
@@ -24,7 +25,6 @@ class Connect4
     @game = 0
     @ui = ui
     @config = GameConfig.new(ui)
-    @game_stats = GameStats.new stats
     @ready = Queue.new
   end
 
@@ -37,10 +37,6 @@ class Connect4
     end
   end
 
-  def load_stats
-    raise(NotImplementedError)
-  end
-
   def configure_settings
     raise(NotImplementedError)
   end
@@ -49,11 +45,6 @@ class Connect4
     game = Game.new(@config)
     @ui.load_game
     game.game_loop
-  end
-
-  def update_game_stats(update)
-    raise(NotImplementedError)
-    @game_stats.update update
   end
 
   def notify(event)
@@ -101,13 +92,19 @@ class Connect4
     end
   end
 
+  def make_bot(name, algorithm)
+    bot = ComputerPlayer.new(name,
+                       @game_counters[@game][0],
+                       @game_wins[@game][0],
+                       @game_counters[@game][1])
+    bot.algorithm = algorithm
+    bot
+  end
+
   private
 
   def configure_bot
-    @config.players[1] = ComputerPlayer.new('p2',
-                                            @game_counters[@game][0],
-                                            @game_wins[@game][0],
-                                            @game_counters[@game][1]).extend AlphaBetaPruning
+    @config.players[1] = make_bot('p2', AlphaBetaPruning)
   end
 end
 

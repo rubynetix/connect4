@@ -22,11 +22,15 @@ class UI
   end
 
   def load_menu
-    @game_window.show_menu
+    on_ui_thread do
+      @game_window.show_menu
+    end
   end
 
   def load_game
-    @game_window.show_game
+    on_ui_thread do
+      @game_window.show_game
+    end
   end
 
   def method_missing(m, *args, &block)

@@ -6,7 +6,7 @@ require_relative 'lib/controllers/local_player'
 require_relative 'lib/models/counter'
 
 ui = UI.new
-c4 = Connect4.new ui, nil
+c4 = Connect4.new ui
 Thread.new do
   c4.app_loop
 end
