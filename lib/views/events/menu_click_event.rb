@@ -14,6 +14,7 @@ class MenuClickEvent < UIEvent
 
   # Restart the game
   NEW_GAME = 5
+  RETURN_MAIN_MENU = 6
 
   attr_reader :click
 

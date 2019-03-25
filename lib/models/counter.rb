@@ -33,7 +33,7 @@ class YellowCounter
   include Counter
 
   @@symbol = "Y"
-  @@sprite = get_asset("y_counter_rubynetix_75.png")
+  @@sprite = get_asset("y_counter_75.png")
   @@icon = get_asset("y_counter_40.png")
 end
 
@@ -51,7 +51,7 @@ class RedCounter
   include Counter
 
   @@symbol = "R"
-  @@sprite = get_asset("r_counter_rubynetix_75.png")
+  @@sprite = get_asset("r_counter_75.png")
   @@icon = get_asset("r_counter_40.png")
 end
 

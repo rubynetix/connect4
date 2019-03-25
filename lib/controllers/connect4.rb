@@ -88,6 +88,9 @@ class Connect4
       puts "New game"
       @config.reset
       @ready << true
+    when MenuClickEvent::RETURN_MAIN_MENU
+      @config.reset
+      @ui.load_menu
     end
   end
 

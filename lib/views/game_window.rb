@@ -47,12 +47,20 @@ class GameWindow
 
     @counter_bar = builder["counter_bar"]
     @bt_new_game = builder["bt_new_game"]
+    @main_menu_btn = builder["main_menu_btn"]
+    @main_menu_btn.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::RETURN_MAIN_MENU))}
     @bt_new_game.signal_connect("clicked") do
       clear_gameboard
       notify_all(MenuClickEvent.new(MenuClickEvent::NEW_GAME))
     end
 
     @game = builder["game_panel"]
+
+    fft_btn = builder["forfeit_btn"]
+    fft_btn.add_child(load_image(abs_path("/assets/forfeit.png")))
+    fft_btn.signal_connect "clicked" do
+      notify_all(ForfeitClickEvent.new)
+    end
 
     # Game configuration items
     @menu = builder["menu_panel"]
@@ -85,6 +93,7 @@ class GameWindow
   end
 
   def show_menu
+    clear_gameboard
     @menu.visible = true
     @game.visible = false
   end
@@ -121,11 +130,13 @@ class GameWindow
     
     @lb_win.visible = true
     @bt_new_game.visible = true
+    @main_menu_btn.visible = true
   end
 
   def clear_gameboard
     @lb_win.visible = false
     @bt_new_game.visible = false
+    @main_menu_btn.visible = false
   end
 
   private
