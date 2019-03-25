@@ -78,14 +78,21 @@ class Connect4
       @game = 0
       @config.win_check = WinCheck.connect4
       @config.players[0].counters = [RedCounter.instance]
-      @config.players[1].counters = [YellowCounter.instance]
+      if @config.players[1].instance_of? ComputerPlayer
+        configure_bot
+      else
+        @config.players[1].counters = [YellowCounter.instance]
+      end
     when MenuClickEvent::TOOT_OTTO
       @game = 1
       @config.win_check = WinCheck.toot_otto
       @config.players[0].counters = [TCounter.instance, OCounter.instance]
-      @config.players[1].counters = [TCounter.instance, OCounter.instance]
+      if @config.players[1].instance_of? ComputerPlayer
+        configure_bot
+      else
+        @config.players[1].counters = [TCounter.instance, OCounter.instance]
+      end
     when MenuClickEvent::NEW_GAME
-      puts "New game"
       @config.reset
       @ready << true
     when MenuClickEvent::RETURN_MAIN_MENU
