@@ -97,7 +97,7 @@ class GameBoardTest < Test::Unit::TestCase
     end
   end
 
-  def test_alg_win_or_loss_col
+  def test_alg_loss_col
     TEST_ITER.times do
       board = empty_board
       rand_col = rand(0..board.cols-1)
@@ -114,18 +114,20 @@ class GameBoardTest < Test::Unit::TestCase
     end
   end
 
-  def test_alg_win_or_loss_row
+  def test_alg_win_precedence
     TEST_ITER.times do
       board = empty_board
-      rand_col = rand(0..board.cols - 5)
+      rand_col = rand(0..board.cols - 4)
       player = ComputerPlayer.new('p2',
                                   [YellowCounter.instance],
                                   "YYYY",
                                   [RedCounter.instance]).extend AlphaBetaPruning
-      board.place(YellowCounter.instance, rand_col + 4)
       board.place(RedCounter.instance, rand_col + 1)
       board.place(RedCounter.instance, rand_col + 2)
       board.place(RedCounter.instance, rand_col + 3)
+      board.place(YellowCounter.instance, rand_col)
+      board.place(YellowCounter.instance, rand_col)
+      board.place(YellowCounter.instance, rand_col)
 
       assert_equal player.get_move(board)[1], rand_col
 
