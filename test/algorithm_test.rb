@@ -8,7 +8,7 @@ require_relative '../lib/controllers/algorithms/mcts'
 require_relative '../lib/controllers/algorithms/alpha_beta_pruning'
 require_relative '../lib/controllers/algorithms/random'
 
-class GameBoardTest < Test::Unit::TestCase
+class AlgorithmTest < Test::Unit::TestCase
   TEST_ITER = 10
   MIN_SIZE = 3
   MAX_SIZE = 10
