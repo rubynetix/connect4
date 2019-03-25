@@ -10,11 +10,12 @@ class MenuClickEvent < UIEvent
 
   # Opponent configuration events
   PVP = 3
-  PVC = 4
+  PVC_EASY = 4
+  PVC_HARD = 5
 
   # Restart the game
-  NEW_GAME = 5
-  RETURN_MAIN_MENU = 6
+  NEW_GAME = 6
+  RETURN_MAIN_MENU = 7
 
   attr_reader :click
 
