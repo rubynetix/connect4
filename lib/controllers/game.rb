@@ -3,6 +3,7 @@ class Game
     raise NotTwoPlayersError unless config.players.size == 2
 
     @players = config.players
+    puts config.gameboard.win_check.wins
     @gameboard = config.gameboard
     @win_check = config.win_check
     @ui = config.ui
@@ -25,9 +26,10 @@ class Game
 
   private
 
+
   def process_action(player, action)
     case action
-    when PlayerAction::FORFEIT
+    when PlayerAction::FORFEIT\
       @done = true
       @winner = other_player(player)
     when PlayerAction::PLACE_COUNTER

@@ -22,6 +22,10 @@ class Player
     ui.set_turn(self)
     @board = board
     @waiting = true
+    get_action ui, board
+  end
+
+  def get_action(ui, board)
     register(ui, [CellClickEvent, ForfeitClickEvent, CounterSelectedEvent])
     action = do_action(@event_que.deq) until action
     ui.unregister self

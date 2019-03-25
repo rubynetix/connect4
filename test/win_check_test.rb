@@ -181,7 +181,7 @@ class WinCheckTest < Test::Unit::TestCase
   end
 
   def test_full_board
-    full_board = GameBoard.new(1,1)
+    full_board = GameBoard.new(rows:1,cols:1)
     full_board.place(OCounter.instance, 0)
     last_counter_pos = full_board.last_counter_pos
 
@@ -202,7 +202,7 @@ class WinCheckTest < Test::Unit::TestCase
   end
 
   def test_ot_neutral
-    ot_neutral_board = GameBoard.new(5)
+    ot_neutral_board = GameBoard.new(rows:5, cols:5)
     ot_neutral_board.place(OCounter.instance, 1)
     ot_neutral_board.place(TCounter.instance, 4)
     last_counter_pos = ot_neutral_board.last_counter_pos

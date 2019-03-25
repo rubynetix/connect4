@@ -15,7 +15,7 @@ class GameBoardTest < Test::Unit::TestCase
   end
 
   def empty_board(rows: rand(MIN_SIZE..MAX_SIZE), cols: rand(MIN_SIZE..MAX_SIZE))
-    GameBoard.new(rows, cols)
+    GameBoard.new(rows: rows, cols: cols)
   end
 
   def rand_board(rows: rand(MIN_SIZE..MAX_SIZE), cols: rand(MIN_SIZE..MAX_SIZE), fill_factor: rand(1..100))

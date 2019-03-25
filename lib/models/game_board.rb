@@ -1,26 +1,43 @@
-require_relative '../../lib/models/counter'
+require_relative '../models/counter'
+require_relative '../models/win_check'
 
 class GameBoard
   INVALID_ROW = -1
 
   attr_accessor :rows, :cols
-  attr_reader :last_counter_pos
+  attr_reader :last_counter_pos, :win_check
 
   class << self
-      def connect4
-        GameBoard.new
-      end
+    def connect4
+      GameBoard.new
+    end
 
-      def toot_otto
-        GameBoard.new(rows: 6, cols: 6)
-      end
+    def toot_otto
+      GameBoard.new(rows: 6, cols: 7, win_check: WinCheck.toot_otto)
+    end
   end
 
-  def initialize(rows = 6, cols = 7)
+  def initialize(rows: 6, cols: 7, board: nil, win_check: WinCheck.connect4, last_move: nil)
     @rows = rows
     @cols = cols
     @board = Array.new(@rows) {Array.new(@cols, EmptyCounter.instance)}
-    @last_counter_pos = nil
+    @board = board unless board.nil?
+    @last_counter_pos = last_move
+    @win_check = win_check
+  end
+
+  def dup(*)
+    cp = initialize_copy
+    cp
+  end
+
+  def initialize_copy(*)
+
+    board = Array.new(@rows) {Array.new(@cols, EmptyCounter.instance)}
+    iter {|r, c, counter| board[r][c] = counter}
+    self.class.new rows: @rows.dup, cols: @cols.dup, board: board.dup,
+                   last_move: @last_counter_pos.dup, win_check: @win_check.dup
+
   end
 
   def place(counter, col)
@@ -34,10 +51,26 @@ class GameBoard
 
   def clear
     map {|_, _, _| EmptyCounter.instance}
+    self
   end
 
   def col_full?(col)
     row(col) == INVALID_ROW
+  end
+
+  def possible_cols
+    moves = []
+    (0..@cols - 1).each {|col| moves.push(col) unless col_full? col}
+    moves
+  end
+
+
+  def check
+    @win_check.check self
+  end
+
+  def over?
+    full? || (check != WinEnum::NEUTRAL)
   end
 
   def full?
@@ -57,11 +90,6 @@ class GameBoard
     @board.each_with_index do |arr, r|
       arr.each_with_index {|counter, c| yield(r, c, counter)}
     end
-  end
-
-  def initialize_copy(*)
-    clear
-    @last_counter_pos = nil
   end
 
   def to_s
@@ -104,5 +132,7 @@ class GameBoard
 
 end
 
-class ColumnFullError < StandardError; end
-class InvalidColumnError < StandardError; end
+class ColumnFullError < StandardError;
+end
+class InvalidColumnError < StandardError;
+end
