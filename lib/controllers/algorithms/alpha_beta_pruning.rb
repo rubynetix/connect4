@@ -19,6 +19,8 @@ module AlphaBetaPruning
     BestScores.instance.best_scores = {}
     negamax board.dup, 1
 
+    raise GameAlreadyOverError if BestScores.instance.best_scores.empty?
+
 
     best_col, best_counter = BestScores.instance.best_scores.max_by {|_, value| value[1]}[0]
     [best_counter, best_col]
