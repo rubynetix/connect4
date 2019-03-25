@@ -29,7 +29,7 @@ class Game
 
   def process_action(player, action)
     case action
-    when PlayerAction::FORFEIT\
+    when PlayerAction::FORFEIT
       @done = true
       @winner = other_player(player)
     when PlayerAction::PLACE_COUNTER
