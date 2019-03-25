@@ -17,10 +17,11 @@ class GameWindow
     @counter_width = 50
     @counter_height = 50
 
-    @cells = nil
+    @cells = Matrix.empty(0, 0)
     @lb_turn = nil
     @lb_win = nil
     @counter_bar = nil
+    @game_layout = nil
 
     @css = Gtk::CssProvider.new
     @css.load(:path => abs_path("/styles/main.css"))
@@ -37,9 +38,8 @@ class GameWindow
 
     @lb_turn = builder["lb_turn"]
 
-    game_layout = builder["game_board"]
-    game_layout.style_context.add_provider(@css, Gtk::StyleProvider::PRIORITY_USER)
-    draw_board(game_layout)
+    @game_layout = builder["game_board"]
+    @game_layout.style_context.add_provider(@css, Gtk::StyleProvider::PRIORITY_USER)
 
     game_overlay = builder["game_board_overlay"]
     @lb_win = Gtk::Label.new("Player wins!")
@@ -104,6 +104,10 @@ class GameWindow
   end
 
   def draw_gameboard(gb)
+    if gb.rows != @cells.row_count or gb.cols != @cells.column_count
+      draw_board(@game_layout, gb.rows, gb.cols)
+    end
+
     gb.iter do |r, c, counter|
       @cells[r, c].set_counter(counter)
     end
@@ -118,7 +122,6 @@ class GameWindow
     else
       @counter_bar.visible = false
     end
-
   end
 
   def game_over(winner)
@@ -141,8 +144,12 @@ class GameWindow
 
   private
 
-  def draw_board(grid_layout)
-    @cells = Matrix.build(6, 7) do |r, c|
+  def draw_board(grid_layout, rows, cols)
+    grid_layout.children.each do |c|
+      grid_layout.remove_child(c)
+    end
+
+    @cells = Matrix.build(rows, cols) do |r, c|
       cell = CounterCell.new(r, c, 75, 75, @css)
       cell.register(self)
       grid_layout.attach(cell.widget, c, r, 1, 1)
