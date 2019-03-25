@@ -5,6 +5,8 @@ require_relative 'algorithms/random'
 
 class ComputerPlayer < Player
 
+  attr_accessor :op_counters, :my_win
+
   def initialize(name, counters, my_win, op_counters)
     super name, counters
     @my_win = my_win
@@ -27,7 +29,7 @@ class ComputerPlayer < Player
   end
 
   def do_action(event)
-    forfeit if event == :FORFEIT
+    return forfeit if event == :FORFEIT
 
     counter, col = event
     place_counter counter, col
