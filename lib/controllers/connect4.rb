@@ -62,8 +62,10 @@ class Connect4
       end
       @ready << true
     when MenuClickEvent::PVC_EASY
+      @config.alg = :RandomAction
       configure_bot
     when MenuClickEvent::PVC_HARD
+      @config.alg = :AlphaBetaPruning
       configure_bot
     when MenuClickEvent::PVP
       @config.players[1] = Player.new('p2', @game_counters[@game][0])
@@ -106,12 +108,12 @@ class Connect4
   private
 
   def configure_bot
-    @config.players[1] = make_bot('p2', :AlphaBetaPruning)
+    @config.players[1] = make_bot('p2', @config.alg)
   end
 end
 
 class GameConfig
-  attr_accessor :players, :gameboard, :win_check, :ui
+  attr_accessor :players, :gameboard, :win_check, :ui, :alg
 
   def initialize(ui)
     @ui = ui
@@ -119,6 +121,7 @@ class GameConfig
         Player.new('p1', [RedCounter.instance]),
         Player.new('p2', [YellowCounter.instance])
     ]
+    @alg = :AlphaBetaPruning
     @win_check = WinCheck.connect4
     @gameboard = GameBoard.connect4
   end
