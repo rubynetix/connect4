@@ -13,7 +13,7 @@ class GameBoard
     end
 
     def toot_otto
-      GameBoard.new(rows: 6, cols: 7, win_check: WinCheck.toot_otto)
+      GameBoard.new(rows: 6, cols: 6, win_check: WinCheck.toot_otto)
     end
   end
 
