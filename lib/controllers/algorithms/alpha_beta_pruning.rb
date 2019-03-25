@@ -1,6 +1,6 @@
 module AlphaBetaPruning
   MAX_SCORE = 10_000
-  MAX_DEPTH = 5
+  MAX_DEPTH = 3
 
   class BestScores
     include Singleton
@@ -15,24 +15,16 @@ module AlphaBetaPruning
     @op_counters.sample
   end
 
-  def favour_middle(board, col)
-    mid = board.cols / 2
-    diff = (mid - col).abs
-    return (mid - diff).abs
-  end
-
   def get_move(board)
     BestScores.instance.best_scores = {}
     negamax board.dup, 1
 
 
-    puts "Scores: ", BestScores.instance.best_scores
     best_col = BestScores.instance.best_scores.max_by {|_, value| value}[0]
     [@counters.sample, best_col]
   end
 
   def negamax(board, turn, alpha: -MAX_SCORE, beta: MAX_SCORE, depth: 0, max_depth: MAX_DEPTH)
-    puts board
     return get_score(board, depth, turn) if board.over?
     return 0 if depth > max_depth
 
@@ -44,7 +36,7 @@ module AlphaBetaPruning
       negamax_return = -negamax(next_board, -turn, alpha: -beta, beta: -alpha, depth: depth + 1)
 
 
-      puts "Move: #{move} Max: #{my_max}, ret: #{negamax_return} Depth: #{depth}"
+      # puts "Move: #{move} Max: #{my_max}, ret: #{negamax_return} Depth: #{depth}"
       alpha = [negamax_return, alpha].max
       BestScores.instance.best_scores[move] = negamax_return if depth.zero?
       my_max = [my_max, negamax_return].max
@@ -65,7 +57,6 @@ module AlphaBetaPruning
   end
 
   def get_score(board, depth, player)
-    puts "Scoring on Player: #{player}"
     player * scoring(board, depth)
   end
 end
