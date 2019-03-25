@@ -37,7 +37,7 @@ class AlgorithmTest < Test::Unit::TestCase
   end
 
 
-  def tst_random
+  def test_random
     TEST_ITER.times do
       board = make_game
       player = ComputerPlayer.new('p2',
@@ -57,7 +57,7 @@ class AlgorithmTest < Test::Unit::TestCase
   end
 
 
-  def tst_strat
+  def test_strat
     TEST_ITER.times do
       board = make_game
       player = ComputerPlayer.new('p2',
