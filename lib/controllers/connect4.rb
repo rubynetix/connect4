@@ -46,7 +46,6 @@ class Connect4
   end
 
   def launch_game
-    puts "Launch game"
     game = Game.new(@config)
     @ui.load_game
     game.game_loop
