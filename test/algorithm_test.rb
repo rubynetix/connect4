@@ -20,11 +20,11 @@ class GameBoardTest < Test::Unit::TestCase
   def teardown;
   end
 
-  def empty_board(rows: rand(MIN_SIZE..MAX_SIZE), cols: rand(MIN_SIZE..MAX_SIZE))
+  def empty_board
     GameBoard.connect4
   end
 
-  def placeRand(board, counters: (MIN_SIZE..MAX_SIZE))
+  def place_rand(board, counters: (MIN_SIZE..MAX_SIZE))
     while counters > 0
       c = rand(0...board.cols)
       unless board.col_full?(c)
@@ -62,7 +62,7 @@ class GameBoardTest < Test::Unit::TestCase
       player = ComputerPlayer.new('p2',
                                   [YellowCounter.instance],
                                   "YYYY",
-                                  [RedCounter.instance]).extend AlphaBetaPruning
+                                  [RedCounter.instance]).extend MCTS
 
       starting_board = board.to_s.dup
 
@@ -87,7 +87,7 @@ class GameBoardTest < Test::Unit::TestCase
 
       starting_board = board.to_s.dup
 
-      move = player.get_move board
+      token, move = player.get_move board
 
       # Postconditions
       begin
@@ -109,7 +109,7 @@ class GameBoardTest < Test::Unit::TestCase
       board.place(RedCounter.instance, rand_col)
       board.place(RedCounter.instance, rand_col)
 
-      assert_equal player.get_move[1], rand_col
+      assert_equal player.get_move(board)[1], rand_col
 
     end
   end
@@ -127,7 +127,7 @@ class GameBoardTest < Test::Unit::TestCase
       board.place(RedCounter.instance, rand_col + 1)
       board.place(RedCounter.instance, rand_col + 2)
 
-      assert_equal player.get_move[1], rand_col + 3
+      assert_equal player.get_move(board)[1], rand_col + 3
 
     end
   end

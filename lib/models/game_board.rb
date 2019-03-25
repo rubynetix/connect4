@@ -67,7 +67,7 @@ class GameBoard
   end
 
   def over?
-    full? || check != WinEnum::NEUTRAL
+    full? || (check != WinEnum::NEUTRAL)
   end
 
   def full?
@@ -87,11 +87,6 @@ class GameBoard
     @board.each_with_index do |arr, r|
       arr.each_with_index {|counter, c| yield(r, c, counter)}
     end
-  end
-
-  def initialize_copy(*)
-    clear
-    @last_counter_pos = nil
   end
 
   def to_s
