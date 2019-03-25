@@ -27,9 +27,7 @@ class GameBoard
   end
 
   def dup(*)
-    puts "Duplicating: ", @win_check.wins
     cp = initialize_copy
-    puts "Duplicated: ", cp.win_check.wins
     cp
   end
 
@@ -53,6 +51,7 @@ class GameBoard
 
   def clear
     map {|_, _, _| EmptyCounter.instance}
+    self
   end
 
   def col_full?(col)

@@ -86,6 +86,7 @@ class Connect4
       @config.players[0].counters = [TCounter.instance, OCounter.instance]
       @config.players[1].counters = [TCounter.instance, OCounter.instance]
     when MenuClickEvent::NEW_GAME
+      puts "New game"
       @config.reset
       @ready << true
     end
@@ -94,7 +95,6 @@ class Connect4
   private
 
   def configure_bot
-    puts @game_wins[@game][0]
     @config.players[1] = ComputerPlayer.new('p2',
                                             @game_counters[@game][0],
                                             @game_wins[@game][0],

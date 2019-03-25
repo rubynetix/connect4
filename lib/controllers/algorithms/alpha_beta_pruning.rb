@@ -1,6 +1,6 @@
 module AlphaBetaPruning
   MAX_SCORE = 10_000
-  MAX_DEPTH = 2
+  MAX_DEPTH = 3
 
   class BestScores
     include Singleton
@@ -20,9 +20,7 @@ module AlphaBetaPruning
     negamax board.dup, 1
 
 
-    # puts BestScores.instance.best_scores
     best_col, best_counter = BestScores.instance.best_scores.max_by {|_, value| value[1]}[0]
-    # best_counter = BestScores.instance.best_scores[best_col][0]
     [best_counter, best_col]
   end
 
@@ -32,7 +30,6 @@ module AlphaBetaPruning
 
     my_max = -MAX_SCORE
 
-    # puts "|#{board.possible_cols}|", "|#{turn_counters(turn)}|"
     board.possible_cols.each do |col|
       turn_counters(turn).each do |counter|
         next_board = board.dup
