@@ -13,7 +13,7 @@ class GameBoard
     end
 
     def toot_otto
-      GameBoard.new(rows: 6, cols: 6)
+      GameBoard.new(rows: 6, cols: 6, win_check: WinCheck.toot_otto)
     end
   end
 
@@ -35,7 +35,7 @@ class GameBoard
     board = Array.new(@rows) {Array.new(@cols, EmptyCounter.instance)}
     iter {|r, c, counter| board[r][c] = counter}
     self.class.new rows: @rows.dup, cols: @cols.dup, board: board.dup,
-                   last_move: @last_counter_pos.dup, win_check: @win_check
+                   last_move: @last_counter_pos.dup, win_check: @win_check.dup
 
   end
 

@@ -91,8 +91,9 @@ class GameBoardTest < Test::Unit::TestCase
       board.place(@near_loss_squence.pop, rand_col)
       board.place(@near_loss_squence.pop, rand_col)
       board.place(@near_loss_squence.pop, rand_col)
-      puts "Board: #{TEST_ITER}", board
+      # puts "Board: #{TEST_ITER}", board
 
+      # puts rand_col
       assert_equal player.get_move(board)[1], rand_col
 
     end
@@ -113,7 +114,8 @@ class GameBoardTest < Test::Unit::TestCase
       board.place(@near_win_squence.pop, rand_col)
       board.place(@near_win_squence.pop, rand_col)
       board.place(@near_win_squence.pop, rand_col)
-      puts board
+      # puts board
+      # puts rand_col
 
       assert_equal player.get_move(board)[1], rand_col
 

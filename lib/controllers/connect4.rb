@@ -64,6 +64,11 @@ class Connect4
     case event.click
     when MenuClickEvent::START
       @ready << true
+      if @game.zero?
+        @gameboard = GameBoard.connect4
+      else
+        @gameboard = GameBoard.toot_otto
+      end
     when MenuClickEvent::PVC
       configure_bot
     when MenuClickEvent::PVP
@@ -87,6 +92,7 @@ class Connect4
   private
 
   def configure_bot
+    puts @game_wins[@game][0]
     @config.players[1] = ComputerPlayer.new('p2',
                                             @game_counters[@game][0],
                                             @game_wins[@game][0],
@@ -108,6 +114,6 @@ class GameConfig
   end
 
   def reset
-    @gameboard = @gameboard.dup
+    @gameboard = @gameboard.clear
   end
 end
