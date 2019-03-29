@@ -18,9 +18,9 @@ CREATE TABLE IF NOT EXISTS games(
 );
 
 CREATE TABLE IF NOT EXISTS game_boards(
-  game_id INTEGER,
-  board BLOB,
-  FOREIGN KEY (game_id) REFERENCES games(game_id)
+  game_id INTEGER NOT NULL,
+  board BLOB NOT NULL,
+  FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE
 );
 
 
