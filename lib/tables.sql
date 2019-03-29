@@ -33,7 +33,7 @@ CREATE TRIGGER game_ends
   BEGIN
     IF new.state IN ('W1', 'W2', 'D') THEN
       DELETE FROM game_boards WHERE game_id = NEW.game_id;
-      IF NEW.player_2 = 'Computer%' THEN
+      IF NEW.player_2 LIKE 'Computer%' THEN
         DELETE FROM games WHERE game_id = NEW.game_id;
       end if;
     end if;
