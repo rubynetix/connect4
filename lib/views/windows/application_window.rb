@@ -19,7 +19,8 @@ module C4
       set_title 'Connect4'
 
       launch_app_btn.signal_connect 'clicked' do |btn, app|
-        puts "LAUNCHING APP!"
+        game_window = C4::GameWindow.new(application)
+        game_window.present
       end
     end
   end
