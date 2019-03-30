@@ -21,6 +21,9 @@ module C4
       launch_app_btn.signal_connect 'clicked' do |btn, app|
         game_window = C4::GameWindow.new(application)
         game_window.present
+        gb = GameBoard.connect4
+        gb.place(RedCounter.instance, 1)
+        game_window.draw_gameboard(gb)
       end
     end
   end
