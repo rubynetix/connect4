@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/com/rubynetix/connect4">
+    <!-- path is relative - "xml-stripblanks" may require you to run '$ sudo apt install libxml2-utils'-->
+    <file preprocess="xml-stripblanks">ui/application_window.ui</file>
+  </gresource>
+</gresources>
