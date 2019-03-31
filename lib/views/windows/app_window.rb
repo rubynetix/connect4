@@ -1,7 +1,7 @@
 require_relative '../../../lib/views/observable'
 
 module C4
-  class MainWindow < Gtk::ApplicationWindow
+  class AppWindow < Gtk::ApplicationWindow
     include PassthroughObservable
 
     attr_reader :active_window
@@ -11,7 +11,7 @@ module C4
     class << self
       def init
         # Bind the associated resource file (i.e. gresource-prefix + resource-path-name)
-        set_template(:resource => "/com/rubynetix/connect4/ui/main_window.ui")
+        set_template(:resource => "/com/rubynetix/connect4/ui/app_window.ui")
 
         bind_template_child("window_stack")
       end
@@ -55,7 +55,7 @@ module C4
         return
       end
 
-      display_window(event.new_wid)
+      display_window(event.wid)
     end
   end
 end

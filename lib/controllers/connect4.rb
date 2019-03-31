@@ -51,8 +51,6 @@ class Connect4
     # Only interested in menu clicks
     return if event.id != UIEvent::MENU_CLICK
 
-    puts "CONNECT4 notification"
-
     case event.click
     when MenuClickEvent::START
       if @game.zero?

@@ -1,12 +1,12 @@
-require 'matrix'
-require_relative '../observable'
-require_relative '../../../lib/models/game_board'
-require_relative '../../../lib/views/events/menu_click_event'
-require_relative '../../../lib/views/components/counter_cell'
+require_relative '../../../lib/views/events/window_change_event'
+require_relative '../../../lib/views/observable'
+require_relative 'main_menu_window'
 
 module C4
-  class GameWindow < Gtk::Window
+  class GameWindow < Gtk::Box
     include PassthroughObservable
+
+    @@WID = "game_window"
 
     type_register
 
@@ -34,14 +34,15 @@ module C4
         bind_template_child("pvc_btn")
         bind_template_child("pvc_btn_hard")
         bind_template_child("start_btn")
+        bind_template_child("back_btn")
       end
     end
 
-    def initialize(application)
-      super application: application
+    def initialize
+      super(:orientation => Gtk::Orientation::VERTICAL)
+    end
 
-      set_title 'Connect4'
-
+    def display
       init_gameboard
       init_menu
     end
@@ -60,11 +61,13 @@ module C4
       clear_gameboard
       @menu.visible = true
       @game.visible = false
+      @back_btn.visible = true
     end
 
     def load_game
       @menu.visible = false
       @game.visible = true
+      @back_btn.visible = false
     end
 
     def set_turn(player)
@@ -94,6 +97,7 @@ module C4
       @lb_win.visible = false
       @bt_new_game.visible = false
       @main_menu_btn.visible = false
+      @back_btn.visible = false
     end
 
     private
@@ -148,6 +152,7 @@ module C4
       @menu_pvc_hard = pvc_btn_hard
       @menu_pvc_hard.mode = false
       @menu_start = start_btn
+      @back_btn = back_btn
 
       # Styled radio buttons
       c4_btn = connect4_btn_widget
@@ -165,6 +170,7 @@ module C4
       @menu_pvp.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::PVP))}
       @menu_pvc.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::PVC_EASY))}
       @menu_pvc_hard.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::PVC_HARD))}
+      @back_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(MainMenuWindow.class_variable_get(:@@WID)))}
     end
 
     def draw_board(grid_layout, rows, cols)

@@ -1,6 +1,6 @@
 require_relative '../../../lib/views/events/window_change_event'
 require_relative '../../../lib/views/observable'
-require_relative 'game_window_widget'
+require_relative 'game_window'
 
 module C4
   class MainMenuWindow < Gtk::Box
@@ -12,7 +12,7 @@ module C4
 
     class << self
       def init
-        set_template(:resource => "/com/rubynetix/connect4/ui/main_menu_widget.ui")
+        set_template(:resource => "/com/rubynetix/connect4/ui/main_menu_window.ui")
 
         bind_template_child("launch_app_btn")
       end
@@ -20,7 +20,7 @@ module C4
 
     def initialize
       super(:orientation => Gtk::Orientation::VERTICAL)
-      launch_app_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(GameWindowWidget.class_variable_get(:@@WID)))}
+      launch_app_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(GameWindow.class_variable_get(:@@WID)))}
     end
 
     def display; end

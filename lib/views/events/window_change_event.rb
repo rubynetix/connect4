@@ -1,10 +1,10 @@
 require_relative '../../views/events/ui_event'
 
 class WindowChangeEvent < UIEvent
-  attr_reader :new_wid
+  attr_reader :wid
 
   def initialize(wid)
     super UIEvent::WINDOW_CHANGE
-    @new_wid = wid
+    @wid = wid
   end
 end
