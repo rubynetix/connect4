@@ -15,7 +15,7 @@ class GtkUI
   end
 
   def method_missing(m, *args, &block)
-    @app.ui.new_window.send(m, *args, &block)
+    @app.ui.active_window.send(m, *args, &block)
   end
 
   def shutdown

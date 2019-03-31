@@ -6,10 +6,10 @@
     <file preprocess="xml-stripblanks">ui/game_window.ui</file>
 
     <!-- Main application window -->
-    <file preprocess="xml-stripblanks">ui/stack_window.ui</file>
+    <file preprocess="xml-stripblanks">ui/main_window.ui</file>
 
     <!-- Application 'screens' -->
-    <file preprocess="xml-stripblanks">ui/window1_widget.ui</file>
-    <file preprocess="xml-stripblanks">ui/window2_widget.ui</file>
+    <file preprocess="xml-stripblanks">ui/main_menu_widget.ui</file>
+    <file preprocess="xml-stripblanks">ui/game_window_widget.ui</file>
   </gresource>
 </gresources>
