@@ -26,7 +26,7 @@ module C4
       # Possible spawned child windows
       @game_window = nil
       @stats_window = nil
-      @active_window = nil
+      @new_window = nil
 
       launch_app_btn.signal_connect 'clicked' do |btn, app|
         @game_window = C4::GameWindow.new(application)
@@ -36,7 +36,7 @@ module C4
         @game_window.register(self)
         @game_window.present
 
-        @active_window = @game_window
+        @new_window = @game_window
       end
     end
   end

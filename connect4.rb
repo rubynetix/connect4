@@ -26,10 +26,10 @@ at_exit do
 end
 
 app = C4::Application.new
-ui = GtkUI.new(app)
-c4 = Connect4.new(ui)
-Thread.new do
-  c4.app_loop
-end
+# ui = GtkUI.new(app)
+# c4 = Connect4.new(ui)
+# Thread.new do
+#   c4.app_loop
+# end
 
 puts app.run
