@@ -1,10 +1,10 @@
-#!/usr/bin/env ruby
-
 require 'gtk3'
+require 'fileutils'
+require_relative 'lib/views/gtk_ui'
 
 # Recursively require all ruby files in lib directory
 application_root_path = File.expand_path(__dir__)
-Dir[File.join(application_root_path, '/lib/**', '*.rb')].each { |file| require file }
+Dir[File.join(application_root_path, '/lib/**', '*.rb')].each(&method(:require))
 
 # Define the source & target files of the glib-compile-resources command
 resource_xml = File.join(application_root_path, 'lib/resources', 'gresources.xml')
@@ -20,11 +20,16 @@ system("glib-compile-resources",
 resource = Gio::Resource.load(resource_bin)
 Gio::Resources.register(resource)
 
-#at_exit do
+at_exit do
   # Remove resource binary upon exit
- # FileUtils.rm_f(resource_bin)
-#end
+  FileUtils.rm_f(resource_bin)
+end
 
 app = C4::Application.new
+ui = GtkUI.new(app)
+c4 = Connect4.new(ui)
+Thread.new do
+  c4.app_loop
+end
 
 puts app.run

@@ -50,6 +50,7 @@ class Connect4
   def notify(event)
     # Only interested in menu clicks
     return if event.id != UIEvent::MENU_CLICK
+    puts "----- #{self.to_s} RESPONDING #{event.id} -----"
 
     case event.click
     when MenuClickEvent::START

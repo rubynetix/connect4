@@ -1,9 +1,13 @@
 require 'matrix'
+require_relative '../observable'
 require_relative '../../../lib/models/game_board'
+require_relative '../../../lib/views/events/menu_click_event'
 require_relative '../../../lib/views/components/counter_cell'
 
 module C4
   class GameWindow < Gtk::Window
+    include PassthroughObservable
+
     type_register
 
     class << self
@@ -17,6 +21,7 @@ module C4
         bind_template_child("game_board_grid")
         bind_template_child("new_game_btn")
         bind_template_child("main_menu_btn")
+        bind_template_child("counter_bar")
 
         # Game menu children
         bind_template_child("menu_panel")
@@ -33,6 +38,8 @@ module C4
 
     def initialize(application)
       super application: application
+
+      set_title 'Connect4'
 
       init_gameboard
       init_menu
@@ -62,12 +69,12 @@ module C4
     def set_turn(player)
       @lb_turn.set_text("#{player.name}'s turn")
 
-      # if player.counters.size > 1
-      #   draw_counter_bar(@counter_bar, player.counters, player.counter_select)
-      #   @counter_bar.visible = true
-      # else
-      #   @counter_bar.visible = false
-      # end
+      if player.counters.size > 1
+        draw_counter_bar(@counter_bar, player.counters, player.counter_select)
+        @counter_bar.visible = true
+      else
+        @counter_bar.visible = false
+      end
     end
 
     def game_over(winner)
@@ -100,21 +107,38 @@ module C4
 
       # Game widgets
       @game_layout = game_board_grid
+      @counter_bar = counter_bar
       @bt_new_game = new_game_btn
       @main_menu_btn = main_menu_btn
       @lb_turn = player_turn_lbl
       @fft_btn = forfeit_btn
 
+      if @game.nil? || @game_layout.nil? || @counter_bar.nil? || @bt_new_game.nil? || @main_menu_btn.nil? || @lb_turn.nil? || @fft_btn.nil?
+        raise <<-EOF
+        \n
+        #########################################################################
+        ##############################             ##############################
+        ############################## NIL OBJECTS ##############################
+        ##############################             ##############################
+        #########################################################################
+        \n
+        EOF
+      end
+
       # Styling
       @css = Gtk::CssProvider.new
       @css.load(:path => abs_path("/styles/main.css"))
-      @game_layout.style_context.add_provider(@css, Gtk::StyleProvider::PRIORITY_USER)
+      # @game_layout.style_context.add_provider(@css, Gtk::StyleProvider::PRIORITY_USER)
       @fft_btn.add_child(load_image(abs_path("/assets/forfeit.png")))
 
       # Event signals
-      @main_menu_btn.signal_connect("clicked") { puts "---------CLICKED! ---------"}
-      @bt_new_game.signal_connect("clicked") {puts "---------CLICKED---------"}
-      @fft_btn.signal_connect("clicked") { puts "---------CLICKED! ---------"}
+      @main_menu_btn.signal_connect("clicked") {puts "----- #{self.to_s} CREATE MenuClickEvent::START -----"; notify_all(MenuClickEvent.new(MenuClickEvent::RETURN_MAIN_MENU))}
+      @bt_new_game.signal_connect("clicked") do
+        puts "----- #{self.to_s} CREATE MenuClickEvent::START -----"
+        clear_gameboard
+        notify_all(MenuClickEvent.new(MenuClickEvent::NEW_GAME))
+      end
+      @fft_btn.signal_connect("clicked") {puts "----- #{self.to_s} CREATE MenuClickEvent::START -----"; notify_all(ForfeitClickEvent.new)}
     end
 
     def init_menu
@@ -144,12 +168,12 @@ module C4
       to_btn.pack_start(load_image(OCounter.instance.icon))
 
       # Event signals
-      @menu_start.signal_connect("clicked") {puts "--------- CLICKED---------"}
-      @menu_c4.signal_connect("clicked") {puts "--------- CLICKED---------"}
-      @menu_to.signal_connect("clicked") {puts "--------- CLICKED---------"}
-      @menu_pvp.signal_connect("clicked") {puts "--------- CLICKED---------"}
-      @menu_pvc.signal_connect("clicked") {puts "--------- CLICKED---------"}
-      @menu_pvc_hard.signal_connect("clicked") {puts "--------- CLICKED---------"}
+      @menu_start.signal_connect("clicked") {puts "----- #{self.to_s} CREATE MenuClickEvent::START -----"; notify_all(MenuClickEvent.new(MenuClickEvent::START))}
+      @menu_c4.signal_connect("clicked") {puts "----- #{self.to_s} CREATE MenuClickEvent::START -----";notify_all(MenuClickEvent.new(MenuClickEvent::CONNECT4))}
+      @menu_to.signal_connect("clicked") {puts "----- #{self.to_s} CREATE MenuClickEvent::START -----";notify_all(MenuClickEvent.new(MenuClickEvent::TOOT_OTTO))}
+      @menu_pvp.signal_connect("clicked") {puts "----- #{self.to_s} CREATE MenuClickEvent::START -----";notify_all(MenuClickEvent.new(MenuClickEvent::PVP))}
+      @menu_pvc.signal_connect("clicked") {puts "----- #{self.to_s} CREATE MenuClickEvent::START -----";notify_all(MenuClickEvent.new(MenuClickEvent::PVC_EASY))}
+      @menu_pvc_hard.signal_connect("clicked") {puts "----- #{self.to_s} CREATE MenuClickEvent::START -----";notify_all(MenuClickEvent.new(MenuClickEvent::PVC_HARD))}
     end
 
     def draw_board(grid_layout, rows, cols)
@@ -159,9 +183,44 @@ module C4
 
       @cells = Matrix.build(rows, cols) do |r, c|
         cell = CounterCell.new(r, c, 75, 75, @css)
-        # cell.register(self)
+        cell.register(self)
         grid_layout.attach(cell.widget, c, r, 1, 1)
         cell
+      end
+    end
+
+    def draw_counter_bar(bar_layout, counters, select_index)
+      return if counters.empty?
+
+      bar_layout.children.each do |c|
+        bar_layout.remove_child(c)
+      end
+
+      root_sel = Gtk::RadioButton.new
+      root_sel.mode = false
+      root_sel.visible = true
+      root_sel.add_child(load_image(counters[0].icon))
+      bar_layout.pack_start(root_sel)
+
+      selectors = [root_sel]
+
+      if counters.size > 1
+        selectors += counters[1..-1].map do |c|
+          c_sel = Gtk::RadioButton.new(:member => root_sel)
+          c_sel.mode = false
+          c_sel.visible = true
+          c_sel.add_child(load_image(c.icon))
+          bar_layout.pack_start(c_sel)
+          c_sel
+        end
+      end
+
+      selectors[select_index].active = true
+
+      selectors.each_with_index do |s, i|
+        s.signal_connect "toggled" do
+          notify_all(CounterSelectedEvent.new(i))
+        end
       end
     end
 

@@ -1,7 +1,12 @@
+require_relative '../../../lib/views/observable'
+
 module C4
   class ApplicationWindow < Gtk::ApplicationWindow
-    # Register the class in the GLib world
+    include PassthroughObservable
+
     type_register
+
+    attr_reader :game_window, :stats_window
 
     class << self
       def init
@@ -16,14 +21,19 @@ module C4
     def initialize(application)
       super application: application
 
-      set_title 'Connect4'
+      set_title 'Rubynetix Games'
+
+      # Possible spawned child windows
+      @game_window = nil
+      @stats_window = nil
 
       launch_app_btn.signal_connect 'clicked' do |btn, app|
-        game_window = C4::GameWindow.new(application)
-        game_window.present
-        gb = GameBoard.connect4
-        gb.place(RedCounter.instance, 1)
-        game_window.draw_gameboard(gb)
+        @game_window = C4::GameWindow.new(application)
+
+        # Listen for events in all spawned child windows and pass them up the
+        # observable chain to the listening application
+        @game_window.register(self)
+        @game_window.present
       end
     end
   end
