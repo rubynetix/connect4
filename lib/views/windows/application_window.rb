@@ -6,7 +6,7 @@ module C4
 
     type_register
 
-    attr_reader :game_window, :stats_window
+    attr_reader :game_window, :stats_window, :active_window
 
     class << self
       def init
@@ -26,6 +26,7 @@ module C4
       # Possible spawned child windows
       @game_window = nil
       @stats_window = nil
+      @active_window = nil
 
       launch_app_btn.signal_connect 'clicked' do |btn, app|
         @game_window = C4::GameWindow.new(application)
@@ -34,6 +35,8 @@ module C4
         # observable chain to the listening application
         @game_window.register(self)
         @game_window.present
+
+        @active_window = @game_window
       end
     end
   end

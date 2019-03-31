@@ -22,6 +22,7 @@ module C4
         bind_template_child("new_game_btn")
         bind_template_child("main_menu_btn")
         bind_template_child("counter_bar")
+        bind_template_child("game_board_overlay")
 
         # Game menu children
         bind_template_child("menu_panel")
@@ -55,13 +56,13 @@ module C4
       end
     end
 
-    def show_menu
+    def load_menu
       clear_gameboard
       @menu.visible = true
       @game.visible = false
     end
 
-    def show_game
+    def load_game
       @menu.visible = false
       @game.visible = true
     end
@@ -112,33 +113,23 @@ module C4
       @main_menu_btn = main_menu_btn
       @lb_turn = player_turn_lbl
       @fft_btn = forfeit_btn
-
-      if @game.nil? || @game_layout.nil? || @counter_bar.nil? || @bt_new_game.nil? || @main_menu_btn.nil? || @lb_turn.nil? || @fft_btn.nil?
-        raise <<-EOF
-        \n
-        #########################################################################
-        ##############################             ##############################
-        ############################## NIL OBJECTS ##############################
-        ##############################             ##############################
-        #########################################################################
-        \n
-        EOF
-      end
+      @game_overlay = game_board_overlay
+      @lb_win = Gtk::Label.new("Player wins!")
+      @game_overlay.add_overlay(@lb_win)
 
       # Styling
       @css = Gtk::CssProvider.new
       @css.load(:path => abs_path("/styles/main.css"))
-      # @game_layout.style_context.add_provider(@css, Gtk::StyleProvider::PRIORITY_USER)
+      @game_layout.style_context.add_provider(@css, Gtk::StyleProvider::PRIORITY_USER)
       @fft_btn.add_child(load_image(abs_path("/assets/forfeit.png")))
 
       # Event signals
-      @main_menu_btn.signal_connect("clicked") {puts "----- #{self.to_s} CREATE MenuClickEvent::START -----"; notify_all(MenuClickEvent.new(MenuClickEvent::RETURN_MAIN_MENU))}
+      @main_menu_btn.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::RETURN_MAIN_MENU))}
       @bt_new_game.signal_connect("clicked") do
-        puts "----- #{self.to_s} CREATE MenuClickEvent::START -----"
         clear_gameboard
         notify_all(MenuClickEvent.new(MenuClickEvent::NEW_GAME))
       end
-      @fft_btn.signal_connect("clicked") {puts "----- #{self.to_s} CREATE MenuClickEvent::START -----"; notify_all(ForfeitClickEvent.new)}
+      @fft_btn.signal_connect("clicked") {notify_all(ForfeitClickEvent.new)}
     end
 
     def init_menu
@@ -168,12 +159,12 @@ module C4
       to_btn.pack_start(load_image(OCounter.instance.icon))
 
       # Event signals
-      @menu_start.signal_connect("clicked") {puts "----- #{self.to_s} CREATE MenuClickEvent::START -----"; notify_all(MenuClickEvent.new(MenuClickEvent::START))}
-      @menu_c4.signal_connect("clicked") {puts "----- #{self.to_s} CREATE MenuClickEvent::START -----";notify_all(MenuClickEvent.new(MenuClickEvent::CONNECT4))}
-      @menu_to.signal_connect("clicked") {puts "----- #{self.to_s} CREATE MenuClickEvent::START -----";notify_all(MenuClickEvent.new(MenuClickEvent::TOOT_OTTO))}
-      @menu_pvp.signal_connect("clicked") {puts "----- #{self.to_s} CREATE MenuClickEvent::START -----";notify_all(MenuClickEvent.new(MenuClickEvent::PVP))}
-      @menu_pvc.signal_connect("clicked") {puts "----- #{self.to_s} CREATE MenuClickEvent::START -----";notify_all(MenuClickEvent.new(MenuClickEvent::PVC_EASY))}
-      @menu_pvc_hard.signal_connect("clicked") {puts "----- #{self.to_s} CREATE MenuClickEvent::START -----";notify_all(MenuClickEvent.new(MenuClickEvent::PVC_HARD))}
+      @menu_start.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::START))}
+      @menu_c4.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::CONNECT4))}
+      @menu_to.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::TOOT_OTTO))}
+      @menu_pvp.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::PVP))}
+      @menu_pvc.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::PVC_EASY))}
+      @menu_pvc_hard.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::PVC_HARD))}
     end
 
     def draw_board(grid_layout, rows, cols)

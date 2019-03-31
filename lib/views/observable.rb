@@ -24,7 +24,6 @@ module PassthroughObservable
   include Observable
 
   def notify(event)
-    puts "----- #{self} FORWARDING #{event.id} -----"
     notify_all(event)
   end
 end

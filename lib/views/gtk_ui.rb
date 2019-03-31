@@ -14,19 +14,8 @@ class GtkUI
     @app.register(self)
   end
 
-  def load_menu
-    @app.ui.game_window.show_menu
-  end
-
-  def load_game
-    @app.ui.game_window.show_game
-  end
-
-  def draw_gameboard(gb)
-    @app.ui.game_window.draw_gameboard(gb)
-  end
-
   def method_missing(m, *args, &block)
+    @app.ui.active_window.send(m, *args, &block)
   end
 
   def shutdown
