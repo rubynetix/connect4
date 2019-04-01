@@ -1,5 +1,5 @@
 require 'test/unit'
-require_relative '../lib/server/server'
+require_relative '../server/server'
 
 class ServerTest < Test::Unit::TestCase
   TEST_ITER = 10

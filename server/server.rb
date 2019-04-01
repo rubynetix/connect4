@@ -2,6 +2,11 @@ require 'xmlrpc/server'
 
 # Handles user related requests
 class UserHandler
+  def create(username)
+    
+    { :success => true }
+  end
+
   # Returns games of a user
   def games(username)
     { 'games' => ['game1', 'game2'] }
@@ -23,9 +28,3 @@ class LeagueHandler
     { 'standings' => ['wins', 'losses'] }
   end
 end
-
-s = XMLRPC::Server.new(8080)
-s.add_handler('user', UserHandler.new)
-s.add_handler('game', GameHandler.new)
-s.add_handler('league', LeagueHandler.new)
-s.serve

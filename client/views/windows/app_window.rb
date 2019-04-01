@@ -1,4 +1,4 @@
-require_relative '../../../lib/views/observable'
+require_relative '../../../client/views/observable'
 
 module C4
   class AppWindow < Gtk::ApplicationWindow

@@ -1,7 +1,7 @@
 require 'test/unit'
-require_relative '../lib/models/game_board'
-require_relative '../lib/models/counter'
-require_relative '../lib/models/win_check'
+require_relative '../client/models/game_board'
+require_relative '../client/models/counter'
+require_relative '../client/models/win_check'
 
 class WinCheckTest < Test::Unit::TestCase
   TEST_ITER = 10

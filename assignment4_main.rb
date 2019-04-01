@@ -1,9 +1,9 @@
 require "gtk3"
-require_relative 'lib/views/ui'
-require_relative 'lib/controllers/connect4'
-require_relative 'lib/models/game_board'
-require_relative 'lib/controllers/local_player'
-require_relative 'lib/models/counter'
+require_relative 'client/views/ui'
+require_relative 'client/controllers/connect4'
+require_relative 'client/models/game_board'
+require_relative 'client/controllers/local_player'
+require_relative 'client/models/counter'
 
 
 # Group No. 6 Members:

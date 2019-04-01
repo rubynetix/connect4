@@ -1,8 +1,8 @@
 require_relative 'helper'
 require_relative 'mock/mock_ui'
-require_relative '../lib/controllers/connect4'
-require_relative '../lib/controllers/computer_player'
-require_relative '../lib/controllers/algorithms/alpha_beta_pruning'
+require_relative '../client/controllers/connect4'
+require_relative '../client/controllers/computer_player'
+require_relative '../client/controllers/algorithms/alpha_beta_pruning'
 
 class Connect4Test < Helper
 
