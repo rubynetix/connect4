@@ -1,6 +1,7 @@
 require 'test/unit'
-require_relative '../lib/server/server'
-require_relative '../lib/models/game_board'
+require 'xmlrpc/client'
+require_relative '../server/server'
+require_relative '../client/models/game_board'
 
 class ServerTest < Test::Unit::TestCase
   TEST_ITER = 10
@@ -49,7 +50,7 @@ class ServerTest < Test::Unit::TestCase
     end
   end
 
-  def test_user_list
+  def tst_user_list
     user_list = %w[tester john kanye]
     # Preconditions
     begin

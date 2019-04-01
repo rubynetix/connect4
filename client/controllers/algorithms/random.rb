@@ -1,4 +1,4 @@
-require_relative '../../../lib/models/game_board'
+require_relative '../../../client/models/game_board'
 
 # Random move if possible, else forfeit
 module RandomAction
