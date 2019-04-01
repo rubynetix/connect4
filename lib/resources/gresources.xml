@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/com/rubynetix/connect4">
+    <!-- Main application window - NOTE: "xml-stripblanks" may require you to run '$ sudo apt install libxml2-utils' -->
+    <file preprocess="xml-stripblanks">ui/app_window.ui</file>
+
+    <!-- Application 'screens' -->
+    <file preprocess="xml-stripblanks">ui/main_menu_window.ui</file>
+    <file preprocess="xml-stripblanks">ui/game_window.ui</file>
+  </gresource>
+</gresources>

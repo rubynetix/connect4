@@ -7,6 +7,7 @@ class UIEvent
   MENU_CLICK = 2
   CELL_CLICK = 3
   FORFEIT_CLICK = 4
+  WINDOW_CHANGE = 5
 
   def initialize(id)
     @id = id

@@ -18,7 +18,7 @@ class UI
     @game_window.build
     @game_window.register(self)
 
-    @active_window = @game_window
+    @new_window = @game_window
   end
 
   def load_menu
@@ -36,7 +36,7 @@ class UI
   def method_missing(m, *args, &block)
     # Delegate calls to active window on UI thread
     on_ui_thread do
-      @active_window.send(m, *args, &block)
+      @new_window.send(m, *args, &block)
     end
   end
 
