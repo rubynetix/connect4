@@ -1,14 +1,16 @@
 require 'gtk3'
 require 'fileutils'
 require_relative 'lib/views/gtk_ui'
+require_relative 'lib/views/windows/app_window'
+require_relative 'lib/controllers/application'
+require_relative 'lib/controllers/connect4'
 
 # Recursively require all ruby files in lib directory
-application_root_path = File.expand_path(__dir__)
-Dir[File.join(application_root_path, '/lib/**', '*.rb')].each(&method(:require))
+root = File.expand_path(__dir__)
 
 # Define the source & target files of the glib-compile-resources command
-resource_xml = File.join(application_root_path, 'lib/resources', 'gresources.xml')
-resource_bin = File.join(application_root_path, 'gresource.bin')
+resource_xml = File.join(root, 'lib/resources', 'gresources.xml')
+resource_bin = File.join(root, 'gresource.bin')
 
 # Build the binary
 system("glib-compile-resources",
