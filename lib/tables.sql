@@ -1,4 +1,6 @@
+CREATE DATABASE IF NOT EXISTS ece421;
 
+USE ece421;
 
 CREATE TABLE IF NOT EXISTS users(
   username char,
@@ -23,11 +25,11 @@ CREATE TABLE IF NOT EXISTS game_boards(
   FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE
 );
 
-
+# Note these may error if exists
 CREATE INDEX games_p1 ON games(player_1);
 CREATE INDEX games_p2 ON games(player_2);
 
-
+DELIMITER $$
 CREATE TRIGGER game_ends
   AFTER UPDATE ON games FOR EACH ROW
   BEGIN
@@ -37,4 +39,5 @@ CREATE TRIGGER game_ends
         DELETE FROM games WHERE game_id = NEW.game_id;
       end if;
     end if;
-  end;
+  END$$
+DELIMITER ;
