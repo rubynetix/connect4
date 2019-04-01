@@ -2,14 +2,28 @@ require 'xmlrpc/server'
 
 # Handles user related requests
 class UserHandler
+
+  # Creates a new user
+  # returns 'success' or 'failed'
   def create(username)
-    
-    { :success => true }
+    # Check if the user exists
+    # Add the user to the DB
+    success = false
+    if success
+      return { 'create' => 'success' }
+    else
+      return { 'create' => 'failed' }
+    end
   end
 
   # Returns games of a user
   def games(username)
-    { 'games' => ['game1', 'game2'] }
+    { 'games' => ['list of active game ids'] }
+  end
+
+  # Returns a list of all usernames
+  def list()
+    { 'list' => ['list of names here'] }
   end
 end
 
@@ -17,7 +31,18 @@ end
 class GameHandler
   # Creates a new game
   def create(username1, username2)
-    { 'game' => ['gamename', username1, username2] }
+    { 'id' => 'game_id' }
+  end
+
+  # gets the gameboard, player_turn and game_state
+  def get(game_id)
+    { 'board' => 'game_board', 'turn' => 'player_turn',
+      'state' => 'game_state' }
+  end
+
+  # Saves the gameboard and player turn
+  def put(game_id, game_board, player_turn)
+    { 'put' => 'success or fail' }
   end
 end
 
@@ -25,6 +50,6 @@ end
 class LeagueHandler
   # Returns league standings of a user
   def standings(username)
-    { 'standings' => ['wins', 'losses'] }
+    { 'wins' => 'wins', 'losses' => 'losses' }
   end
 end
