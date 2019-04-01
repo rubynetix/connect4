@@ -27,8 +27,8 @@ class ServerTest < Test::Unit::TestCase
     begin
       # TODO: Assert name_success in db
       # TODO: Assert name_failed in db
-      assert('success', result_success, "Result not equal to 'success'")
-      assert('failed', result_failed, "Result not equal to 'failed'")
+      assert('success', result_success['create'], "Result not equal to 'success'")
+      assert('failed', result_failed['create'], "Result not equal to 'failed'")
     end
   end
 
@@ -45,7 +45,7 @@ class ServerTest < Test::Unit::TestCase
 
     # Postconditions
     begin
-      assert_equal(games, result, 'result not equal to games')
+      assert_equal(games, result['games'], 'result not equal to games')
     end
   end
 
@@ -60,7 +60,7 @@ class ServerTest < Test::Unit::TestCase
 
     # Postconditions
     begin
-      assert_equal(user_list, result, 'result not equal to user_list')
+      assert_equal(user_list, result['list'], 'result not equal to user_list')
     end
   end
 
@@ -76,7 +76,7 @@ class ServerTest < Test::Unit::TestCase
 
     # Postconditions
     begin
-      assert_true(result.is_a?(Integer), 'result is not an integer')
+      assert_true(result['id'].is_a?(Integer), 'result is not an integer')
     end
   end
 
@@ -95,9 +95,9 @@ class ServerTest < Test::Unit::TestCase
 
     # Postconditions
     begin
-      assert_equal(game_board, result['game_board'])
-      assert_equal(player_turn, result['player_turn'])
-      assert_equal(game_state_enum, result['game_state'])
+      assert_equal(game_board, result['board'])
+      assert_equal(player_turn, result['turn'])
+      assert_equal(game_state_enum, result['state'])
     end
   end
 
@@ -117,22 +117,26 @@ class ServerTest < Test::Unit::TestCase
     begin
       # TODO: assert that game_board is in the db as id 6789
       # TODO: assert that game 6789 is on other_turn
+      assert_equal('success', result['put'])
     end
   end
 
   def tst_league_standings
     name = 'kanye'
-    standings = 1 # TODO: update this with actual standings
+    expected_wins = 1
+    expected_losses = 500
+
     # Preconditions
     begin
     end
 
     result = @server.call('league.standings', name)
-
+    wins = result['wins']
+    losses = result['losses']
     # Postconditions
     begin
-      # TODO: assert that standings match
+      assert_equal(expected_wins, wins)
+      assert_equal(expected_losses, losses)
     end
   end
-
 end
