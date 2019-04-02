@@ -8,3 +8,5 @@ install_gem() {
 gem update --system
 install_gem bundler
 bundle install
+
+
