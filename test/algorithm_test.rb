@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 require 'test/unit'
-require_relative '../lib/models/game_board'
-require_relative '../lib/models/counter'
-require_relative '../lib/controllers/computer_player'
-require_relative '../lib/controllers/algorithms/mcts'
-require_relative '../lib/controllers/algorithms/alpha_beta_pruning'
-require_relative '../lib/controllers/algorithms/random'
+require_relative '../client/models/game_board'
+require_relative '../client/models/counter'
+require_relative '../client/controllers/computer_player'
+require_relative '../client/controllers/algorithms/mcts'
+require_relative '../client/controllers/algorithms/alpha_beta_pruning'
+require_relative '../client/controllers/algorithms/random'
 
 class AlgorithmTest < Test::Unit::TestCase
   TEST_ITER = 10
