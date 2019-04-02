@@ -1,12 +1,14 @@
 require_relative '../../../client/views/events/window_change_event'
 require_relative '../../../client/views/observable'
 require_relative 'game_window'
+require_relative 'widget_window'
 
 module C4
   class MainMenuWindow < Gtk::Box
     include PassthroughObservable
+    include WidgetWindow
 
-    @@WID = "main_menu"
+    @@wid = "main_menu"
 
     type_register
 
@@ -30,13 +32,7 @@ module C4
       @offline_btn = offline_btn
 
       @connect_btn.signal_connect('clicked') {try_connect}
-      @offline_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(GameWindow.class_variable_get(:@@WID)))}
-    end
-
-    def display; end
-
-    def id
-      @@WID
+      @offline_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(GameWindow.class_variable_get(:@@wid)))}
     end
 
     private
@@ -61,10 +57,6 @@ module C4
 
     def valid_server?(server_url)
       true
-    end
-
-    def display_error(title: 'Error', msg: "Could not complete request.")
-      # TODO: Implement generic error dialog
     end
   end
 end
