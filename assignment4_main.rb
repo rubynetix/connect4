@@ -2,7 +2,6 @@ require "gtk3"
 require_relative 'client/views/ui'
 require_relative 'client/controllers/connect4'
 require_relative 'client/models/game_board'
-require_relative 'client/controllers/local_player'
 require_relative 'client/models/counter'
 
 

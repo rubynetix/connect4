@@ -25,8 +25,9 @@ class PlayerTest < Test::Unit::TestCase
 
     board = GameBoard.new
     ui = MockUI.new
+    previous_state = WinEnum::NEUTRAL
     # @player.register(ui, [ForfeitClickEvent])
-    action = Thread.new { @player.take_turn(board, ui) }
+    action = Thread.new { @player.take_turn(board, ui, previous_state) }
     sleep(1) # we sleep to give the player time to register itself to ui
     ui.notify_all(ForfeitClickEvent.new) # Simulate button click
 
@@ -41,8 +42,9 @@ class PlayerTest < Test::Unit::TestCase
 
     board = GameBoard.new
     ui = MockUI.new
+    prevous_state = WinEnum::NEUTRAL
     # @player.register(ui, [CellClickEvent])
-    action = Thread.new { @player.take_turn(board, ui) }
+    action = Thread.new { @player.take_turn(board, ui, prevous_state) }
     sleep(1) # we sleep to give the player time to register itself to ui
     col = rand(0...BOARD_COLS)
     ui.notify_all(CellClickEvent.new(0, col)) # Simulate button click

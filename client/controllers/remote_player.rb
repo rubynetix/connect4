@@ -1,34 +1,37 @@
 require_relative 'player'
+require_relative 'client'
 
 class RemotePlayer < Player
 
   attr_accessor :op_counters, :my_win
 
-  def initialize(name, counters, game_id, xml_client)
+  def initialize(name, counters, game_id, client=nil)
     super name, counters
     @game_id = game_id
 
-    @xml_client = xml_client
+    if client.nil?
+      @client = Client.new
+    end
   end
 
-  def take_turn(board, ui)
+  def take_turn(board, ui, state)
     ui.set_turn(self)
     @board = board
     @waiting = true
-    update_remote_board(board)
+    update_remote_board(board, state)
     get_action ui, board
   end
 
   # Send updated board to remote server
-  def update_remote_board(board)
-    # TODO: Need to rework current architecture to pass in game state. Currently just passing in NEUTRAL as a placeholder
-    @xml_client.call("game.put", @game_id, board.board, @name, WinEnum::NEUTRAL)
+  def update_remote_board(board, state)
+    @client.put_game(@game_id, board.board, @name, state)
+    # TODO: Handle fail response
   end
 
   def get_action(ui, board)
-    # Wait for server to update
+    # Wait for remote player to take their turn
     while true
-      result = @xml_client.call( "game.get", [@game_id])
+      result = @client.get_game(@game_id)
       if result['turn'] != @name
         break
       end
@@ -46,8 +49,7 @@ class RemotePlayer < Player
 
   def update_board(board)
     @board.board = board
-
-    # TODO: Set the state as a class attribute of the board
+    # TODO: Might have to do something (eg reset) board.last_location_pos
     PlayerAction::REMOTE_UPDATE_BOARD
   end
 
