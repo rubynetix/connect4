@@ -16,11 +16,12 @@ install_mysql() {
         sudo apt-get update
         sudo apt-get -y install mysql-server >/dev/null
     else
-        echo "Package mysql-server already installed"
+	echo "Package mysql-server already installed"
     fi
 }
 
 install_mysql
+sudo apt-get install -y libmysqlclient-dev
 
 gem update --system
 install_gem bundler
