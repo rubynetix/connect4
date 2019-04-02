@@ -1,3 +1,5 @@
+require 'xmlrpc/client'
+
 class Client
 
   def initialize(host: 'localhost', path: '/', port: 8080)
@@ -5,38 +7,31 @@ class Client
   end
 
   def create_user(username)
-    result = @xml_client.call("user.create", username)
-    result["create"]
+    @xml_client.call("user.create", username)
   end
 
   def user_games(username)
-    result = @xml_client.call("user.games", username)
-    result['games']
+    @xml_client.call("user.games", username)
   end
 
   def list_users()
-    result = @xml_client.call("user.list")
-    result['list']
+    @xml_client.call("user.list")
   end
 
   def create_game(username1, username2)
-    result = @xml_client.call("game.create", username1, username2)
-    result['id']
+    @xml_client.call("game.create", username1, username2)
   end
 
   def get_game(gid)
-    result = @xml_client.call("game.get", gid)
-    [result['board'], result['turn'], result['state']]
+    @xml_client.call("game.get", gid)
   end
 
   def put_game(gid, board_array, player_turn, game_state)
-    result = @xml_client.call("put.game", [gid, board_array, player_turn, game_state])
-    result['put']
+    @xml_client.call("put.game", [gid, board_array, player_turn, game_state])
   end
 
   def get_league_standings(username)
-    result = @xml_client.call("league.standings", username)
-    [result['wins'], result['loses']]
+    @xml_client.call("league.standings", username)
   end
 
 end

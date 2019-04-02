@@ -1,5 +1,4 @@
 require_relative '../views/ui'
-require_relative '../controllers/local_player'
 require_relative 'computer_player'
 require_relative '../controllers/player'
 require_relative '../controllers/game'
@@ -11,6 +10,7 @@ require_relative 'algorithms/mcts'
 require_relative 'algorithms/alpha_beta_pruning'
 require_relative 'algorithms/random'
 require_relative '../../client/views/events/server_connect_event'
+require_relative 'client'
 
 # Class representing the application
 class Connect4
@@ -125,7 +125,7 @@ class Connect4
 end
 
 class GameConfig
-  attr_accessor :players, :gameboard, :win_check, :ui, :alg
+  attr_accessor :players, :gameboard, :win_check, :ui, :alg, :client
 
   def initialize(ui)
     @ui = ui
@@ -136,6 +136,7 @@ class GameConfig
     @alg = :AlphaBetaPruning
     @win_check = WinCheck.connect4
     @gameboard = GameBoard.connect4
+    @client = Client.new
   end
 
   def reset
