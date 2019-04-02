@@ -1,5 +1,5 @@
-require_relative '../../../lib/views/events/window_change_event'
-require_relative '../../../lib/views/observable'
+require_relative '../../../client/views/events/window_change_event'
+require_relative '../../../client/views/observable'
 require_relative 'main_menu_window'
 
 module C4

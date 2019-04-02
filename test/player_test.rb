@@ -1,12 +1,12 @@
 require 'test/unit'
-require_relative '../lib/controllers/player'
-require_relative '../lib/controllers/player_action'
-require_relative '../lib/models/counter'
-require_relative '../lib/models/game_board'
+require_relative '../client/controllers/player'
+require_relative '../client/controllers/player_action'
+require_relative '../client/models/counter'
+require_relative '../client/models/game_board'
 require_relative 'mock/mock_event'
 require_relative 'mock/mock_ui'
-require_relative '../lib/views/events/forfeit_click_event'
-require_relative '../lib/views/events/cell_click_event'
+require_relative '../client/views/events/forfeit_click_event'
+require_relative '../client/views/events/cell_click_event'
 
 class PlayerTest < Test::Unit::TestCase
   TEST_ITER = 10

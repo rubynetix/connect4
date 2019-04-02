@@ -10,7 +10,7 @@ require_relative '../views/events/menu_click_event'
 require_relative 'algorithms/mcts'
 require_relative 'algorithms/alpha_beta_pruning'
 require_relative 'algorithms/random'
-require_relative '../../lib/views/events/server_connect_event'
+require_relative '../../client/views/events/server_connect_event'
 
 # Class representing the application
 class Connect4
@@ -36,9 +36,6 @@ class Connect4
       @ui.unregister(self)
       launch_game
     end
-￼	require_relative 'lib/views/windows/app_window'
-￼	require_relative 'lib/controllers/application'
-￼	require_relative 'lib/controllers/connect4'
   end
 
   def configure_settings

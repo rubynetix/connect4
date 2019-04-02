@@ -1,4 +1,4 @@
-require_relative '../../lib/views/observable'
+require_relative '../../client/views/observable'
 
 class MockUI
   include Observable
