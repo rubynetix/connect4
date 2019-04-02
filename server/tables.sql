@@ -1,12 +1,14 @@
-CREATE DATABASE IF NOT EXISTS ece421;
+USE connect4;
 
-USE ece421;
+# Cleanup tables if they exist
+DROP TABLE IF EXISTS game_boards;
+DROP TABLE IF EXISTS games;
+DROP TABLE IF EXISTS users;
 
 CREATE TABLE IF NOT EXISTS users(
   username char,
   PRIMARY KEY (username)
 );
-
 
 CREATE TABLE IF NOT EXISTS games(
   game_id INTEGER,
