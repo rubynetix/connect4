@@ -10,8 +10,8 @@ install_mysql() {
     then
         echo "Installing mysql-server..."
         mkdir tmp
-        wget -P ./tmp/ "https://dev.mysql.com/downloads/file/?id=482330"
-        sudo dpkg -i ./tmp/*.deb
+        wget -P ./tmp/ "https://dev.mysql.com/get/mysql-apt-config_0.8.12-1_all.deb"
+        sudo dpkg -i ./tmp/mysql-apt-config_0.8.12-1_all.deb
         rm -rf tmp
         sudo apt-get update
         sudo apt-get -y install mysql-server >/dev/null
