@@ -26,7 +26,6 @@ class Game
 
   private
 
-
   def process_action(player, action)
     case action
     when PlayerAction::FORFEIT
