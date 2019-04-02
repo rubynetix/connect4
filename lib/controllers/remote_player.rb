@@ -4,12 +4,11 @@ class RemotePlayer < Player
 
   attr_accessor :op_counters, :my_win
 
-  def initialize(name, counters, game_id)
+  def initialize(name, counters, game_id, xml_client)
     super name, counters
     @game_id = game_id
 
-    # TODO: Pass this in rather than init here
-    @xml_client = XMLRPC::Client.new('localhost', '/', 8080)
+    @xml_client = xml_client
   end
 
   def take_turn(board, ui)
@@ -22,15 +21,15 @@ class RemotePlayer < Player
 
   # Send updated board to remote server
   def update_remote_board(board)
-    # Test and update this - change this to the proper name
-    @xml_client.call("game.put", @game_id, board, @name)
+    # TODO: Need to rework current architecture to pass in game state. Currently just passing in NEUTRAL as a placeholder
+    @xml_client.call("game.put", @game_id, board.board, @name, WinEnum::NEUTRAL)
   end
 
   def get_action(ui, board)
     # Wait for server to update
     while true
       result = @xml_client.call( "game.get", [@game_id])
-      if result['player_turn'] != @name
+      if result['turn'] != @name
         break
       end
       sleep(0.5)
@@ -41,13 +40,16 @@ class RemotePlayer < Player
 
   # Parse the result from the server and create the corresponding event
   def parse_response(result)
-    return forfeit if result['game_state'] == PlayerAction::FORFEIT
+    return forfeit if result['state'] == PlayerAction::FORFEIT
     update_board(result['board'])
   end
 
   def update_board(board)
-    @board = board
-    PlayerAction::PLACE_COUNTER
+    @board.board = board
+
+    # TODO: Set the state as a class attribute of the board
+    PlayerAction::REMOTE_UPDATE_BOARD
   end
+
 
 end
