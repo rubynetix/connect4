@@ -42,6 +42,7 @@ GEM
     rake (12.3.2)
     test-unit (3.3.0)
       power_assert
+    xmlrpc (0.3.0)
 
 PLATFORMS
   ruby
@@ -52,6 +53,7 @@ DEPENDENCIES
   gtk3 (~> 3.3, >= 3.3.5)
   rake
   test-unit
+  xmlrpc
 
 RUBY VERSION
    ruby 2.5.3p105

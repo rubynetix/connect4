@@ -10,6 +10,7 @@ require_relative '../views/events/menu_click_event'
 require_relative 'algorithms/mcts'
 require_relative 'algorithms/alpha_beta_pruning'
 require_relative 'algorithms/random'
+require_relative '../../lib/views/events/server_connect_event'
 
 # Class representing the application
 class Connect4
@@ -35,6 +36,9 @@ class Connect4
       @ui.unregister(self)
       launch_game
     end
+￼	require_relative 'lib/views/windows/app_window'
+￼	require_relative 'lib/controllers/application'
+￼	require_relative 'lib/controllers/connect4'
   end
 
   def configure_settings
@@ -48,9 +52,30 @@ class Connect4
   end
 
   def notify(event)
-    # Only interested in menu clicks
-    return if event.id != UIEvent::MENU_CLICK
+    case event.id
+    when UIEvent::MENU_CLICK
+      handle_menu_click(event)
+    when UIEvent::SERVER_CONN
+      server_connect(event.username, event.server_url)
+    end
+  end
 
+  def make_bot(name, algorithm)
+    bot = ComputerPlayer.new(name,
+                       @game_counters[@game][0],
+                       @game_wins[@game][0],
+                       @game_counters[@game][1])
+    bot.algorithm = algorithm
+    bot
+  end
+
+  private
+
+  def configure_bot
+    @config.players[1] = make_bot('p2', @config.alg)
+  end
+
+  def handle_menu_click(event)
     case event.click
     when MenuClickEvent::START
       if @game.zero?
@@ -96,19 +121,9 @@ class Connect4
     end
   end
 
-  def make_bot(name, algorithm)
-    bot = ComputerPlayer.new(name,
-                       @game_counters[@game][0],
-                       @game_wins[@game][0],
-                       @game_counters[@game][1])
-    bot.algorithm = algorithm
-    bot
-  end
-
-  private
-
-  def configure_bot
-    @config.players[1] = make_bot('p2', @config.alg)
+  def server_connect(username, server_url)
+    # TODO: Start the 'session'
+    puts "---- CONNECTING ----- #{username} on #{server_url}"
   end
 end
 
