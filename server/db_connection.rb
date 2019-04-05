@@ -28,8 +28,3 @@ class Connection
     query.execute(user, user, :as => :array).to_a
   end
 end
-
-db = Connection.new
-puts db.create_user 'Furrer'
-puts db.get_user 'Ryan'
-db.games 'Ryan'
