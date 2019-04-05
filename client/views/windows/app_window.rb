@@ -1,8 +1,8 @@
-require_relative '../../../lib/views/observable'
+require_relative '../../../client/views/observable'
 
 module C4
   class AppWindow < Gtk::ApplicationWindow
-    include PassthroughObservable
+    include Observable
 
     attr_reader :active_window
 
@@ -31,7 +31,7 @@ module C4
     # Load an observable window
     def add_window(window)
       window.register(self)
-      wid = window.class.class_variable_get(:@@WID)
+      wid = window.id
       @window_stack.add_named(window, wid)
     end
 

@@ -1,7 +1,7 @@
-require_relative '../../lib/views/observable'
-require_relative '../../lib/views/windows/app_window'
-require_relative '../../lib/views/windows/main_menu_window'
-require_relative '../../lib/views/windows/game_window'
+require_relative '../../client/views/observable'
+require_relative '../../client/views/windows/app_window'
+require_relative '../../client/views/windows/main_menu_window'
+require_relative '../../client/views/windows/game_window'
 
 module C4
   class Application < Gtk::Application

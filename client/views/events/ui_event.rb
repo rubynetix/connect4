@@ -1,6 +1,5 @@
 # Base class for a UI Event
 class UIEvent
-
   attr_reader :id
 
   COUNTER_SELECTED = 1
@@ -8,6 +7,7 @@ class UIEvent
   CELL_CLICK = 3
   FORFEIT_CLICK = 4
   WINDOW_CHANGE = 5
+  SERVER_CONN = 6
 
   def initialize(id)
     @id = id

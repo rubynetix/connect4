@@ -1,12 +1,14 @@
-require_relative '../../../lib/views/events/window_change_event'
-require_relative '../../../lib/views/observable'
+require_relative '../../../client/views/events/window_change_event'
+require_relative '../../../client/views/observable'
 require_relative 'main_menu_window'
+require_relative 'widget_window'
 
 module C4
   class GameWindow < Gtk::Box
     include PassthroughObservable
+    include WidgetWindow
 
-    @@WID = "game_window"
+    @@wid = "game_window"
 
     type_register
 
@@ -170,7 +172,7 @@ module C4
       @menu_pvp.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::PVP))}
       @menu_pvc.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::PVC_EASY))}
       @menu_pvc_hard.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::PVC_HARD))}
-      @back_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(MainMenuWindow.class_variable_get(:@@WID)))}
+      @back_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(MainMenuWindow.class_variable_get(:@@wid)))}
     end
 
     def draw_board(grid_layout, rows, cols)

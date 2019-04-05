@@ -6,17 +6,22 @@ class Game
     puts config.gameboard.win_check.wins
     @gameboard = config.gameboard
     @win_check = config.win_check
+    @client = config.client
     @ui = config.ui
     @done = false
     @winner = nil
+
+    # TODO: Properly initialize game settings (aka grab from server if remoteplayer)
+    @gid = nil
+    @game_state = WinEnum::NEUTRAL
   end
 
   def game_loop
     update_board
     until @done
       @players.each do |p|
-        p_action = p.take_turn(@gameboard, @ui)
-        process_action(p, p_action)
+        @game_state = p.take_turn(@gameboard, @ui, @game_state)
+        process_action(p, @game_state)
         update_board
         break if @done
       end
@@ -25,7 +30,6 @@ class Game
   end
 
   private
-
 
   def process_action(player, action)
     case action
@@ -43,6 +47,18 @@ class Game
         @done = true
         @winner = @players[1]
       end
+    when PlayerAction::REMOTE_UPDATE_BOARD
+      case @client.get_game(gid)['state']
+      when WinEnum::DRAW
+        @done = true
+      when WinEnum::WIN1
+        @done = true
+        @winner = @players[0]
+      when WinEnum::WIN2
+        @done = true
+        @winner = @players[1]
+      end
+
     end
   end
 

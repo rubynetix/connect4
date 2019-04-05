@@ -1,12 +1,12 @@
 require 'test/unit'
-require_relative '../lib/controllers/player'
-require_relative '../lib/controllers/player_action'
-require_relative '../lib/models/counter'
-require_relative '../lib/models/game_board'
+require_relative '../client/controllers/player'
+require_relative '../client/controllers/player_action'
+require_relative '../client/models/counter'
+require_relative '../client/models/game_board'
 require_relative 'mock/mock_event'
 require_relative 'mock/mock_ui'
-require_relative '../lib/views/events/forfeit_click_event'
-require_relative '../lib/views/events/cell_click_event'
+require_relative '../client/views/events/forfeit_click_event'
+require_relative '../client/views/events/cell_click_event'
 
 class PlayerTest < Test::Unit::TestCase
   TEST_ITER = 10
@@ -25,8 +25,9 @@ class PlayerTest < Test::Unit::TestCase
 
     board = GameBoard.new
     ui = MockUI.new
+    previous_state = WinEnum::NEUTRAL
     # @player.register(ui, [ForfeitClickEvent])
-    action = Thread.new { @player.take_turn(board, ui) }
+    action = Thread.new { @player.take_turn(board, ui, previous_state) }
     sleep(1) # we sleep to give the player time to register itself to ui
     ui.notify_all(ForfeitClickEvent.new) # Simulate button click
 
@@ -41,8 +42,9 @@ class PlayerTest < Test::Unit::TestCase
 
     board = GameBoard.new
     ui = MockUI.new
+    prevous_state = WinEnum::NEUTRAL
     # @player.register(ui, [CellClickEvent])
-    action = Thread.new { @player.take_turn(board, ui) }
+    action = Thread.new { @player.take_turn(board, ui, prevous_state) }
     sleep(1) # we sleep to give the player time to register itself to ui
     col = rand(0...BOARD_COLS)
     ui.notify_all(CellClickEvent.new(0, col)) # Simulate button click

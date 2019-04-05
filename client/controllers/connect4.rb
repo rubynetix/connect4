@@ -1,5 +1,4 @@
 require_relative '../views/ui'
-require_relative '../controllers/local_player'
 require_relative 'computer_player'
 require_relative '../controllers/player'
 require_relative '../controllers/game'
@@ -10,6 +9,8 @@ require_relative '../views/events/menu_click_event'
 require_relative 'algorithms/mcts'
 require_relative 'algorithms/alpha_beta_pruning'
 require_relative 'algorithms/random'
+require_relative '../../client/views/events/server_connect_event'
+require_relative 'client'
 
 # Class representing the application
 class Connect4
@@ -48,9 +49,30 @@ class Connect4
   end
 
   def notify(event)
-    # Only interested in menu clicks
-    return if event.id != UIEvent::MENU_CLICK
+    case event.id
+    when UIEvent::MENU_CLICK
+      handle_menu_click(event)
+    when UIEvent::SERVER_CONN
+      server_connect(event.username, event.server_url)
+    end
+  end
 
+  def make_bot(name, algorithm)
+    bot = ComputerPlayer.new(name,
+                       @game_counters[@game][0],
+                       @game_wins[@game][0],
+                       @game_counters[@game][1])
+    bot.algorithm = algorithm
+    bot
+  end
+
+  private
+
+  def configure_bot
+    @config.players[1] = make_bot('p2', @config.alg)
+  end
+
+  def handle_menu_click(event)
     case event.click
     when MenuClickEvent::START
       if @game.zero?
@@ -96,24 +118,14 @@ class Connect4
     end
   end
 
-  def make_bot(name, algorithm)
-    bot = ComputerPlayer.new(name,
-                       @game_counters[@game][0],
-                       @game_wins[@game][0],
-                       @game_counters[@game][1])
-    bot.algorithm = algorithm
-    bot
-  end
-
-  private
-
-  def configure_bot
-    @config.players[1] = make_bot('p2', @config.alg)
+  def server_connect(username, server_url)
+    # TODO: Start the 'session'
+    puts "---- CONNECTING ----- #{username} on #{server_url}"
   end
 end
 
 class GameConfig
-  attr_accessor :players, :gameboard, :win_check, :ui, :alg
+  attr_accessor :players, :gameboard, :win_check, :ui, :alg, :client
 
   def initialize(ui)
     @ui = ui
@@ -124,6 +136,7 @@ class GameConfig
     @alg = :AlphaBetaPruning
     @win_check = WinCheck.connect4
     @gameboard = GameBoard.connect4
+    @client = Client.new
   end
 
   def reset
