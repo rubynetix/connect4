@@ -15,10 +15,11 @@ class Connection
     false
   end
 
-  def get_user(id)
+  def user_exists?(id)
     query = @conn.prepare('Select * from users Where username=?;')
     result = query.execute(id)
-    result.each {|row| return row['username']}
+    result.each {|row| return true}
+    false
   end
 
   def user_list
