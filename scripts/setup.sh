@@ -5,6 +5,16 @@ install_gem() {
     gem install $1 --quiet --no-document
 }
 
+install_package() {
+    if [[ $(dpkg-query -W -f='${Status}' $1 2>/dev/null | grep -c "ok installed") -eq 0 ]];
+    then
+        echo "Installing $1..."
+        sudo apt-get -y install $1 >/dev/null
+    else
+        echo "Package $1 already installed"
+    fi
+}
+
 install_mysql() {
     if [[ $(dpkg-query -W -f='${Status}' mysql-server 2>/dev/null | grep -c "ok installed") -eq 0 ]];
     then
@@ -21,7 +31,7 @@ install_mysql() {
 }
 
 install_mysql
-sudo apt-get install -y libmysqlclient-dev
+install_package libmysqlclient-dev
 
 gem update --system
 install_gem bundler

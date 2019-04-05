@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS games;
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE IF NOT EXISTS users(
-  username char,
+  username VARCHAR(50),
   PRIMARY KEY (username)
 );
 
