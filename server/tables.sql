@@ -43,3 +43,8 @@ CREATE TRIGGER game_ends
     end if;
   END$$
 DELIMITER ;
+
+
+CREATE FUNCTION score(wins INTEGER, losses INTEGER, draws INTEGER)
+RETURNS INTEGER
+RETURN wins * 2 - losses * 2 + draws;

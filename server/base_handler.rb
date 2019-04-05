@@ -1,14 +1,20 @@
 require 'mysql2'
 
+
+def prod_db
+  Mysql2::Client.new(
+      :host => "localhost",
+      :database => "connect4",
+      :port => 3306,
+      :username => "ece421",
+      :password => "ece421")
+end
+
+
 class BaseHandler
 
-  def initialize
-    @db_client = Mysql2::Client.new(
-        :host => "localhost",
-        :database => "connect4",
-        :port => 3306,
-        :username => "ece421",
-        :password => "ece421")
+  def initialize(opts = {})
+    @db_client = opts[:db_client] || prod_db
   end
 
   def user_exists?(username)
@@ -35,12 +41,12 @@ class BaseHandler
     raise ArgumentError, 'No block was given' unless block_given?
 
     begin
-      @conn.query('BEGIN')
+      @db_client.query('BEGIN')
       yield
-      @conn.query('COMMIT')
+      @db_client.query('COMMIT')
       true
     rescue
-      @conn.query('ROLLBACK')
+      @db_client.query('ROLLBACK')
       false
     end
   end

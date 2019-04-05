@@ -1,35 +1,70 @@
 require 'test/unit'
-require 'xmlrpc/client'
-require_relative '../server/server'
+require_relative '../client/rpc_client'
 require_relative '../client/models/game_board'
+require_relative '../server/server'
+require_relative 'mock/mock_db'
+
 
 class ServerTest < Test::Unit::TestCase
   TEST_ITER = 10
 
-  def setup
-    @server = XMLRPC::Client.new('localhost', '/', 8080)
-  end
+  def setup; end
 
   def teardown; end
 
-  def tst_user_create
-    name_success = 'doesnt_exist'
-    name_failed = 'already_exists'
+  def test_user_create_new_user
+    new_user = 'newuser'
+    db = MockDB.new([],[],[{:username => new_user}])
+    handler = UserHandler.new(:db_client => db)
+
     # Preconditions
     begin
-      # TODO: Assert name_failed is in DB
     end
 
-    result_success = @server.call("user.create", name_success)
-
-    result_failed = @server.call("user.create", name_failed)
+    res = handler.create(new_user)
 
     # Postconditions
     begin
-      # TODO: Assert name_success in db
-      # TODO: Assert name_failed in db
-      assert('success', result_success['create'], "Result not equal to 'success'")
-      assert('failed', result_failed['create'], "Result not equal to 'failed'")
+      assert_true(res[:success])
+    end
+  end
+
+  def test_user_create_existing_user
+    existing_user = 'already_exists'
+    db = MockDB.one_result({ :username => existing_user })
+    handler = UserHandler.new(:db_client => db)
+
+    # Preconditions
+    begin
+      users = db.query("SELECT * from users;")
+      assert_equal(1, users.count)
+      assert_equal(users[0][:username], existing_user)
+    end
+
+    res = handler.create(existing_user)
+
+    # Postconditions
+    begin
+      assert_false(res[:success])
+      assert_equal("Username '#{existing_user}' is already taken.", res[:message])
+    end
+  end
+
+  def test_user_create_bad_user
+    bad_user = 'add?meplz'
+    db = MockDB.no_result
+    handler = UserHandler.new(:db_client => db)
+
+    # Preconditions
+    begin
+    end
+
+    res = handler.create(bad_user)
+
+    # Postconditions
+    begin
+      assert_false(res[:success])
+      assert_equal("Username '#{bad_user}' is invalid.", res[:message])
     end
   end
 

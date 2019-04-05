@@ -1,7 +1,3 @@
-require 'xmlrpc/server'
-require_relative 'base_handler'
-require_relative 'game_handler'
-require_relative 'league_handler'
 
 # Handles game related requests
 class GameHandler
@@ -20,12 +16,4 @@ class GameHandler
   def put(game_id, game_board, player_turn)
     { 'put' => 'success or fail' }
   end
-end
-
-def serve
-  s = XMLRPC::Server.new(8080)
-  s.add_handler('user', UserHandler.new)
-  s.add_handler('game', GameHandler.new)
-  s.add_handler('league', LeagueHandler.new)
-  s.serve
 end
