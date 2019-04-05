@@ -14,8 +14,8 @@ CREATE TABLE IF NOT EXISTS games(
   game_id INTEGER,
   type ENUM('C','T') NOT NULL,
   state ENUM('W1', 'W2', 'D', 'P1', 'P2') NOT NULL,
-  player_1 char NOT NULL,
-  player_2 char NOT NULL,
+  player_1 VARCHAR(50) NOT NULL,
+  player_2 VARCHAR(50) NOT NULL,
   FOREIGN KEY (player_1) REFERENCES users(username),
   FOREIGN KEY (player_2) REFERENCES users(username),
   PRIMARY KEY (game_id)
