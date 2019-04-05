@@ -13,15 +13,16 @@ class BaseHandler
 
   def user_exists?(username)
     puts "SELECT * FROM users WHERE username='#{username}'"
-    r = @db_client.query("SELECT * FROM users WHERE username='#{username}'")
+    query = @db_client.prepare("SELECT * FROM users WHERE username=?")
+    r = query.execute(username)
     r.count > 0
   end
 
   def get_user(username)
     raise UserDoesNotExist unless user_exists?
     puts "SELECT * FROM users WHERE username='#{username}'"
-    r = @db_client.query("SELECT * FROM users WHERE username='#{username}'",
-                     :symbolize_keys => true)
+    query = @db_client.prepare("SELECT * FROM users WHERE username=?")
+    r = query.execute(username, :symbolize_keys => true)
     r[:username]
   end
 
