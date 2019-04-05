@@ -1,14 +1,19 @@
 require 'xmlrpc/server'
+require_relative 'db_connection'
 
 # Handles user related requests
 class UserHandler
+
+  def initialize
+    @conn = Connection.new
+  end
 
   # Creates a new user
   # returns 'success' or 'failed'
   def create(username)
     # Check if the user exists
     # Add the user to the DB
-    success = false
+    success = @conn.create_user username
     if success
       return { 'create' => 'success' }
     else
@@ -18,17 +23,21 @@ class UserHandler
 
   # Returns games of a user
   def games(username)
-    { 'games' => ['list of active game ids'] }
+    { 'games' => @conn.games username }
   end
 
   # Returns a list of all usernames
   def list()
-    { 'list' => ['list of names here'] }
+    { 'list' => @conn.user_list}
   end
 end
 
 # Handles game related requests
 class GameHandler
+  def initialize
+    @conn = Connection.new
+  end
+
   # Creates a new game
   def create(username1, username2)
     { 'id' => 'game_id' }
@@ -48,9 +57,19 @@ end
 
 # Handles league related requests
 class LeagueHandler
+
+  def initialize
+    @conn = Connection.new
+  end
+
   # Returns league standings of a user
   def standings(username)
-    { 'wins' => 'wins', 'losses' => 'losses' }
+    @conn.user_stats username
+  end
+
+  # Returns league standings of a user
+  def table
+    @conn.league
   end
 end
 

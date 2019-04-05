@@ -66,7 +66,7 @@ class Connection
     puts query
   end
 
-  def rank(username)
+  def user_stats(username)
 
   end
 
