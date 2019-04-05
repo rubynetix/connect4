@@ -43,11 +43,15 @@ class UserHandler < BaseHandler
       username, username, :symbolize_keys => true).each do |row|
         games.append(row[:game_id])
       end
-    return { :games => games } # TODO: check if this works
+    return { :games => games }
   end
 
   # Returns a list of all usernames
   def list()
-    { 'list' => ['list of names here'] }
+    users = []
+    result = query("SELECT username FROM users", :symbolize_keys => true).each do |row|
+      users.append(row[:username])
+    end
+    return { :list => users }
   end
 end
