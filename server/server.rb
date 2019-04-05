@@ -1,19 +1,39 @@
 require 'xmlrpc/server'
+require_relative 'base_handler'
 
 # Handles user related requests
-class UserHandler
+class UserHandler < BaseHandler
+
+  def valid_username(username)
+    /[a-zA-Z_]+/.match(username)[0] == username
+  end
 
   # Creates a new user
   # returns 'success' or 'failed'
   def create(username)
-    # Check if the user exists
-    # Add the user to the DB
-    success = false
-    if success
-      return { 'create' => 'success' }
-    else
-      return { 'create' => 'failed' }
+    unless valid_username(username)
+      return {
+          :success => false,
+          :message => "Username '#{username}' is invalid."
+      }
     end
+
+    # Check if the user exists
+    if user_exists?(username)
+      return {
+          :success => false,
+          :message => "Username '#{username}' is already taken."
+      }
+    end
+
+    # Add the user to the DB
+    @db_client.query("INSERT INTO users (username) VALUES ('#{username}')")
+
+    if user_exists?(username)
+      return { :success => true }
+    end
+
+    { :success => false, :message => "User creation failed." }
   end
 
   # Returns games of a user
