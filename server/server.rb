@@ -67,7 +67,7 @@ class LeagueHandler
     @conn.user_stats username
   end
 
-  # Returns league standings of a user
+  # Returns all league standings
   def table
     @conn.league
   end
