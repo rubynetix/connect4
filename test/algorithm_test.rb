@@ -4,7 +4,6 @@ require 'test/unit'
 require_relative '../client/models/game_board'
 require_relative '../client/models/counter'
 require_relative '../client/controllers/computer_player'
-require_relative '../client/controllers/algorithms/mcts'
 require_relative '../client/controllers/algorithms/alpha_beta_pruning'
 require_relative '../client/controllers/algorithms/random'
 
@@ -114,8 +113,6 @@ class AlgorithmTest < Test::Unit::TestCase
       board.place(@near_win_squence.pop, rand_col)
       board.place(@near_win_squence.pop, rand_col)
       board.place(@near_win_squence.pop, rand_col)
-      # puts board
-      # puts rand_col
 
       assert_equal player.get_move(board)[1], rand_col
 

@@ -6,6 +6,7 @@
 
     <!-- Application 'screens' -->
     <file preprocess="xml-stripblanks">ui/main_menu_window.ui</file>
+    <file preprocess="xml-stripblanks">ui/game_menu_window.ui</file>
     <file preprocess="xml-stripblanks">ui/game_window.ui</file>
   </gresource>
 </gresources>
