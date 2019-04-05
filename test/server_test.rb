@@ -2,6 +2,7 @@ require 'test/unit'
 require_relative '../client/rpc_client'
 require_relative '../client/models/game_board'
 require_relative '../server/server'
+require_relative '../server/user_handler'
 require_relative 'mock/mock_db'
 
 
