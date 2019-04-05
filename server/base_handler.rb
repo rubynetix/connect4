@@ -32,12 +32,12 @@ class BaseHandler
     raise ArgumentError, 'No block was given' unless block_given?
 
     begin
-      @conn.query('BEGIN')
+      @db_client.query('BEGIN')
       yield
-      @conn.query('COMMIT')
+      @db_client.query('COMMIT')
       true
     rescue
-      @conn.query('ROLLBACK')
+      @db_client.query('ROLLBACK')
       false
     end
   end
