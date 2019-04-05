@@ -11,6 +11,7 @@ addons:
   apt:
     packages:
       - libgtk-3-dev
+      - libmysqlclient-dev
 
 stages:
   - test

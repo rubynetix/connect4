@@ -7,4 +7,5 @@ install_gem() {
 
 gem update --system
 install_gem bundler
+sudo apt-get install libmysqlclient-dev -y
 bundle install
