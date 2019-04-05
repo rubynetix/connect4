@@ -1,5 +1,6 @@
 require 'xmlrpc/server'
 require_relative 'base_handler'
+require_relative 'game_handler'
 require_relative 'league_handler'
 
 # Handles user related requests
@@ -14,16 +15,16 @@ class UserHandler < BaseHandler
   def create(username)
     unless valid_username(username)
       return {
-          :success => false,
-          :message => "Username '#{username}' is invalid."
+          success: false,
+          message: "Username '#{username}' is invalid."
       }
     end
 
     # Check if the user exists
     if user_exists?(username)
       return {
-          :success => false,
-          :message => "Username '#{username}' is already taken."
+          success: false,
+          message: "Username '#{username}' is already taken."
       }
     end
 
@@ -31,10 +32,10 @@ class UserHandler < BaseHandler
     @db_client.query("INSERT INTO users (username) VALUES ('#{username}')")
 
     if user_exists?(username)
-      return { :success => true }
+      return { success: true }
     end
 
-    { :success => false, :message => "User creation failed." }
+    { success: false, message: "User creation failed." }
   end
 
   # Returns games of a user
