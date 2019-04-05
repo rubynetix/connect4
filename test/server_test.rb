@@ -8,35 +8,20 @@ require_relative 'mock/mock_db'
 class ServerTest < Test::Unit::TestCase
   TEST_ITER = 10
 
-  def setup
-    @client = RpcClient.new('localhost', '/', 8080)
-    @server = XMLRPC::Server.new(8080)
-    @server_thread = nil
-  end
+  def setup; end
 
-  def teardown
-    unless @server_thread.nil?
-      @server_thread.kill
-    end
-  end
-
-  def serve
-    @server_thread = Thread.new do
-      @server.serve
-    end
-  end
+  def teardown; end
 
   def test_user_create_new_user
     new_user = 'newuser'
     db = MockDB.new([],[],[{:username => new_user}])
-    @server.add_handler("user", UserHandler.new(:db_client => db))
-    serve
+    handler = UserHandler.new(:db_client => db)
 
     # Preconditions
     begin
     end
 
-    res = @client.call("user.create", new_user)
+    res = handler.create(new_user)
 
     # Postconditions
     begin
@@ -47,8 +32,7 @@ class ServerTest < Test::Unit::TestCase
   def test_user_create_existing_user
     existing_user = 'already_exists'
     db = MockDB.one_result({ :username => existing_user })
-    @server.add_handler("user", UserHandler.new(:db_client => db))
-    serve
+    handler = UserHandler.new(:db_client => db)
 
     # Preconditions
     begin
@@ -57,7 +41,7 @@ class ServerTest < Test::Unit::TestCase
       assert_equal(users[0][:username], existing_user)
     end
 
-    res = @client.call("user.create", existing_user)
+    res = handler.create(existing_user)
 
     # Postconditions
     begin
@@ -69,14 +53,13 @@ class ServerTest < Test::Unit::TestCase
   def test_user_create_bad_user
     bad_user = 'add?meplz'
     db = MockDB.no_result
-    @server.add_handler("user", UserHandler.new(:db_client => db))
-    serve
+    handler = UserHandler.new(:db_client => db)
 
     # Preconditions
     begin
     end
 
-    res = @client.call("user.create", bad_user)
+    res = handler.create(bad_user)
 
     # Postconditions
     begin

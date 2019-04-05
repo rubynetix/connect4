@@ -1,6 +1,7 @@
 require 'mysql2'
 
 
+
 class BaseHandler
 
   def self.default_opts
