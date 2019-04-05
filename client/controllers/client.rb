@@ -34,4 +34,8 @@ class Client
     @xml_client.call("league.standings", username)
   end
 
+  def get_league(username)
+    @xml_client.call("league.league")
+  end
+
 end
