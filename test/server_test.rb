@@ -1,35 +1,87 @@
 require 'test/unit'
-require 'xmlrpc/client'
-require_relative '../server/server'
+require_relative '../client/rpc_client'
 require_relative '../client/models/game_board'
+require_relative '../server/server'
+require_relative 'mock/mock_db'
+
 
 class ServerTest < Test::Unit::TestCase
   TEST_ITER = 10
 
   def setup
-    @server = XMLRPC::Client.new('localhost', '/', 8080)
+    @client = RpcClient.new('localhost', '/', 8080)
+    @server = XMLRPC::Server.new(8080)
+    @server_thread = nil
   end
 
-  def teardown; end
+  def teardown
+    unless @server_thread.nil?
+      @server_thread.kill
+    end
+  end
 
-  def tst_user_create
-    name_success = 'doesnt_exist'
-    name_failed = 'already_exists'
+  def serve
+    @server_thread = Thread.new do
+      @server.serve
+    end
+  end
+
+  def test_user_create_new_user
+    new_user = 'newuser'
+    db = MockDB.new([],[],[{:username => new_user}])
+    @server.add_handler("user", UserHandler.new(:db_client => db))
+    serve
+
     # Preconditions
     begin
-      # TODO: Assert name_failed is in DB
     end
 
-    result_success = @server.call("user.create", name_success)
-
-    result_failed = @server.call("user.create", name_failed)
+    res = @client.call("user.create", new_user)
 
     # Postconditions
     begin
-      # TODO: Assert name_success in db
-      # TODO: Assert name_failed in db
-      assert('success', result_success['create'], "Result not equal to 'success'")
-      assert('failed', result_failed['create'], "Result not equal to 'failed'")
+      assert_true(res[:success])
+    end
+  end
+
+  def test_user_create_existing_user
+    existing_user = 'already_exists'
+    db = MockDB.one_result({ :username => existing_user })
+    @server.add_handler("user", UserHandler.new(:db_client => db))
+    serve
+
+    # Preconditions
+    begin
+      users = db.query("SELECT * from users;")
+      assert_equal(1, users.count)
+      assert_equal(users[0][:username], existing_user)
+    end
+
+    res = @client.call("user.create", existing_user)
+
+    # Postconditions
+    begin
+      assert_false(res[:success])
+      assert_equal("Username '#{existing_user}' is already taken.", res[:message])
+    end
+  end
+
+  def test_user_create_bad_user
+    bad_user = 'add?meplz'
+    db = MockDB.no_result
+    @server.add_handler("user", UserHandler.new(:db_client => db))
+    serve
+
+    # Preconditions
+    begin
+    end
+
+    res = @client.call("user.create", bad_user)
+
+    # Postconditions
+    begin
+      assert_false(res[:success])
+      assert_equal("Username '#{bad_user}' is invalid.", res[:message])
     end
   end
 
