@@ -4,7 +4,7 @@ class LeagueHandler < BaseHandler
 
   def league
     sql = ""\
-    "Select username, SUM(wins) As Wins, SUM(losses) As Losses, SUM(draws) As Draws "\
+    "Select username, cast(SUM(wins) as char(4)) As Wins, cast(SUM(losses) as char(4)) As Lossses, cast(SUM(draws) as char(4)) As Draws "\
     "FROM (SELECT player_1                                          as username, "\
     "         count(case state when 'w1' then 1 else null end) AS wins, "\
     "         count(case state when 'w2' then 1 else null end) AS losses, "\
@@ -20,12 +20,12 @@ class LeagueHandler < BaseHandler
     "  Group by player_2) As League "\
     "GROUP BY username "\
     "ORDER BY score(SUM(wins), SUM(losses), SUM(draws)) DESC;"
-    @db_client.query(sql, :symbolize_keys => true)
+    { league: @db_client.query(sql, :symbolize_keys => true).to_a}
   end
 
   def standings(username)
     sql = ""\
-    "Select SUM(wins) As Wins, SUM(losses) As Lossses, SUM(draws) As Draws "\
+    "Select cast(SUM(wins) as char(4)) As Wins, cast(SUM(losses) as char(4)) As Lossses, cast(SUM(draws) as char(4)) As Draws "\
     "FROM (SELECT count(case state when 'w1' then 1 else null end) AS wins, "\
     "         count(case state when 'w2' then 1 else null end) AS losses, "\
     "         count(case state when 'd' then 1 else null end)  AS draws "\
@@ -37,6 +37,7 @@ class LeagueHandler < BaseHandler
     "         count(case state when 'd' then 1 else null end)  AS draws "\
     "  FROM games "\
     "  Where player_2 = ?) As Standings;"
-    query(sql, username, username, :symbolize_keys => true, :ints => true).to_a[0]
+    r = query(sql, username, username, :symbolize_keys => true).to_a[0]
+    r
   end
 end
