@@ -16,10 +16,7 @@ class BaseHandler
   end
 
   def initialize(opts = {})
-    @opts = self.class.default_opts.dup
-    @opts.merge! opts
-
-    @db_client = @opts[:db_client]
+    @db_client = opts[:db_client] || self.class.default_opts[:db_client]
   end
 
   def user_exists?(username)
