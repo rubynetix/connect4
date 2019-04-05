@@ -1,8 +1,5 @@
 require 'mysql2'
 
-def prod_db
-
-end
 
 class BaseHandler
 
