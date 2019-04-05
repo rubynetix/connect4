@@ -18,13 +18,16 @@ class BaseHandler
 
   def get_user(username)
     raise UserDoesNotExist unless user_exists? username
+
     r = query("SELECT * FROM users WHERE username=?", username, :symbolize_keys => true)
-    r[:username]
+    raise DuplicateUsers if r.count > 1
+
+    r.first[:username]
   end
 
   def query(sql, *args, **kwargs)
-    @db_client.prepare(sql)
-    r = query.execute(*args, **kwargs)
+    statement = @db_client.prepare(sql)
+    r = statement.execute(*args, **kwargs)
     r
   end
 
@@ -45,3 +48,4 @@ class BaseHandler
 end
 
 class UserDoesNotExist < StandardError; end
+class DuplicateUsers < StandardError; end
