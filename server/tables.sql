@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS games;
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE IF NOT EXISTS users(
-  username char,
+  username char(64) NOT NULL,
   PRIMARY KEY (username)
 );
 
@@ -14,8 +14,8 @@ CREATE TABLE IF NOT EXISTS games(
   game_id INTEGER,
   type ENUM('C','T') NOT NULL,
   state ENUM('W1', 'W2', 'D', 'P1', 'P2') NOT NULL,
-  player_1 char NOT NULL,
-  player_2 char NOT NULL,
+  player_1 char(64) NOT NULL,
+  player_2 char(64) NOT NULL,
   FOREIGN KEY (player_1) REFERENCES users(username),
   FOREIGN KEY (player_2) REFERENCES users(username),
   PRIMARY KEY (game_id)
