@@ -1,22 +1,20 @@
 require 'mysql2'
 
 
+def prod_db
+  Mysql2::Client.new(
+      :host => "localhost",
+      :database => "connect4",
+      :port => 3306,
+      :username => "ece421",
+      :password => "ece421")
+end
+
 
 class BaseHandler
 
-  def self.default_opts
-    @default_opts ||= {
-        :db_client => Mysql2::Client.new(
-            :host => "localhost",
-            :database => "connect4",
-            :port => 3306,
-            :username => "ece421",
-            :password => "ece421")
-    }
-  end
-
   def initialize(opts = {})
-    @db_client = opts[:db_client] || self.class.default_opts[:db_client]
+    @db_client = opts[:db_client] || prod_db
   end
 
   def user_exists?(username)

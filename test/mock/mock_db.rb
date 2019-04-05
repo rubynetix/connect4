@@ -18,9 +18,16 @@ class MockDB
     @index = 0
   end
 
-  def query(sql)
+  def query(*args)
     res = @results[@index]
     @index += 1 if @multiquery
     res
   end
+
+  def prepare(sql)
+    self
+  end
+
+  alias_method :execute, :query
+
 end
