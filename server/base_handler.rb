@@ -25,6 +25,20 @@ class BaseHandler
     r[:username]
   end
 
+  def transaction
+    raise ArgumentError, 'No block was given' unless block_given?
+
+    begin
+      @conn.query('BEGIN')
+      yield
+      @conn.query('COMMIT')
+      true
+    rescue
+      @conn.query('ROLLBACK')
+      false
+    end
+  end
+
 end
 
 class UserDoesNotExist < StandardError; end
