@@ -23,8 +23,8 @@ class BaseHandler
   end
 
   def query(sql, *args, **kwargs)
-    @db_client.prepare(sql)
-    r = query.execute(*args, **kwargs)
+    statement = @db_client.prepare(sql)
+    r = statement.execute(*args, **kwargs)
     r
   end
 

@@ -1,5 +1,6 @@
 require 'xmlrpc/server'
 require_relative 'base_handler'
+require_relative 'league_handler'
 
 # Handles user related requests
 class UserHandler < BaseHandler
@@ -63,14 +64,6 @@ class GameHandler
   # Saves the gameboard and player turn
   def put(game_id, game_board, player_turn)
     { 'put' => 'success or fail' }
-  end
-end
-
-# Handles league related requests
-class LeagueHandler
-  # Returns league standings of a user
-  def standings(username)
-    { 'wins' => 'wins', 'losses' => 'losses' }
   end
 end
 
