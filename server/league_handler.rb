@@ -4,7 +4,7 @@ class LeagueHandler < BaseHandler
 
   def league
     sql = ""\
-    "Select username, cast(SUM(wins) as char(4)) As Wins, cast(SUM(losses) as char(4)) As Lossses, cast(SUM(draws) as char(4)) As Draws "\
+    "Select username, cast(SUM(wins) as char(4)) As Wins, cast(SUM(losses) as char(4)) As Losses, cast(SUM(draws) as char(4)) As Draws "\
     "FROM (SELECT player_1                                          as username, "\
     "         count(case state when 'w1' then 1 else null end) AS wins, "\
     "         count(case state when 'w2' then 1 else null end) AS losses, "\
@@ -25,7 +25,7 @@ class LeagueHandler < BaseHandler
 
   def standings(username)
     sql = ""\
-    "Select cast(SUM(wins) as char(4)) As Wins, cast(SUM(losses) as char(4)) As Lossses, cast(SUM(draws) as char(4)) As Draws "\
+    "Select cast(SUM(wins) as char(4)) As Wins, cast(SUM(losses) as char(4)) As Losses, cast(SUM(draws) as char(4)) As Draws "\
     "FROM (SELECT count(case state when 'w1' then 1 else null end) AS wins, "\
     "         count(case state when 'w2' then 1 else null end) AS losses, "\
     "         count(case state when 'd' then 1 else null end)  AS draws "\
