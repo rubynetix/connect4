@@ -89,7 +89,7 @@ class ServerTest < Test::Unit::TestCase
 
   def test_user_list
     user_list = %w[tester john kanye]
-    db = MockDB.one_result([{ :username => 'tester' }, { :username => 'john' }, { :username => 'kanye' }])
+    db = MockDB.new([{ :username => 'tester' }, { :username => 'john' }, { :username => 'kanye' }])
     handler = UserHandler.new(:db_client => db)
     # Preconditions
     begin
