@@ -53,6 +53,8 @@ class Connect4
       handle_menu_click(event)
     when UIEvent::SERVER_CONN
       server_connect(event.username, event.server_url)
+    when UIEvent::LIST_USER_GAMES
+      load_user_games
     end
   end
 
@@ -121,6 +123,25 @@ class Connect4
     # TODO: Start the 'session'
     puts "---- CONNECTING ----- #{username} on #{server_url}"
     @ui.load_online_menu
+  end
+
+  def load_user_games
+    # TODO: Replace with actual games from server
+    puts "---- LOADING USER GAMES -----"
+
+    g1 = {
+        :gid => 91023,
+        :game_type => 'Connect4',
+        :opponent_name => 'connect4_wizard'
+    }
+
+    g2 = {
+        :gid => 12354,
+        :game_type => 'Toot/Otto',
+        :opponent_name => 'mr. otto'
+    }
+
+    @ui.load_current_games([g1, g2])
   end
 end
 

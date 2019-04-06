@@ -33,6 +33,10 @@ class GtkUI
     @app.ui.display_window(C4::OnlineGameMenuWindow.class_variable_get(:@@wid))
   end
 
+  def load_current_games(games)
+    games.each {|game| @app.online_menu_window.add_current_game(game)}
+  end
+
   def method_missing(m, *args, &block)
     @app.ui.active_window.send(m, *args, &block)
   end
