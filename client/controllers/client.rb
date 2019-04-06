@@ -44,6 +44,10 @@ class Client
     call("league.standings", username)
   end
 
+  def get_league(username)
+    @xml_client.call("league.league")
+  end
+
   private
 
   def call(method, *args)

@@ -39,8 +39,7 @@ module C4
       window = @window_stack.get_child_by_name(wid)
 
       if window.nil?
-        raise StandardError("WINDOW NOT FOUND!")
-        return
+        raise StandardError("----- WINDOW NOT FOUND ----- wid=#{wid}")
       end
 
       @window_stack.set_visible_child(window)
