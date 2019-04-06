@@ -33,6 +33,8 @@ GEM
       gdk_pixbuf2 (= 3.3.5)
       gio2 (= 3.3.5)
       pango (= 3.3.5)
+    macaddr (1.7.1)
+      systemu (~> 2.6.2)
     mysql2 (0.5.2)
     mysql2 (0.5.2-x64-mingw32)
     native-package-installer (1.0.7)
@@ -42,8 +44,11 @@ GEM
     pkg-config (1.3.7)
     power_assert (1.1.3)
     rake (12.3.2)
+    systemu (2.6.5)
     test-unit (3.3.0)
       power_assert
+    uuid (2.3.9)
+      macaddr (~> 1.0)
     xmlrpc (0.3.0)
 
 PLATFORMS
@@ -56,6 +61,7 @@ DEPENDENCIES
   mysql2 (~> 0.5.2)
   rake
   test-unit
+  uuid (~> 2.3, >= 2.3.8)
   xmlrpc
 
 RUBY VERSION
