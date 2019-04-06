@@ -120,6 +120,7 @@ class Connect4
   def server_connect(username, server_url)
     # TODO: Start the 'session'
     puts "---- CONNECTING ----- #{username} on #{server_url}"
+    @ui.load_online_menu
   end
 end
 

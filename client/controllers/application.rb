@@ -3,6 +3,7 @@ require_relative '../../client/views/windows/app_window'
 require_relative '../../client/views/windows/main_menu_window'
 require_relative '../../client/views/windows/game_window'
 require_relative '../../client/views/windows/game_menu_window'
+require_relative '../../client/views/windows/online_game_menu_window'
 
 module C4
   class Application < Gtk::Application
@@ -14,7 +15,15 @@ module C4
       super 'com.rubynetix.connect4', Gio::ApplicationFlags::FLAGS_NONE
 
       signal_connect :activate do |application|
-        windows = [MainMenuWindow.new, GameMenuWindow.new, GameWindow.new]
+        windows = [
+            # Menu windows
+            MainMenuWindow.new,
+            OnlineGameMenuWindow.new,
+            GameMenuWindow.new,
+            # Gameplay window
+            GameWindow.new
+        ]
+
         @ui = C4::AppWindow.new(application, windows[0].id, windows)
 
         # Listen for events in spawned windows and bubble them up the observable

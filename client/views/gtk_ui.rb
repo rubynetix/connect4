@@ -1,5 +1,6 @@
 require_relative 'observable'
 require_relative '../views/windows/game_menu_window'
+require_relative '../../client/views/windows/online_game_menu_window'
 
 # Wrapper class that knows about the GTK windows involved
 # in the presenting the application and presents a UI
@@ -26,6 +27,10 @@ class GtkUI
   def load_stats
     puts "############### LOADING STATISTICS... ###############\n"
     raise NotImplementedError
+  end
+
+  def load_online_menu
+    @app.ui.display_window(C4::OnlineGameMenuWindow.class_variable_get(:@@wid))
   end
 
   def method_missing(m, *args, &block)
