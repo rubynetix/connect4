@@ -69,20 +69,21 @@ class ServerTest < Test::Unit::TestCase
     end
   end
 
-  def tst_user_games
+  def test_user_games
     name = 'tester'
-    games = ['game1', 'second_game']
+    games = [1, 2, 3]
+    db = MockDB.new(['tester'], [{ :game_id => 1}, { :game_id => 2}, { :game_id => 3}])
+    handler = UserHandler.new(:db_client => db)
+
     # Preconditions
     begin
-      # TODO: assert that name is in the db
-      # TODO: assert that name's games are in the db
     end
 
-    result = @server.call('user.games', name)
+    result = handler.games(name)
 
     # Postconditions
     begin
-      assert_equal(games, result['games'], 'result not equal to games')
+      assert_equal(games, result[:games], 'result not equal to games')
     end
   end
 
