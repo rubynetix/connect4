@@ -1,30 +1,70 @@
 require 'mysql2'
 
+
+def prod_db
+  Mysql2::Client.new(
+      :host => "localhost",
+      :database => "connect4",
+      :port => 3306,
+      :username => "ece421",
+      :password => "ece421")
+end
+
+
+def abs_path(path)
+  "#{File.expand_path(__dir__)}/#{path}"
+end
+
+
 class BaseHandler
 
-  def initialize
-    @db_client = Mysql2::Client.new(
-        :host => "localhost",
-        :database => "connect4",
-        :port => 3306,
-        :username => "ece421",
-        :password => "ece421")
+  def initialize(opts = {})
+    @db_client = opts[:db_client] || prod_db
   end
 
   def user_exists?(username)
-    puts "SELECT * FROM users WHERE username='#{username}'"
-    r = @db_client.query("SELECT * FROM users WHERE username='#{username}'")
-    r.count > 0
+    exists?("SELECT * FROM users WHERE username=?", username)
   end
 
   def get_user(username)
-    raise UserDoesNotExist unless user_exists?
-    puts "SELECT * FROM users WHERE username='#{username}'"
-    r = @db_client.query("SELECT * FROM users WHERE username='#{username}'",
-                     :symbolize_keys => true)
-    r[:username]
+    raise UserDoesNotExist unless user_exists? username
+
+    r = query("SELECT * FROM users WHERE username=?", username, :symbolize_keys => true)
+    raise DuplicateUsers if r.count > 1
+
+    r.first[:username]
+  end
+
+  def query(sql, *args, **kwargs)
+    statement = @db_client.prepare(sql)
+    r = statement.execute(*args, **kwargs)
+    r
+  end
+
+  def exists?(sql, *args, **kwargs)
+    r = query(sql, *args, **kwargs)
+    r.count > 0
+  end
+
+  def load_query(path)
+    File.read(path)
+  end
+
+  def transaction
+    raise ArgumentError, 'No block was given' unless block_given?
+
+    begin
+      @db_client.query('BEGIN')
+      yield
+      @db_client.query('COMMIT')
+      true
+    rescue
+      @db_client.query('ROLLBACK')
+      false
+    end
   end
 
 end
 
 class UserDoesNotExist < StandardError; end
+class DuplicateUsers < StandardError; end
