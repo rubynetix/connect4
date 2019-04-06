@@ -11,6 +11,11 @@ def prod_db
 end
 
 
+def abs_path(path)
+  "#{File.expand_path(__dir__)}/#{path}"
+end
+
+
 class BaseHandler
 
   def initialize(opts = {})
@@ -18,8 +23,7 @@ class BaseHandler
   end
 
   def user_exists?(username)
-    r = query("SELECT * FROM users WHERE username=?", username, :symbolize_keys => true)
-    r.count > 0
+    exists?("SELECT * FROM users WHERE username=?", username)
   end
 
   def get_user(username)
@@ -35,6 +39,15 @@ class BaseHandler
     statement = @db_client.prepare(sql)
     r = statement.execute(*args, **kwargs)
     r
+  end
+
+  def exists?(sql, *args, **kwargs)
+    r = query(sql, *args, **kwargs)
+    r.count > 0
+  end
+
+  def load_query(path)
+    File.read(path)
   end
 
   def transaction
