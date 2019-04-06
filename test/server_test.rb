@@ -87,18 +87,19 @@ class ServerTest < Test::Unit::TestCase
     end
   end
 
-  def tst_user_list
+  def test_user_list
     user_list = %w[tester john kanye]
+    db = MockDB.one_result([{ :username => 'tester' }, { :username => 'john' }, { :username => 'kanye' }])
+    handler = UserHandler.new(:db_client => db)
     # Preconditions
     begin
-      # TODO: assert user_list is in db
     end
 
-    result = @server.call('user.list')
+    result = handler.list
 
     # Postconditions
     begin
-      assert_equal(user_list, result['list'], 'result not equal to user_list')
+      assert_equal(user_list, result[:list], 'result not equal to user_list')
     end
   end
 
