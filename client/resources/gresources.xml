@@ -6,7 +6,7 @@
 
     <!-- Menu screens -->
     <file preprocess="xml-stripblanks">ui/main_menu_window.ui</file>
-    <file preprocess="xml-stripblanks">ui/game_menu_window.ui</file>
+    <file preprocess="xml-stripblanks">ui/offline_game_menu_window.ui</file>
     <file preprocess="xml-stripblanks">ui/online_game_menu_window.ui</file>
     <file preprocess="xml-stripblanks">ui/stats_window.ui</file>
 
