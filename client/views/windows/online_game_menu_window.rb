@@ -1,6 +1,7 @@
 require_relative '../../../client/views/events/window_change_event'
 require_relative '../../../client/views/observable'
 require_relative '../../../client/views/windows/main_menu_window'
+require_relative 'online_game_window'
 require_relative 'game_list_row'
 require_relative '../events/ui_event'
 require_relative 'widget_window'
@@ -65,6 +66,7 @@ module C4
       opp = @opponent_entry.text
 
       puts "----- STARTING NEW GAME AGAINST #{opp} -----"
+      notify_all(WindowChangeEvent.new(OnlineGameWindow.class_variable_get(:@@wid)))
     end
 
     def valid_username?(username)

@@ -12,6 +12,7 @@
 
     <!-- Game screen -->
     <file preprocess="xml-stripblanks">ui/game_window.ui</file>
+    <file preprocess="xml-stripblanks">ui/online_game_window.ui</file>
 
     <!-- Other custom widgets -->
     <file preprocess="xml-stripblanks">ui/game_list_row.ui</file>
