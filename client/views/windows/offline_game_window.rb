@@ -4,7 +4,7 @@ require_relative 'main_menu_window'
 require_relative 'widget_window'
 
 module C4
-  class GameWindow < Gtk::Box
+  class OfflineGameWindow < Gtk::Box
     include PassthroughObservable
     include WidgetWindow
 
@@ -14,7 +14,7 @@ module C4
 
     class << self
       def init
-        set_template(:resource => "/com/rubynetix/connect4/ui/game_window.ui")
+        set_template(:resource => "/com/rubynetix/connect4/ui/offline_game_window.ui")
 
         # Game board children
         bind_template_child("game_panel")

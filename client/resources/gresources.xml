@@ -11,7 +11,7 @@
     <file preprocess="xml-stripblanks">ui/stats_window.ui</file>
 
     <!-- Game screen -->
-    <file preprocess="xml-stripblanks">ui/game_window.ui</file>
+    <file preprocess="xml-stripblanks">ui/offline_game_window.ui</file>
     <file preprocess="xml-stripblanks">ui/online_game_window.ui</file>
 
     <!-- Other custom widgets -->

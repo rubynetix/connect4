@@ -1,7 +1,7 @@
 require_relative '../../../client/views/events/window_change_event'
 require_relative '../../../client/views/observable'
 require_relative '../../../client/views/windows/main_menu_window'
-require_relative 'game_window'
+require_relative 'offline_game_window'
 require_relative 'widget_window'
 
 module C4

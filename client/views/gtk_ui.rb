@@ -17,7 +17,7 @@ class GtkUI
   end
 
   def load_game
-    @app.ui.display_window(C4::GameWindow.class_variable_get(:@@wid))
+    @app.ui.display_window(C4::OfflineGameWindow.class_variable_get(:@@wid))
   end
 
   def load_menu

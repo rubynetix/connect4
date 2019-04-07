@@ -1,7 +1,7 @@
 require_relative '../../client/views/observable'
 require_relative '../../client/views/windows/app_window'
 require_relative '../../client/views/windows/main_menu_window'
-require_relative '../../client/views/windows/game_window'
+require_relative '../../client/views/windows/offline_game_window'
 require_relative '../../client/views/windows/offline_game_menu_window'
 require_relative '../../client/views/windows/online_game_menu_window'
 require_relative '../../client/views/windows/online_game_window'
@@ -20,7 +20,7 @@ module C4
         @main_menu_window = MainMenuWindow.new
         @online_menu_window = OnlineGameMenuWindow.new
         @offline_menu_window = OfflineGameMenuWindow.new
-        @game_window = GameWindow.new
+        @game_window = OfflineGameWindow.new
         @online_game_window = OnlineGameWindow.new
         @stats_window = StatsWindow.new
 
