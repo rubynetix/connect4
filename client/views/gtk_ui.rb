@@ -24,9 +24,8 @@ class GtkUI
     @app.ui.display_window(C4::GameMenuWindow.class_variable_get(:@@wid))
   end
 
-  def load_stats
-    puts "############### LOADING STATISTICS... ###############\n"
-    raise NotImplementedError
+  def load_stats(user_stats)
+    user_stats.each {|stat| @app.stats_window.add_user_stat(stat)}
   end
 
   def load_online_menu

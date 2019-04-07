@@ -9,6 +9,7 @@ class UIEvent
   WINDOW_CHANGE = 5
   SERVER_CONN = 6
   LIST_USER_GAMES = 7
+  LIST_LEAGUE_STATS = 8
 
   def initialize(id)
     @id = id

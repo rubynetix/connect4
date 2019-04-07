@@ -4,6 +4,7 @@ require_relative '../../../client/views/windows/main_menu_window'
 require_relative 'game_list_row'
 require_relative '../events/ui_event'
 require_relative 'widget_window'
+require_relative 'stats_window'
 
 module C4
   class OnlineGameMenuWindow < Gtk::Box
@@ -22,6 +23,7 @@ module C4
         bind_template_child("current_games_list")
         bind_template_child("start_btn")
         bind_template_child("back_btn")
+        bind_template_child("stats_btn")
       end
     end
 
@@ -32,10 +34,12 @@ module C4
       @games_list = current_games_list
       @start_btn = start_btn
       @back_btn = back_btn
+      @stats_btn = stats_btn
 
       # Signals
       @start_btn.signal_connect('clicked') {try_new_game}
       @back_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(MainMenuWindow.class_variable_get(:@@wid)))}
+      @stats_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(StatsWindow.class_variable_get(:@@wid)))}
     end
 
     def add_current_game(game)

@@ -55,6 +55,8 @@ class Connect4
       server_connect(event.username, event.server_url)
     when UIEvent::LIST_USER_GAMES
       load_user_games
+    when UIEvent::LIST_LEAGUE_STATS
+      load_league_stats
     end
   end
 
@@ -142,6 +144,37 @@ class Connect4
     }
 
     @ui.load_current_games([g1, g2])
+  end
+
+  def load_league_stats
+    # TODO: Replace with actual stats from server
+    puts "---- LOADING USER GAMES -----"
+
+    s1 = {
+        :username => "connect4_wizard",
+        :c4_wins => 100,
+        :c4_losses => 0,
+        :c4_draws => 2,
+        :c4_gp => 102,
+        :to_wins => 0,
+        :to_losses => 0,
+        :to_draws => 0,
+        :to_gp => 0,
+    }
+
+    s2 = {
+        :username => "Mr. Otto",
+        :c4_wins => 12,
+        :c4_losses => 2,
+        :c4_draws => 3,
+        :c4_gp => 17,
+        :to_wins => 8,
+        :to_losses => 3,
+        :to_draws => 1,
+        :to_gp => 12,
+    }
+
+    @ui.load_stats([s1, s2])
   end
 end
 

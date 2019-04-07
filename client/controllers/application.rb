@@ -9,7 +9,7 @@ module C4
   class Application < Gtk::Application
     include PassthroughObservable
 
-    attr_reader :ui, :main_menu_window, :online_menu_window, :offline_menu_window, :game_window
+    attr_reader :ui, :main_menu_window, :online_menu_window, :offline_menu_window, :game_window, :stats_window
 
     def initialize
       super 'com.rubynetix.connect4', Gio::ApplicationFlags::FLAGS_NONE
@@ -20,12 +20,15 @@ module C4
         @online_menu_window = OnlineGameMenuWindow.new
         @offline_menu_window = GameMenuWindow.new
         @game_window = GameWindow.new
+        @stats_window = StatsWindow.new
 
         windows = [
             # Menu windows
             @main_menu_window,
             @online_menu_window,
             @offline_menu_window,
+            # League Statistics
+            @stats_window,
             # Gameplay window
             @game_window
         ]
