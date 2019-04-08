@@ -1,5 +1,5 @@
 require_relative 'observable'
-require_relative '../views/windows/game_menu_window'
+require_relative '../views/windows/offline_game_menu_window'
 require_relative '../../client/views/windows/online_game_menu_window'
 
 # Wrapper class that knows about the GTK windows involved
@@ -17,11 +17,11 @@ class GtkUI
   end
 
   def load_game
-    @app.ui.display_window(C4::GameWindow.class_variable_get(:@@wid))
+    @app.ui.display_window(C4::OfflineGameWindow.class_variable_get(:@@wid))
   end
 
   def load_menu
-    @app.ui.display_window(C4::GameMenuWindow.class_variable_get(:@@wid))
+    @app.ui.display_window(C4::OfflineGameMenuWindow.class_variable_get(:@@wid))
   end
 
   def load_stats(user_stats)

@@ -9,6 +9,12 @@ require_relative 'mock/mock_db'
 class UserHandlerTest < HandlerTestHelper
   TEST_ITER = 10
 
+  class Empty
+    def count
+      0
+    end
+  end
+
   def setup; end
 
   def teardown; end
@@ -104,22 +110,52 @@ class UserHandlerTest < HandlerTestHelper
 
 
 
-  def tst_league_standings
+  def test_league_standings
     name = 'kanye'
     expected_wins = 1
     expected_losses = 500
+    expected_draws = 0
+    expected = {'Wins'=> "#{expected_wins}", 'Losses'=> "#{expected_losses}", 'Draws'=> "#{expected_draws}"}
+    db = MockDB.one_result(expected)
+    handler = LeagueHandler.new(:db_client => db)
 
     # Preconditions
     begin
     end
 
-    result = @server.call('league.standings', name)
-    wins = result['wins']
-    losses = result['losses']
+    result = handler.standings name
+    wins = result['Wins'].to_i
+    losses = result['Losses'].to_i
+    draws = result['Draws'].to_i
     # Postconditions
     begin
       assert_equal(expected_wins, wins)
       assert_equal(expected_losses, losses)
+      assert_equal(expected_draws, draws)
+    end
+
+    db2 = MockDB.new Empty.new
+    handler2 = LeagueHandler.new(:db_client => db2)
+
+    assert_raise UserDoesNotExist do
+      handler2.standings (name + 'e')
+    end
+  end
+
+  def test_league_league
+    name = 'kanye'
+    expected_result = {:league => [nil]}
+    db = MockDB.one_result(nil)
+    handler = LeagueHandler.new(:db_client => db)
+
+    # Preconditions
+    begin
+    end
+
+    result = handler.league
+    # Postconditions
+    begin
+      assert_equal(expected_result, result)
     end
   end
 end

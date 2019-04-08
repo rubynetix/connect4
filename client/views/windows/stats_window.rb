@@ -3,7 +3,7 @@ require_relative '../../../client/views/observable'
 require_relative '../events/ui_event'
 require_relative 'online_game_menu_window'
 require_relative 'widget_window'
-require_relative 'stats_list_row'
+require_relative '../components/stats_list_row'
 
 module C4
   class StatsWindow < Gtk::Box

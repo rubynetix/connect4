@@ -1,28 +1,28 @@
 require_relative '../../../client/views/events/window_change_event'
 require_relative '../../../client/views/observable'
+require_relative '../events/window_change_event'
+require_relative 'online_game_menu_window'
 require_relative 'main_menu_window'
 require_relative 'widget_window'
 
 module C4
-  class GameWindow < Gtk::Box
+  class OnlineGameWindow < Gtk::Box
     include PassthroughObservable
     include WidgetWindow
 
-    @@wid = "game_window"
+    @@wid = "online_game_window"
 
     type_register
 
     class << self
       def init
-        set_template(:resource => "/com/rubynetix/connect4/ui/game_window.ui")
+        set_template(:resource => "/com/rubynetix/connect4/ui/online_game_window.ui")
 
         # Game board children
-        bind_template_child("game_panel")
+        bind_template_child("back_btn")
         bind_template_child("player_turn_lbl")
         bind_template_child("forfeit_btn")
         bind_template_child("game_board_grid")
-        bind_template_child("new_game_btn")
-        bind_template_child("main_menu_btn")
         bind_template_child("counter_bar")
         bind_template_child("game_board_overlay")
       end
@@ -32,10 +32,6 @@ module C4
       super(:orientation => Gtk::Orientation::VERTICAL)
 
       init_gameboard
-    end
-
-    def display
-      clear_gameboard
     end
 
     def draw_gameboard(gb)
@@ -67,14 +63,15 @@ module C4
       end
 
       @lb_win.visible = true
-      @bt_new_game.visible = true
-      @main_menu_btn.visible = true
     end
 
     def clear_gameboard
       @lb_win.visible = false
-      @bt_new_game.visible = false
-      @main_menu_btn.visible = false
+    end
+
+    def display
+      clear_gameboard
+
     end
 
     private
@@ -84,19 +81,15 @@ module C4
       @counter_height = 50
       @cells = Matrix.empty(0, 0)
 
-      # Parent of all game widgets
-      @game = game_panel
-
       # Game widgets
       @game_layout = game_board_grid
       @counter_bar = counter_bar
-      @bt_new_game = new_game_btn
-      @main_menu_btn = main_menu_btn
       @lb_turn = player_turn_lbl
       @fft_btn = forfeit_btn
       @game_overlay = game_board_overlay
       @lb_win = Gtk::Label.new("Player wins!")
       @game_overlay.add_overlay(@lb_win)
+      @back_btn = back_btn
 
       # Styling
       @css = Gtk::CssProvider.new
@@ -105,12 +98,13 @@ module C4
       @fft_btn.add_child(load_image(abs_path("/assets/forfeit.png")))
 
       # Event signals
-      @main_menu_btn.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::RETURN_MAIN_MENU))}
-      @bt_new_game.signal_connect("clicked") do
-        clear_gameboard
-        notify_all(MenuClickEvent.new(MenuClickEvent::NEW_GAME))
-      end
       @fft_btn.signal_connect("clicked") {notify_all(ForfeitClickEvent.new)}
+      @back_btn.signal_connect("clicked") {exit_game}
+    end
+
+    def exit_game
+      # TODO: Logic for exiting an online game
+      notify_all(WindowChangeEvent.new(OnlineGameMenuWindow.class_variable_get(:@@wid)))
     end
 
     def draw_board(grid_layout, rows, cols)

@@ -50,9 +50,8 @@ class Client
   end
 
   def get_league(username)
-    @xml_client.call("league.league")
+    call("league.league")
   end
-
   private
 
   def call(method, *args)
