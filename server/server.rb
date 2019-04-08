@@ -1,7 +1,7 @@
 require 'xmlrpc/server'
-require_relative 'base_handler'
 require_relative 'game_handler'
 require_relative 'league_handler'
+require_relative 'user_handler'
 
 def serve(port: 8080)
   s = XMLRPC::Server.new(port)

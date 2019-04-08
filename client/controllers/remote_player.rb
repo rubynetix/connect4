@@ -32,7 +32,7 @@ class RemotePlayer < Player
     # Wait for remote player to take their turn
     while true
       result = @client.get_game(@game_id)
-      if result['turn'] != @name
+      if result[:turn] != @name
         break
       end
       sleep(0.5)
@@ -43,8 +43,8 @@ class RemotePlayer < Player
 
   # Parse the result from the server and create the corresponding event
   def parse_response(result)
-    return forfeit if result['state'] == PlayerAction::FORFEIT
-    update_board(result['board'])
+    return forfeit if result[:state] == PlayerAction::FORFEIT
+    update_board(result[:board])
   end
 
   def update_board(board)
