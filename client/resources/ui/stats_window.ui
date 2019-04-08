@@ -25,11 +25,6 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">League Statistics</property>
-        <attributes>
-          <attribute name="style" value="italic"/>
-          <attribute name="weight" value="ultrabold"/>
-          <attribute name="scale" value="-100"/>
-        </attributes>
       </object>
       <packing>
         <property name="expand">False</property>
