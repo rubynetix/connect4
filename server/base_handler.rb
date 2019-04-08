@@ -4,11 +4,11 @@ require_relative 'server_error'
 
 def prod_db
   Mysql2::Client.new(
-      :host => "162.246.157.188",
+      :host => "localhost",
       :database => "connect4",
       :port => 3306,
       :username => "ece421",
-      :password => "password")
+      :password => "ece421")
 end
 
 
