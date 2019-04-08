@@ -39,7 +39,7 @@ class UserHandler < BaseHandler
   def games(username)
     raise UserDoesNotExist unless user_exists?(username)
     games = []
-    result = query("SELECT game_id FROM games WHERE player_1=? or player_2=?",
+    result = query("SELECT game_id FROM games WHERE (p1=? OR p2=?) AND state='Active';",
       username, username, :symbolize_keys => true).each do |row|
         games.append(row[:game_id])
       end

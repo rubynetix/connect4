@@ -37,8 +37,7 @@ class BaseHandler
 
   def query(sql, *args, **kwargs)
     statement = @db_client.prepare(sql)
-    r = statement.execute(*args, **kwargs)
-    r
+    statement.execute(*args, symbolize_keys: true, **kwargs)
   end
 
   def exists?(sql, *args, **kwargs)
@@ -46,8 +45,8 @@ class BaseHandler
     r.count > 0
   end
 
-  def load_query(path)
-    File.read(path)
+  def load_query(qname)
+    File.read(abs_path("queries/#{qname}.sql"))
   end
 
   def transaction

@@ -1,5 +1,5 @@
 require 'xmlrpc/client'
-
+require 'marshal'
 
 def symbolize_keys(hash)
   sym_hash = {}
@@ -28,12 +28,15 @@ class Client
     call("user.list")
   end
 
-  def create_game(username1, username2, game_type)
-    call("game.create", username1, username2, game_type)
+  def create_game(username1, username2, game_type, game_board)
+    gb = encode(game_board)
+    call("game.create", username1, username2, game_type, gb)
   end
 
   def get_game(gid)
-    call("game.get", gid)
+    game = call("game.get", gid)
+    game[:board] = decode(game[:board])
+    game
   end
 
   def put_game(gid, board_array, player_turn, game_state)
@@ -54,4 +57,13 @@ class Client
     res = @xml_client.call(method, *args)
     symbolize_keys res
   end
+
+  def encode(obj)
+    Marshal.dump(obj)
+  end
+
+  def decode(bytes)
+    Marshal.load(bytes)
+  end
+
 end
