@@ -1,25 +1,55 @@
 require 'mysql2'
+require_relative 'server_error'
 
 
 def prod_db
   Mysql2::Client.new(
-      :host => "localhost",
+      :host => "162.246.157.188",
       :database => "connect4",
       :port => 3306,
       :username => "ece421",
-      :password => "ece421")
+      :password => "password")
+end
+
+
+def abs_path(path)
+  "#{File.expand_path(__dir__)}/#{path}"
 end
 
 
 class BaseHandler
+
+  def self.endpoints
+    []
+  end
+
+  def self.method_added(name)
+    return unless self.endpoints.include?(name)
+    return if @__last_endpoint && @__last_endpoint.include?(name)
+
+    endpoint = :"#{name}_endpoint"
+    endpoint_impl = :"#{name}__endpoint_impl"
+    @__last_endpoint = [name, endpoint, endpoint_impl]
+
+    define_method endpoint do |*args|
+      begin
+        send endpoint_impl, *args
+      rescue StandardError => e
+        { exception: Marshal.dump(e) }
+      end
+    end
+
+    alias_method endpoint_impl, name
+    alias_method name, endpoint
+    @__last_endpoint = nil
+  end
 
   def initialize(opts = {})
     @db_client = opts[:db_client] || prod_db
   end
 
   def user_exists?(username)
-    r = query("SELECT * FROM users WHERE username=?", username, :symbolize_keys => true)
-    r.count > 0
+    exists?("SELECT * FROM users WHERE username=?", username)
   end
 
   def get_user(username)
@@ -33,8 +63,16 @@ class BaseHandler
 
   def query(sql, *args, **kwargs)
     statement = @db_client.prepare(sql)
-    r = statement.execute(*args, **kwargs)
-    r
+    statement.execute(*args, symbolize_keys: true, **kwargs)
+  end
+
+  def exists?(sql, *args, **kwargs)
+    r = query(sql, *args, **kwargs)
+    r.count > 0
+  end
+
+  def load_query(qname)
+    File.read(abs_path("queries/#{qname}.sql"))
   end
 
   def transaction
@@ -44,14 +82,10 @@ class BaseHandler
       @db_client.query('BEGIN')
       yield
       @db_client.query('COMMIT')
-      true
-    rescue
+    rescue Mysql2::Error => e
       @db_client.query('ROLLBACK')
-      false
+      raise e
     end
   end
 
 end
-
-class UserDoesNotExist < StandardError; end
-class DuplicateUsers < StandardError; end

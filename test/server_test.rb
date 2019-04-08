@@ -1,7 +1,8 @@
 require 'test/unit'
-require_relative '../client/rpc_client'
 require_relative '../client/models/game_board'
 require_relative '../server/server'
+require_relative '../server/user_handler'
+require_relative '../server/server_error'
 require_relative 'mock/mock_db'
 
 
@@ -29,6 +30,11 @@ class ServerTest < Test::Unit::TestCase
     end
   end
 
+  def assert_res_exception(res, exception)
+    assert_true(res.key?(:exception))
+    assert_true(Marshal.load(res[:exception]).is_a?(exception))
+  end
+
   def test_user_create_existing_user
     existing_user = 'already_exists'
     db = MockDB.one_result({ :username => existing_user })
@@ -45,8 +51,7 @@ class ServerTest < Test::Unit::TestCase
 
     # Postconditions
     begin
-      assert_false(res[:success])
-      assert_equal("Username '#{existing_user}' is already taken.", res[:message])
+      assert_res_exception(res, DuplicateUsers)
     end
   end
 
@@ -63,40 +68,42 @@ class ServerTest < Test::Unit::TestCase
 
     # Postconditions
     begin
-      assert_false(res[:success])
-      assert_equal("Username '#{bad_user}' is invalid.", res[:message])
+      assert_res_exception(res, InvalidUsername)
     end
   end
 
-  def tst_user_games
+  def test_user_games
     name = 'tester'
-    games = ['game1', 'second_game']
+    games = [1, 2, 3]
+    db = MockDB.new(['tester'], [{:game_id => 1}, {:game_id => 2}, {:game_id => 3}])
+    handler = UserHandler.new(:db_client => db)
+
     # Preconditions
     begin
-      # TODO: assert that name is in the db
-      # TODO: assert that name's games are in the db
     end
 
-    result = @server.call('user.games', name)
+    result = handler.games(name)
 
     # Postconditions
     begin
-      assert_equal(games, result['games'], 'result not equal to games')
+      gids = result[:games].map { |g| g[:game_id] }
+      assert_equal(games, gids, 'result not equal to games')
     end
   end
 
-  def tst_user_list
+  def test_user_list
     user_list = %w[tester john kanye]
+    db = MockDB.new([{ :username => 'tester' }, { :username => 'john' }, { :username => 'kanye' }])
+    handler = UserHandler.new(:db_client => db)
     # Preconditions
     begin
-      # TODO: assert user_list is in db
     end
 
-    result = @server.call('user.list')
+    result = handler.list
 
     # Postconditions
     begin
-      assert_equal(user_list, result['list'], 'result not equal to user_list')
+      assert_equal(user_list, result[:list], 'result not equal to user_list')
     end
   end
 

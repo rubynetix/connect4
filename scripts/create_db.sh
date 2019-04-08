@@ -13,4 +13,4 @@ FLUSH PRIVILEGES;
 QUERY
 
 echo Setup tables as 'ece421' user
-mysql -u ece421 -p connect4 < ${PROJECT_ROOT}/server/tables.sql
+mysql -u ece421 -p connect4 < ${PROJECT_ROOT}/server/queries/tables.sql
