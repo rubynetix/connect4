@@ -1,4 +1,5 @@
 require_relative 'base_handler'
+require_relative 'server_error'
 
 class LeagueHandler < BaseHandler
 
@@ -7,6 +8,8 @@ class LeagueHandler < BaseHandler
   end
 
   def standings(username)
+    raise UserDoesNotExist unless user_exists? username
+
     r = query(load_query('stats'), username, username).to_a[0]
     r
   end

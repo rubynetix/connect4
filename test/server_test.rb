@@ -9,6 +9,12 @@ require_relative 'mock/mock_db'
 class ServerTest < Test::Unit::TestCase
   TEST_ITER = 10
 
+  class Empty
+    def count
+      0
+    end
+  end
+
   def setup; end
 
   def teardown; end
@@ -186,6 +192,13 @@ class ServerTest < Test::Unit::TestCase
       assert_equal(expected_wins, wins)
       assert_equal(expected_losses, losses)
       assert_equal(expected_draws, draws)
+    end
+
+    db2 = MockDB.new Empty.new
+    handler2 = LeagueHandler.new(:db_client => db2)
+
+    assert_raise UserDoesNotExist do
+      handler2.standings (name + 'e')
     end
   end
 
