@@ -1,15 +1,16 @@
 require_relative '../../client/views/observable'
 require_relative '../../client/views/windows/app_window'
 require_relative '../../client/views/windows/main_menu_window'
-require_relative '../../client/views/windows/game_window'
-require_relative '../../client/views/windows/game_menu_window'
+require_relative '../../client/views/windows/offline_game_window'
+require_relative '../../client/views/windows/offline_game_menu_window'
 require_relative '../../client/views/windows/online_game_menu_window'
+require_relative '../../client/views/windows/online_game_window'
 
 module C4
   class Application < Gtk::Application
     include PassthroughObservable
 
-    attr_reader :ui, :main_menu_window, :online_menu_window, :offline_menu_window, :game_window, :stats_window
+    attr_reader :ui, :main_menu_window, :online_menu_window, :offline_menu_window, :game_window, :online_game_window, :stats_window
 
     def initialize
       super 'com.rubynetix.connect4', Gio::ApplicationFlags::FLAGS_NONE
@@ -18,8 +19,9 @@ module C4
 
         @main_menu_window = MainMenuWindow.new
         @online_menu_window = OnlineGameMenuWindow.new
-        @offline_menu_window = GameMenuWindow.new
-        @game_window = GameWindow.new
+        @offline_menu_window = OfflineGameMenuWindow.new
+        @game_window = OfflineGameWindow.new
+        @online_game_window = OnlineGameWindow.new
         @stats_window = StatsWindow.new
 
         windows = [
@@ -30,7 +32,8 @@ module C4
             # League Statistics
             @stats_window,
             # Gameplay window
-            @game_window
+            @game_window,
+            @online_game_window
         ]
 
         @ui = C4::AppWindow.new(application, @main_menu_window.id, windows)
