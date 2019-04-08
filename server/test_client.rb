@@ -33,5 +33,6 @@ create_user(client, 'p1')
 create_user(client, 'p2')
 game_id = create_game(client, 'p1', 'p2')
 puts game_id
+puts client.get_league''
 
 server_thread.kill
