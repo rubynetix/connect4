@@ -3,55 +3,47 @@ require_relative 'base_handler'
 # Handles user related requests
 class UserHandler < BaseHandler
 
+  def self.endpoints
+    [:create, :games, :list]
+  end
+
   def valid_username(username)
-    /[a-zA-Z_]+/.match(username)[0] == username
+    /[a-zA-Z0-9_]+/.match(username)[0] == username
   end
 
   # Creates a new user
   # returns 'success' or 'failed'
   def create(username)
-    unless valid_username(username)
-      return {
-          :success => false,
-          :message => "Username '#{username}' is invalid."
-      }
-    end
-
+    raise InvalidUsername unless valid_username(username)
     # Check if the user exists
-    if user_exists?(username)
-      return {
-          :success => false,
-          :message => "Username '#{username}' is already taken."
-      }
-    end
+    raise DuplicateUsers if user_exists?(username)
 
     # Add the user to the DB
-    @db_client.query("INSERT INTO users (username) VALUES ('#{username}')")
-
-    if user_exists?(username)
-      return { :success => true }
-    end
-
-    { :success => false, :message => "User creation failed." }
+    query("INSERT INTO users (username) VALUES (?)", username)
+    { success: true }
   end
 
   # Returns games of a user
   def games(username)
     raise UserDoesNotExist unless user_exists?(username)
     games = []
-    result = query("SELECT game_id FROM games WHERE (p1=? OR p2=?) AND state='Active';",
+    query("SELECT BIN_TO_UUID(game_id) as game_id, p1, p2 FROM games WHERE (p1=? OR p2=?) AND state='active';",
       username, username, :symbolize_keys => true).each do |row|
-        games.append(row[:game_id])
+        if row[:p1] != username
+          games.append({ **row, opponent: row[:p1] })
+        else
+          games.append({ **row, opponent: row[:p2] })
+        end
       end
-    return { :games => games }
+    { :games => games }
   end
 
   # Returns a list of all usernames
   def list()
     users = []
-    result = query("SELECT username FROM users", :symbolize_keys => true).each do |row|
+    query("SELECT username FROM users", :symbolize_keys => true).each do |row|
       users.append(row[:username])
     end
-    return { :list => users }
+    { :list => users }
   end
 end

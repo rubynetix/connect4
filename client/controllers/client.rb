@@ -1,5 +1,7 @@
 require 'xmlrpc/client'
-require 'marshal'
+require_relative '../../client/models/game_board'
+require_relative '../../server/server_error'
+
 
 def symbolize_keys(hash)
   sym_hash = {}
@@ -21,7 +23,7 @@ class Client
   end
 
   def user_games(username)
-    call("user.games", username)
+    call("user.games", username)[:games].map(&method(:symbolize_keys))
   end
 
   def list_users()
@@ -54,8 +56,11 @@ class Client
   private
 
   def call(method, *args)
-    res = @xml_client.call(method, *args)
-    symbolize_keys res
+    res = symbolize_keys(@xml_client.call(method, *args))
+    if res.key?(:exception)
+      raise Marshal.load(res[:exception])
+    end
+    res
   end
 
   def encode(obj)

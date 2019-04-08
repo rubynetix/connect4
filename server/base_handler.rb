@@ -1,4 +1,5 @@
 require 'mysql2'
+require_relative 'server_error'
 
 
 def prod_db
@@ -17,6 +18,31 @@ end
 
 
 class BaseHandler
+
+  def self.endpoints
+    []
+  end
+
+  def self.method_added(name)
+    return unless self.endpoints.include?(name)
+    return if @__last_endpoint && @__last_endpoint.include?(name)
+
+    endpoint = :"#{name}_endpoint"
+    endpoint_impl = :"#{name}__endpoint_impl"
+    @__last_endpoint = [name, endpoint, endpoint_impl]
+
+    define_method endpoint do |*args|
+      begin
+        send endpoint_impl, *args
+      rescue StandardError => e
+        { exception: Marshal.dump(e) }
+      end
+    end
+
+    alias_method endpoint_impl, name
+    alias_method name, endpoint
+    @__last_endpoint = nil
+  end
 
   def initialize(opts = {})
     @db_client = opts[:db_client] || prod_db
@@ -56,14 +82,10 @@ class BaseHandler
       @db_client.query('BEGIN')
       yield
       @db_client.query('COMMIT')
-      true
-    rescue
+    rescue Mysql2::Error => e
       @db_client.query('ROLLBACK')
-      false
+      raise e
     end
   end
 
 end
-
-class UserDoesNotExist < StandardError; end
-class DuplicateUsers < StandardError; end
