@@ -54,7 +54,7 @@ class GameHandler < BaseHandler
     exists? <<END_SQL
       SELECT true FROM games
       WHERE ((p1='#{p1}' AND p2=#{p2}) OR (p1='#{p2}' AND p2='#{p1}'))
-        AND state = 'Active';
+        AND state = 'active';
 END_SQL
   end
 end

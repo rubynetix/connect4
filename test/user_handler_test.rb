@@ -1,4 +1,4 @@
-require 'test/unit'
+require_relative 'handler_test_helper'
 require_relative '../client/models/game_board'
 require_relative '../server/server'
 require_relative '../server/user_handler'
@@ -6,7 +6,7 @@ require_relative '../server/server_error'
 require_relative 'mock/mock_db'
 
 
-class ServerTest < Test::Unit::TestCase
+class UserHandlerTest < HandlerTestHelper
   TEST_ITER = 10
 
   def setup; end
@@ -28,11 +28,6 @@ class ServerTest < Test::Unit::TestCase
     begin
       assert_true(res[:success])
     end
-  end
-
-  def assert_res_exception(res, exception)
-    assert_true(res.key?(:exception))
-    assert_true(Marshal.load(res[:exception]).is_a?(exception))
   end
 
   def test_user_create_existing_user
@@ -107,62 +102,7 @@ class ServerTest < Test::Unit::TestCase
     end
   end
 
-  def tst_game_create
-    username1 = 'john'
-    username2 = 'kanye'
-    # Preconditions
-    begin
-      # TODO: assert than username 1 and 2 are in db
-    end
 
-    result = @server.call('game.create', username1, username2)
-
-    # Postconditions
-    begin
-      assert_true(result['id'].is_a?(Integer), 'result is not an integer')
-    end
-  end
-
-  def tst_game_get
-    game_id = 12345
-    # TODO: make these match the game saved in db
-    game_board = GameBoard.new
-    player_turn = 1
-    game_state = 1
-    # Preconditions
-    begin
-      # TODO: assert a game with id 12345 is in the db
-    end
-
-    result = @server.call('game.get', game_id)
-
-    # Postconditions
-    begin
-      assert_equal(game_board, result['board'])
-      assert_equal(player_turn, result['turn'])
-      assert_equal(game_state_enum, result['state'])
-    end
-  end
-
-  def tst_game_put
-    game_id = 6789
-    game_board = GameBoard.new
-    player_turn = 1
-    other_turn = 2
-    # Preconditions
-    begin
-      # TODO: assert that there is a game with id 6789 in db
-    end
-
-    result = @server.call('game.put', game_id, game_board, player_turn)
-
-    # Postconditions
-    begin
-      # TODO: assert that game_board is in the db as id 6789
-      # TODO: assert that game 6789 is on other_turn
-      assert_equal('success', result['put'])
-    end
-  end
 
   def tst_league_standings
     name = 'kanye'

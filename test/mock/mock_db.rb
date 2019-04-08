@@ -3,7 +3,7 @@ require 'mysql2'
 class MockDB
   class << self
     def no_result
-      MockDB.one_result([])
+      MockDB.new([], multi_query: false)
     end
 
     def one_result(result)
