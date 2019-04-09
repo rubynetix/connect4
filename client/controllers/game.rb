@@ -48,13 +48,13 @@ class Game
         @winner = @players[1]
       end
     when PlayerAction::REMOTE_UPDATE_BOARD
-      case @client.get_game(gid)['state']
-      when WinEnum::DRAW
+      case @client.get_game(gid)[:state]
+      when 'draw'
         @done = true
-      when WinEnum::WIN1
+      when 'w1'
         @done = true
         @winner = @players[0]
-      when WinEnum::WIN2
+      when 'w2'
         @done = true
         @winner = @players[1]
       end
