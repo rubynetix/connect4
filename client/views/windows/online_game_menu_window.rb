@@ -2,6 +2,7 @@ require_relative '../../../client/views/events/window_change_event'
 require_relative '../../../client/views/observable'
 require_relative '../../../client/views/windows/main_menu_window'
 require_relative 'online_game_window'
+require_relative '../events/menu_click_event'
 require_relative '../components/game_list_row'
 require_relative '../events/ui_event'
 require_relative 'widget_window'
@@ -22,6 +23,10 @@ module C4
 
         bind_template_child("opponent_entry")
         bind_template_child("current_games_list")
+        bind_template_child("connect4_btn")
+        bind_template_child("connect4_btn_widget")
+        bind_template_child("toot_otto_btn")
+        bind_template_child("toot_otto_btn_widget")
         bind_template_child("start_btn")
         bind_template_child("back_btn")
         bind_template_child("stats_btn")
@@ -33,12 +38,25 @@ module C4
 
       @opponent_entry = opponent_entry
       @games_list = current_games_list
+      @c4_btn = connect4_btn
+      @to_btn = toot_otto_btn
       @start_btn = start_btn
       @back_btn = back_btn
       @stats_btn = stats_btn
 
+      # Styled radio buttons
+      c4_btn = connect4_btn_widget
+      c4_btn.pack_start(load_image(RedCounter.instance.icon))
+      c4_btn.pack_start(load_image(YellowCounter.instance.icon))
+
+      to_btn = toot_otto_btn_widget
+      to_btn.pack_start(load_image(TCounter.instance.icon))
+      to_btn.pack_start(load_image(OCounter.instance.icon))
+
       # Signals
       @start_btn.signal_connect('clicked') {try_new_game}
+      @c4_btn.signal_connect('clicked') {notify_all(MenuClickEvent.new(MenuClickEvent::CONNECT4))}
+      @to_btn.signal_connect('clicked') {notify_all(MenuClickEvent.new(MenuClickEvent::TOOT_OTTO))}
       @back_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(MainMenuWindow.class_variable_get(:@@wid)))}
       @stats_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(StatsWindow.class_variable_get(:@@wid)))}
     end
@@ -71,6 +89,12 @@ module C4
 
     def valid_username?(username)
       true
+    end
+
+    def load_image(path)
+      img = Gtk::Image.new(:file => path)
+      img.visible = true
+      img
     end
   end
 end
