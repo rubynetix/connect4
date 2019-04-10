@@ -5,6 +5,7 @@ require_relative '../../client/views/windows/offline_game_window'
 require_relative '../../client/views/windows/offline_game_menu_window'
 require_relative '../../client/views/windows/online_game_menu_window'
 require_relative '../../client/views/windows/online_game_window'
+require_relative '../../client/views/windows/debug_game_window'
 
 module C4
   class Application < Gtk::Application
@@ -23,6 +24,7 @@ module C4
         @game_window = OfflineGameWindow.new
         @online_game_window = OnlineGameWindow.new
         @stats_window = StatsWindow.new
+        @debug = DebugGameWindow.new
 
         windows = [
             # Menu windows
@@ -33,10 +35,11 @@ module C4
             @stats_window,
             # Gameplay window
             @game_window,
-            @online_game_window
+            @online_game_window,
+            @debug
         ]
 
-        @ui = C4::AppWindow.new(application, @main_menu_window.id, windows)
+        @ui = C4::AppWindow.new(application, @debug.id, windows)
 
         # Listen for events in spawned windows and bubble them up the observable
         # chain to the wrapping GtkUI instance
