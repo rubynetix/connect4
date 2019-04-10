@@ -34,6 +34,10 @@ module C4
       init_menu
     end
 
+    def window_help
+      "Select a game type and opponent using the provided buttons."
+    end
+
     private
 
     def init_menu

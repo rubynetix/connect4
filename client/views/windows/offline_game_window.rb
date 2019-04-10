@@ -34,8 +34,12 @@ module C4
       init_gameboard
     end
 
-    def display
+    def prepare
       clear_gameboard
+    end
+
+    def window_help
+      "Click a column to place your counter."
     end
 
     def draw_gameboard(gb)

@@ -11,6 +11,8 @@ class UIEvent
   LIST_USER_GAMES = 7
   LIST_LEAGUE_STATS = 8
   EXIT_ONLINE_GAME = 9
+  MSG_ERR = 10
+  MSG_HELP = 11
 
   def initialize(id)
     @id = id

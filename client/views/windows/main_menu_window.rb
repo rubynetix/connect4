@@ -36,6 +36,10 @@ module C4
       @offline_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(OfflineGameMenuWindow.class_variable_get(:@@wid)))}
     end
 
+    def window_help
+      "Connect to a game server or play offline."
+    end
+
     private
 
     def try_connect
