@@ -3,12 +3,12 @@ require_relative 'client'
 
 class RemotePlayer < Player
 
-  attr_accessor :op_counters, :my_win
+  attr_accessor :op_counters, :op_win
 
-  def initialize(name, counters, game_id, client=nil)
+  def initialize(name, counters, game_id, op_win, client=nil)
     super name, counters
     @game_id = game_id
-
+    @op_win = op_win # either 'w1' or 'w2' depending on player #
     if client.nil?
       @client = Client.new
     end
@@ -43,7 +43,7 @@ class RemotePlayer < Player
 
   # Parse the result from the server and create the corresponding event
   def parse_response(result)
-    return forfeit if result[:state] == PlayerAction::FORFEIT
+    return forfeit if result[:state] == @op_win
     update_board(result[:board])
   end
 
