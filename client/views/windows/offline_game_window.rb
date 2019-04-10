@@ -34,8 +34,12 @@ module C4
       init_gameboard
     end
 
-    def display
+    def prepare
       clear_gameboard
+    end
+
+    def window_help
+      "Click a column to place your counter."
     end
 
     def draw_gameboard(gb)
@@ -63,7 +67,7 @@ module C4
       if !winner.nil?
         @lb_win.set_text("#{winner.name} wins!")
       else
-        @lb_win.set_text("Draw")
+         @lb_win.set_text("Draw")
       end
 
       @lb_win.visible = true

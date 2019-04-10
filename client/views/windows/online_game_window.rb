@@ -69,9 +69,12 @@ module C4
       @lb_win.visible = false
     end
 
-    def display
+    def prepare
       clear_gameboard
+    end
 
+    def window_help
+      "Click a column to place your counter."
     end
 
     private

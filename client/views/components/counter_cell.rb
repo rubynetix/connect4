@@ -13,7 +13,6 @@ class CounterCell
     @button = Gtk::Button.new
     @button.set_size_request(width, height)
     @button.visible = true
-    @button.style_context.add_provider(css)
     @button.signal_connect "clicked" do
       notify_all(CellClickEvent.new(row, col))
     end

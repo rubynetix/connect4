@@ -69,10 +69,14 @@ module C4
       @games_list.add(row)
     end
 
-    def display
+    def prepare
       # Clear any existing games and request the most recent games list
       clear_games_list
       notify_all(UIEvent.new(UIEvent::LIST_USER_GAMES))
+    end
+
+    def window_help
+      "Continue an existing game or start a new game by entering your opponent's username."
     end
 
     private

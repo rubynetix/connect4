@@ -37,10 +37,14 @@ module C4
       @stats_list.add(stat)
     end
 
-    def display
+    def prepare
       # Clear any existing user statistics and request the most up to date version
       clear_stats
       notify_all(UIEvent.new(UIEvent::LIST_LEAGUE_STATS))
+    end
+
+    def window_help
+      "Scroll to view player stats."
     end
 
     private
