@@ -5,7 +5,6 @@ require_relative '../../client/views/windows/offline_game_window'
 require_relative '../../client/views/windows/offline_game_menu_window'
 require_relative '../../client/views/windows/online_game_menu_window'
 require_relative '../../client/views/windows/online_game_window'
-require_relative '../../client/views/windows/debug_game_window'
 
 module C4
   class Application < Gtk::Application
