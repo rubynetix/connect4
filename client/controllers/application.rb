@@ -35,11 +35,10 @@ module C4
             @stats_window,
             # Gameplay window
             @game_window,
-            @online_game_window,
-            @debug
+            @online_game_window
         ]
 
-        @ui = C4::AppWindow.new(application, @debug.id, windows)
+        @ui = C4::AppWindow.new(application, @main_menu_window.id, windows)
 
         # Listen for events in spawned windows and bubble them up the observable
         # chain to the wrapping GtkUI instance
