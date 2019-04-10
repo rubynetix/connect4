@@ -20,6 +20,7 @@ module WidgetWindow
   end
 
   def display_error(msg: "Something went wrong!")
+    puts "#{title}: #{msg}"
     notify_all(DialogEvent.new(msg, UIEvent::MSG_HELP))
   end
 end

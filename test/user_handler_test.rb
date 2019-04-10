@@ -76,7 +76,8 @@ class UserHandlerTest < HandlerTestHelper
   def test_user_games
     name = 'tester'
     games = [1, 2, 3]
-    db = MockDB.new(['tester'], [{:game_id => 1}, {:game_id => 2}, {:game_id => 3}])
+    db = MockDB.new(['tester'], [
+        {:game_id => 1, game_type: 'c' }, {:game_id => 2, game_type: 'c' }, {:game_id => 3, game_type: 't'}])
     handler = UserHandler.new(:db_client => db)
 
     # Preconditions

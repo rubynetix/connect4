@@ -1,3 +1,4 @@
+require_relative 'enums'
 require_relative 'base_handler'
 
 # Handles user related requests
@@ -11,12 +12,15 @@ class UserHandler < BaseHandler
     /[a-zA-Z0-9_]+/.match(username)[0] == username
   end
 
+  def login(username)
+    { success: user_exists?(username) }
+  end
+
   # Creates a new user
   # returns 'success' or 'failed'
   def create(username)
-    raise InvalidUsername unless valid_username(username)
-    # Check if the user exists
-    raise DuplicateUsers if user_exists?(username)
+    raise InvalidUsername.new("Invalid username #{username}") unless valid_username(username)
+    raise DuplicateUsers.new("Username '#{username} already exists.'") if user_exists?(username)
 
     # Add the user to the DB
     query("INSERT INTO users (username) VALUES (?)", username)
@@ -27,21 +31,21 @@ class UserHandler < BaseHandler
   def games(username)
     raise UserDoesNotExist unless user_exists?(username)
     games = []
-    query("SELECT BIN_TO_UUID(game_id) as game_id, p1, p2 FROM games WHERE (p1=? OR p2=?) AND state='active';",
-      username, username, :symbolize_keys => true).each do |row|
-        if row[:p1] != username
-          games.append({ **row, opponent: row[:p1] })
-        else
-          games.append({ **row, opponent: row[:p2] })
-        end
+    query(load_query('user_games'), username, username).each do |row|
+      row[:game_type] = GAME_TYPES[row[:game_type].to_sym]
+      if row[:p1] != username
+        games.append({ **row, opponent: row[:p1] })
+      else
+        games.append({ **row, opponent: row[:p2] })
       end
+    end
     { :games => games }
   end
 
   # Returns a list of all usernames
-  def list()
+  def list
     users = []
-    query("SELECT username FROM users", :symbolize_keys => true).each do |row|
+    query("SELECT username FROM users").each do |row|
       users.append(row[:username])
     end
     { :list => users }

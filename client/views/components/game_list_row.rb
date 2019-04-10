@@ -19,8 +19,8 @@ module C4
     def initialize(game)
       super()
 
-      game_type_lbl.text = game[:game_type]
-      opponent_lbl.text = game[:opponent_name]
+      game_type_lbl.text = game[:game_type] || ""
+      opponent_lbl.text = game[:opponent] || ""
 
       @continue_btn = continue_game_btn
       @continue_btn.signal_connect('clicked') {puts "---- CONTINUE CLICK ----"}
