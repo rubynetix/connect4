@@ -13,7 +13,6 @@
     <!-- Game screen -->
     <file>ui/offline_game_window.ui</file>
     <file>ui/online_game_window.ui</file>
-    <file>ui/debug_game_window.ui</file>
 
     <!-- Other custom widgets -->
     <file>ui/game_list_row.ui</file>

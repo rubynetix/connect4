@@ -24,7 +24,6 @@ module C4
         @game_window = OfflineGameWindow.new
         @online_game_window = OnlineGameWindow.new
         @stats_window = StatsWindow.new
-        @debug = DebugGameWindow.new
 
         windows = [
             # Menu windows
