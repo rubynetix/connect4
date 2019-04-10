@@ -24,7 +24,7 @@ module C4
         bind_template_child("new_game_btn")
         bind_template_child("main_menu_btn")
         bind_template_child("counter_bar")
-        # bind_template_child("game_board_overlay")
+        bind_template_child("game_board_overlay")
       end
     end
 
@@ -64,19 +64,19 @@ module C4
     end
 
     def game_over(winner)
-      # if !winner.nil?
-      #   @lb_win.set_text("#{winner.name} wins!")
-      # else
-      #   @lb_win.set_text("Draw")
-      # end
+      if !winner.nil?
+        @lb_win.set_text("#{winner.name} wins!")
+      else
+         @lb_win.set_text("Draw")
+      end
 
-      # @lb_win.visible = true
+      @lb_win.visible = true
       @bt_new_game.visible = true
       @main_menu_btn.visible = true
     end
 
     def clear_gameboard
-      # @lb_win.visible = false
+      @lb_win.visible = false
       @bt_new_game.visible = false
       @main_menu_btn.visible = false
     end
@@ -98,9 +98,9 @@ module C4
       @main_menu_btn = main_menu_btn
       @lb_turn = player_turn_lbl
       @fft_btn = forfeit_btn
-      # @game_overlay = game_board_overlay
-      # @lb_win = Gtk::Label.new("Player wins!")
-      # @game_overlay.add_overlay(@lb_win)
+      @game_overlay = game_board_overlay
+      @lb_win = Gtk::Label.new("Player wins!")
+      @game_overlay.add_overlay(@lb_win)
 
       # Styling
       @css = Gtk::CssProvider.new
