@@ -10,7 +10,7 @@ class LeagueHandler < BaseHandler
   def standings(username)
     raise UserDoesNotExist unless user_exists? username
 
-    r = query(load_query('stats'), username, username).to_a[0]
+    r = query(load_query('stats'), username).to_a[0]
     r
   end
 end
