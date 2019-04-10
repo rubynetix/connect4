@@ -55,7 +55,7 @@ class BaseHandler
   def get_user(username)
     raise UserDoesNotExist unless user_exists? username
 
-    r = query("SELECT * FROM users WHERE username=?", username, :symbolize_keys => true)
+    r = query("SELECT * FROM users WHERE username=?", username)
     raise DuplicateUsers if r.count > 1
 
     r.first[:username]
@@ -63,7 +63,7 @@ class BaseHandler
 
   def query(sql, *args, **kwargs)
     statement = @db_client.prepare(sql)
-    statement.execute(*args, symbolize_keys: true, **kwargs)
+    statement.execute(*args, **kwargs, symbolize_keys: true)
   end
 
   def exists?(sql, *args, **kwargs)

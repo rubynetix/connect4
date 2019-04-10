@@ -1,7 +1,9 @@
+require_relative '../../../server/enums'
 require_relative '../../../client/views/events/window_change_event'
 require_relative '../../../client/views/observable'
 require_relative '../../../client/views/windows/main_menu_window'
 require_relative 'online_game_window'
+require_relative '../events/menu_click_event'
 require_relative '../components/game_list_row'
 require_relative '../events/ui_event'
 require_relative 'widget_window'
@@ -22,6 +24,10 @@ module C4
 
         bind_template_child("opponent_entry")
         bind_template_child("current_games_list")
+        bind_template_child("connect4_btn")
+        bind_template_child("connect4_btn_widget")
+        bind_template_child("toot_otto_btn")
+        bind_template_child("toot_otto_btn_widget")
         bind_template_child("start_btn")
         bind_template_child("back_btn")
         bind_template_child("stats_btn")
@@ -33,12 +39,25 @@ module C4
 
       @opponent_entry = opponent_entry
       @games_list = current_games_list
+      @c4_btn = connect4_btn
+      @to_btn = toot_otto_btn
       @start_btn = start_btn
       @back_btn = back_btn
       @stats_btn = stats_btn
 
+      # Styled radio buttons
+      c4_btn = connect4_btn_widget
+      c4_btn.pack_start(load_image(RedCounter.instance.icon))
+      c4_btn.pack_start(load_image(YellowCounter.instance.icon))
+
+      to_btn = toot_otto_btn_widget
+      to_btn.pack_start(load_image(TCounter.instance.icon))
+      to_btn.pack_start(load_image(OCounter.instance.icon))
+
       # Signals
       @start_btn.signal_connect('clicked') {try_new_game}
+      # @c4_btn.signal_connect('clicked') {notify_all(MenuClickEvent.new(MenuClickEvent::CONNECT4))}
+      # @to_btn.signal_connect('clicked') {notify_all(MenuClickEvent.new(MenuClickEvent::TOOT_OTTO))}
       @back_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(MainMenuWindow.class_variable_get(:@@wid)))}
       @stats_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(StatsWindow.class_variable_get(:@@wid)))}
     end
@@ -65,12 +84,30 @@ module C4
     def try_new_game
       opp = @opponent_entry.text
 
-      puts "----- STARTING NEW GAME AGAINST #{opp} -----"
+      notify_all(NewOnlineGameEvent.new(opp, game_type))
+    end
+
+    def game_type
+      active_btn = connect4_btn.group.detect(&:active?)
+      if active_btn.eql?(connect4_btn)
+        :c
+      else
+        :t
+      end
+    end
+
+    def start_new_game
       notify_all(WindowChangeEvent.new(OnlineGameWindow.class_variable_get(:@@wid)))
     end
 
     def valid_username?(username)
       true
+    end
+
+    def load_image(path)
+      img = Gtk::Image.new(:file => path)
+      img.visible = true
+      img
     end
   end
 end

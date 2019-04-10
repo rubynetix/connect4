@@ -22,11 +22,15 @@ class Client
     call("user.create", username)
   end
 
+  def login(username)
+    call("user.login", username)[:success]
+  end
+
   def user_games(username)
     call("user.games", username)[:games].map(&method(:symbolize_keys))
   end
 
-  def list_users()
+  def user_list()
     call("user.list")
   end
 
