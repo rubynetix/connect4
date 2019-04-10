@@ -4,6 +4,8 @@ require_relative '../../../client/views/windows/main_menu_window'
 require_relative 'offline_game_window'
 require_relative 'widget_window'
 
+RX_IP = /((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/
+
 module C4
   class MainMenuWindow < Gtk::Box
     include PassthroughObservable
@@ -32,8 +34,10 @@ module C4
       @connect_btn = connect_btn
       @offline_btn = offline_btn
 
-      @connect_btn.signal_connect('clicked') {try_connect}
-      @offline_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(OfflineGameMenuWindow.class_variable_get(:@@wid)))}
+      @connect_btn.signal_connect('clicked') { try_connect }
+      @offline_btn.signal_connect('clicked') do
+        notify_all(WindowChangeEvent.new(OfflineGameMenuWindow.class_variable_get(:@@wid)))
+      end
     end
 
     private
@@ -53,11 +57,11 @@ module C4
     end
 
     def valid_username?(username)
-      true
+      /[a-zA-Z0-9_]+/.match(username)[0] == username
     end
 
-    def valid_server?(server_url)
-      true
+    def valid_server?(server_ip)
+      RX_IP.match(server_ip)[0] == server_ip
     end
   end
 end

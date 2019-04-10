@@ -1,3 +1,4 @@
+require_relative '../../../server/enums'
 require_relative '../../../client/views/events/window_change_event'
 require_relative '../../../client/views/observable'
 require_relative '../../../client/views/windows/main_menu_window'
@@ -55,8 +56,8 @@ module C4
 
       # Signals
       @start_btn.signal_connect('clicked') {try_new_game}
-      @c4_btn.signal_connect('clicked') {notify_all(MenuClickEvent.new(MenuClickEvent::CONNECT4))}
-      @to_btn.signal_connect('clicked') {notify_all(MenuClickEvent.new(MenuClickEvent::TOOT_OTTO))}
+      # @c4_btn.signal_connect('clicked') {notify_all(MenuClickEvent.new(MenuClickEvent::CONNECT4))}
+      # @to_btn.signal_connect('clicked') {notify_all(MenuClickEvent.new(MenuClickEvent::TOOT_OTTO))}
       @back_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(MainMenuWindow.class_variable_get(:@@wid)))}
       @stats_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(StatsWindow.class_variable_get(:@@wid)))}
     end
@@ -83,7 +84,19 @@ module C4
     def try_new_game
       opp = @opponent_entry.text
 
-      puts "----- STARTING NEW GAME AGAINST #{opp} -----"
+      notify_all(NewOnlineGameEvent.new(opp, game_type))
+    end
+
+    def game_type
+      active_btn = connect4_btn.group.detect(&:active?)
+      if active_btn.eql?(connect4_btn)
+        :c
+      else
+        :t
+      end
+    end
+
+    def start_new_game
       notify_all(WindowChangeEvent.new(OnlineGameWindow.class_variable_get(:@@wid)))
     end
 

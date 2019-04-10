@@ -37,6 +37,7 @@
         <property name="width_chars">20</property>
         <property name="placeholder_text" translatable="yes">Username</property>
         <property name="input_purpose">url</property>
+        <property name="text">test</property>
       </object>
       <packing>
         <property name="expand">False</property>
@@ -52,6 +53,7 @@
         <property name="width_chars">20</property>
         <property name="placeholder_text" translatable="yes">Game server IP</property>
         <property name="input_purpose">url</property>
+        <property name="text">127.0.0.1</property>
       </object>
       <packing>
         <property name="expand">False</property>

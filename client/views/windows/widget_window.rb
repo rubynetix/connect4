@@ -8,6 +8,7 @@ module WidgetWindow
   def display; end
 
   def display_error(title: "Error", msg: "Request could not be completed.")
+    puts "#{title}: #{msg}"
     # TODO: Generic error dialog
   end
 end
