@@ -1,8 +1,9 @@
 require_relative 'helper'
 require_relative 'mock/mock_ui'
 require_relative '../client/controllers/connect4'
-require_relative '../client/controllers/computer_player'
+require_relative '../client/controllers/player_factory'
 require_relative '../client/controllers/algorithms/alpha_beta_pruning'
+
 
 class Connect4Test < Helper
 
@@ -25,8 +26,10 @@ class Connect4Test < Helper
     ui = MockUI.new
     c4 = Connect4.new ui
 
-    p1 = c4.make_bot('p1', :AlphaBetaPruning)
-    p2 = c4.make_bot('p2', :AlphaBetaPruning)
+    p1 = PlayerFactory::computer_player(
+        Connect4GameType.instance, PlayerFactory::PLAYER_1, 'p1', :AlphaBetaPruning)
+    p2 = PlayerFactory::computer_player(
+        Connect4GameType.instance, PlayerFactory::PLAYER_1, 'p2', :AlphaBetaPruning)
 
     cvc_config = GameConfig.new ui
     cvc_config.players = [p1, p2]

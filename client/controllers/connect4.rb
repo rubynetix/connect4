@@ -1,10 +1,12 @@
 require_relative '../views/ui'
 require_relative 'computer_player'
-require_relative '../controllers/player'
-require_relative '../controllers/game'
+require_relative 'player'
+require_relative 'player_factory'
+require_relative 'game'
 require_relative '../models/game_board'
 require_relative '../models/win_check'
 require_relative '../models/counter'
+require_relative '../models/game_type'
 require_relative '../views/events/menu_click_event'
 require_relative 'algorithms/alpha_beta_pruning'
 require_relative 'algorithms/random'
@@ -17,15 +19,14 @@ class Connect4
   attr_accessor :config
 
   def initialize(ui)
-    @game_counters = [
-        [[YellowCounter.instance], [RedCounter.instance]],
-        [[TCounter.instance, OCounter.instance], [TCounter.instance, OCounter.instance]]
-    ]
-    @game_wins = [%w(YYYY RRRR), %w(OTTO TOOT)]
+    @game_type = Connect4GameType.instance
     @game = 0
     @ui = ui
     @config = GameConfig.new(ui)
     @ready = Queue.new
+
+    @user = nil
+    @client = nil
   end
 
   def app_loop
@@ -57,34 +58,25 @@ class Connect4
       load_user_games
     when UIEvent::LIST_LEAGUE_STATS
       load_league_stats
+    when UIEvent::NEW_ONLINE_GAME
+      new_online_game(event.opponent, event.game_type)
+    else
+      nil
     end
-  end
-
-  def make_bot(name, algorithm)
-    bot = ComputerPlayer.new(name,
-                       @game_counters[@game][0],
-                       @game_wins[@game][0],
-                       @game_counters[@game][1])
-    bot.algorithm = algorithm
-    bot
   end
 
   private
 
   def configure_bot
-    @config.players[1] = make_bot('p2', @config.alg)
+    @config.players[1] = PlayerFactory::computer_player(
+        @game_type, PlayerFactory::PLAYER_2, 'p2', @config.alg)
   end
 
   def handle_menu_click(event)
     case event.click
     when MenuClickEvent::START
-      if @game.zero?
-        @config.gameboard = GameBoard.connect4
-        puts @config.gameboard.win_check.wins
-      else
-        @config.gameboard = GameBoard.toot_otto
-        puts @config.gameboard.win_check.wins
-      end
+      @config.gameboard = @game_type.new_board
+      puts @config.gameboard.win_check.wins
       @ready << true
     when MenuClickEvent::PVC_EASY
       @config.alg = :RandomAction
@@ -93,24 +85,24 @@ class Connect4
       @config.alg = :AlphaBetaPruning
       configure_bot
     when MenuClickEvent::PVP
-      @config.players[1] = Player.new('p2', @game_counters[@game][0])
+      @config.players[1] = PlayerFactory::player(@game_type, PlayerFactory::PLAYER_2, 'p2')
     when MenuClickEvent::CONNECT4
-      @game = 0
-      @config.win_check = WinCheck.connect4
-      @config.players[0].counters = [RedCounter.instance]
+      @game_type = Connect4GameType.instance
+      @config.win_check = @game_type.win_check
+      @config.players[0].counters = @game_type.p1_counters
       if @config.players[1].instance_of? ComputerPlayer
         configure_bot
       else
-        @config.players[1].counters = [YellowCounter.instance]
+        @config.players[1].counters = @game_type.p2_counters
       end
     when MenuClickEvent::TOOT_OTTO
-      @game = 1
-      @config.win_check = WinCheck.toot_otto
-      @config.players[0].counters = [TCounter.instance, OCounter.instance]
+      @game_type = TootOttoGameType.instance
+      @config.win_check = @game_type.win_check
+      @config.players[0].counters = @game_type.p1_counters
       if @config.players[1].instance_of? ComputerPlayer
         configure_bot
       else
-        @config.players[1].counters = [TCounter.instance, OCounter.instance]
+        @config.players[1].counters = @game_type.p2_counters
       end
     when MenuClickEvent::NEW_GAME
       @config.reset
@@ -121,29 +113,37 @@ class Connect4
     end
   end
 
-  def server_connect(username, server_url)
+  def server_connect(username, server_ip)
     # TODO: Start the 'session'
-    puts "---- CONNECTING ----- #{username} on #{server_url}"
+    puts "---- CONNECTING ----- #{username} on #{server_ip}"
+    @user = username
+    @client = Client.new(host: server_ip)
+
+    unless @client.login(username)
+      begin
+        @client.create_user(username)
+      rescue InvalidUsername => e
+        puts e.message
+        return
+      rescue DuplicateUsers
+        nil
+      end
+    end
+
     @ui.load_online_menu
   end
 
   def load_user_games
-    # TODO: Replace with actual games from server
     puts "---- LOADING USER GAMES -----"
 
-    g1 = {
-        :gid => 91023,
-        :game_type => 'Connect4',
-        :opponent_name => 'connect4_wizard'
-    }
+    games = []
+    begin
+      games = @client.user_games(@user)
+    rescue UserDoesNotExist
+      return
+    end
 
-    g2 = {
-        :gid => 12354,
-        :game_type => 'Toot/Otto',
-        :opponent_name => 'mr. otto'
-    }
-
-    @ui.load_current_games([g1, g2])
+    @ui.load_current_games(games)
   end
 
   def load_league_stats
@@ -175,6 +175,25 @@ class Connect4
     }
 
     @ui.load_stats([s1, s2])
+  end
+
+  def new_online_game(opp, type)
+    if type == Connect4GameType.instance.id
+      game_type = Connect4GameType.instance
+    else
+      game_type = TootOttoGameType.instance
+    end
+
+    begin
+      gid = @client.create_game(@user, opp, game_type.id, game_type.new_board)
+    end
+
+    @config.players[1] = PlayerFactory::remote_player(game_type, PlayerFactory::PLAYER_2,
+                                                      opp, gid, @client)
+    @ui.load_online_game
+
+    # Save the configuration
+    @game_type = game_type
   end
 end
 
