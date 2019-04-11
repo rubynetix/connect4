@@ -41,20 +41,11 @@ class GameHandler < BaseHandler
   end
 
   # Saves the gameboard and player turn
-  def put(game_id, game_board, player_turn, last_counter_pos)
-    transaction do
-      query(load_query('update_game'), player_turn, game_id)
-      query(load_query('update_board'), game_board, game_id)
-    end
-
-    { success: true }
-  end
-
-  def put2(game_id, new_board, player_name, counter_placement)
+  def put(game_id, new_board, player_name, counter_placement)
     raise GameDoesNotExist unless
         exists?("SELECT true from games WHERE game_id=UUID_TO_BIN(?);", game_id)
 
-    gid, state, current_turn, current_board = get(game_id).to_a()
+    _, state, current_turn, _ = get(game_id).to_a()
 
     raise GameOver unless state == "active"
     raise InvalidTurn unless current_turn == player_name
@@ -68,6 +59,7 @@ class GameHandler < BaseHandler
     end
 
     # TODO: Change dummy state to actual wincheck. Need to rework wincheck to check 2d arrays
+    # win_check.check(new_board, counter_placement)
     state = 'active'
 
     p1, p2 = query("SELECT p1, p2 FROM games WHERE game_id=UUID_TO_BIN(?);", game_id).first(2)
@@ -77,10 +69,13 @@ class GameHandler < BaseHandler
       next_turn = p1
     end
 
-    query(load_query('update_board'), new_board, game_id)
-    query(load_query('update_game'), next_turn, game_id)
-    query(load_query('update_game_state'), [state, game_id])
+    transaction do
+      query(load_query('update_board'), new_board, game_id)
+      query(load_query('update_game'), next_turn, game_id)
+      query(load_query('update_game_state'), [state, game_id])
+    end
 
+    { success: true }
   end
 
   def active_game?(p1, p2)
