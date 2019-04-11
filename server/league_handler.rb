@@ -4,7 +4,7 @@ require_relative 'server_error'
 class LeagueHandler < BaseHandler
 
   def league
-    { league: query(load_query("league"))}
+    { league: query(load_query("league")).to_a}
   end
 
   def standings(username)
