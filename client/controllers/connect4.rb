@@ -60,6 +60,8 @@ class Connect4
       load_league_stats
     when UIEvent::NEW_ONLINE_GAME
       new_online_game(event.opponent, event.game_type)
+    when UIEvent::CONTINUE_ONLINE_GAME
+      continue_online_game(event.game)
     else
       nil
     end
@@ -174,6 +176,16 @@ class Connect4
     @ui.load_online_game
 
     # Save the configuration
+    @config.game_type = game_type
+    @ready << true
+  end
+
+  def continue_online_game(game)
+    game_type = game[:game_type] == Connect4GameType.instance.name ? Connect4GameType.instance : TootOttoGameType.instance
+    @config.players[1] = PlayerFactory::remote_player(game_type, PlayerFactory::PLAYER_2,
+                                                      game[:opponent], @user, game[:game_id], @client)
+
+    @ui.load_online_game
     @config.game_type = game_type
     @ready << true
   end
