@@ -54,11 +54,7 @@ class Client
   end
 
   def get_league
-    l = []
-    call("league.league")[:league].each do |stat|
-      l = l.push symbolize_keys(stat)
-    end
-    l
+    call("league.league")[:league].map(&method(:symbolize_keys))
   end
   private
 
