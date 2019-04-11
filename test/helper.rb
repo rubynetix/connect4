@@ -8,4 +8,10 @@ class Helper < Test::Unit::TestCase
   def setup; end
 
   def teardown; end
+
+  def sink_stdout(&block)
+    $stdout = File.new( '/dev/null', 'w' )
+    block.call
+    $stdout = @orig_stdout
+  end
 end
