@@ -48,7 +48,7 @@ module C4
       end
     end
 
-    def queue &block
+    def queue &block #TODO: I'm not sure this is necessary; display error seems to always go on the gtk thread
       if Thread.current == Thread.main
         block.call
       else
