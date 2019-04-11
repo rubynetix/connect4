@@ -1,15 +1,14 @@
 Select username,
-       cwins,
-       closses,
-       cdraws,
-       cgames,
-       owins,
-       olosses,
-       odraws,
-       ogames,
-       games,
+       c4_wins,
+       c4_losses,
+       c4_draws,
+       c4_games,
+       to_wins,
+       to_losses,
+       to_draws,
+       to_games,
        rank
-From (Select *, ogames + cgames As games, @curRank := @curRank + 1 AS rank
+From (Select *, @curRank := @curRank + 1 AS rank
       FROM users u, (SELECT @curRank := 0) r
-  Order By score(cwins+owins, closses+olosses, cdraws+odraws)) As League
+  Order By score(c4_wins+to_wins, c4_losses+to_losses, c4_draws+to_draws)) As League
 Where username = ?;

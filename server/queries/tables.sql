@@ -11,14 +11,14 @@ DROP FUNCTION IF EXISTS score;
 CREATE TABLE IF NOT EXISTS users
 (
   username VARCHAR(50),
-  cwins   INTEGER     NOT NULL DEFAULT 0,
-  closses INTEGER     NOT NULL DEFAULT 0,
-  cdraws  INTEGER     NOT NULL DEFAULT 0,
-  cgames  INTEGER     NOT NULL DEFAULT 0,
-  owins   INTEGER     NOT NULL DEFAULT 0,
-  olosses INTEGER     NOT NULL DEFAULT 0,
-  odraws  INTEGER     NOT NULL DEFAULT 0,
-  ogames  INTEGER     NOT NULL DEFAULT 0,
+  c4_wins   INTEGER     NOT NULL DEFAULT 0,
+  c4_losses INTEGER     NOT NULL DEFAULT 0,
+  c4_draws  INTEGER     NOT NULL DEFAULT 0,
+  c4_games  INTEGER     NOT NULL DEFAULT 0,
+  to_wins   INTEGER     NOT NULL DEFAULT 0,
+  to_losses INTEGER     NOT NULL DEFAULT 0,
+  to_draws  INTEGER     NOT NULL DEFAULT 0,
+  to_games  INTEGER     NOT NULL DEFAULT 0,
   PRIMARY KEY (username)
 );
 
@@ -97,11 +97,11 @@ CREATE TRIGGER game_win1
 BEGIN
   IF NEW.state = 'w1' THEN
     IF NEW.type = 'c' THEN
-      UPDATE users SET cwins = cwins + 1, cgames = cgames + 1 WHERE username = NEW.p1;
-      UPDATE users SET closses = closses + 1, cgames = cgames + 1 WHERE username = NEW.p2;
+      UPDATE users SET c4_wins = c4_wins + 1, c4_games = c4_games + 1 WHERE username = NEW.p1;
+      UPDATE users SET c4_losses = c4_losses + 1, c4_games = c4_games + 1 WHERE username = NEW.p2;
     ELSE
-      UPDATE users SET owins = owins + 1, ogames = ogames + 1 WHERE username = NEW.p1;
-      UPDATE users SET olosses = olosses + 1, ogames = ogames + 1 WHERE username = NEW.p2;
+      UPDATE users SET to_wins = to_wins + 1, to_games = to_games + 1 WHERE username = NEW.p1;
+      UPDATE users SET to_losses = to_losses + 1, to_games = to_games + 1 WHERE username = NEW.p2;
     end if;
   end if;
 END$$
@@ -113,11 +113,11 @@ CREATE TRIGGER game_win2
 BEGIN
   IF NEW.state = 'w2' THEN
     IF NEW.type = 'c' THEN
-      UPDATE users SET cwins = cwins + 1, cgames = cgames + 1 WHERE username = NEW.p2;
-      UPDATE users SET closses = closses + 1, cgames = cgames + 1 WHERE username = NEW.p1;
+      UPDATE users SET c4_wins = c4_wins + 1, c4_games = c4_games + 1 WHERE username = NEW.p2;
+      UPDATE users SET c4_losses = c4_losses + 1, c4_games = c4_games + 1 WHERE username = NEW.p1;
     ELSE
-      UPDATE users SET owins = owins + 1, ogames = ogames + 1 WHERE username = NEW.p2;
-      UPDATE users SET olosses = olosses + 1, ogames = ogames + 1 WHERE username = NEW.p1;
+      UPDATE users SET to_wins = to_wins + 1, to_games = to_games + 1 WHERE username = NEW.p2;
+      UPDATE users SET to_losses = to_losses + 1, to_games = to_games + 1 WHERE username = NEW.p1;
     end if;
   end if;
 END$$
@@ -129,11 +129,11 @@ CREATE TRIGGER game_draw
 BEGIN
   IF NEW.state = 'draw' THEN
     IF NEW.type = 'c' THEN
-      UPDATE users SET cdraws = cdraws + 1, cgames = cgames + 1 WHERE username = NEW.p2;
-      UPDATE users SET cdraws = cdraws + 1, cgames = cgames + 1 WHERE username = NEW.p1;
+      UPDATE users SET c4_draws = c4_draws + 1, c4_games = c4_games + 1 WHERE username = NEW.p2;
+      UPDATE users SET c4_draws = c4_draws + 1, c4_games = c4_games + 1 WHERE username = NEW.p1;
     ELSE
-      UPDATE users SET odraws = odraws + 1, ogames = ogames + 1 WHERE username = NEW.p2;
-      UPDATE users SET odraws = odraws + 1, ogames = ogames + 1 WHERE username = NEW.p1;
+      UPDATE users SET to_draws = to_draws + 1, to_games = to_games + 1 WHERE username = NEW.p2;
+      UPDATE users SET to_draws = to_draws + 1, to_games = to_games + 1 WHERE username = NEW.p1;
     end if;
   end if;
 END$$

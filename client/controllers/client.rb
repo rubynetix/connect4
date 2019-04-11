@@ -53,8 +53,8 @@ class Client
     call("league.standings", username)
   end
 
-  def get_league(username)
-    call("league.league")
+  def get_league
+    call("league.league")[:league].map(&method(:symbolize_keys))
   end
   private
 

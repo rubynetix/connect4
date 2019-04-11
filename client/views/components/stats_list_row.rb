@@ -24,18 +24,17 @@ module C4
 
     def initialize(user_stat)
       super()
-
       username_lbl.text = user_stat[:username]
 
       c4_win_lbl.text = user_stat[:c4_wins].to_s
       c4_loss_lbl.text = user_stat[:c4_losses].to_s
       c4_draw_lbl.text = user_stat[:c4_draws].to_s
-      c4_gp_lbl.text = user_stat[:c4_gp].to_s
+      c4_gp_lbl.text = user_stat[:c4_games].to_s
 
       to_win_lbl.text = user_stat[:to_wins].to_s
       to_loss_lbl.text = user_stat[:to_losses].to_s
       to_draw_lbl.text = user_stat[:to_draws].to_s
-      to_gp_lbl.text = user_stat[:to_gp].to_s
+      to_gp_lbl.text = user_stat[:to_games].to_s
     end
   end
 end
