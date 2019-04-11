@@ -53,8 +53,12 @@ class Client
     call("league.standings", username)
   end
 
-  def get_league(username)
-    call("league.league")
+  def get_league
+    l = []
+    call("league.league")[:league].each do |stat|
+      l = l.push symbolize_keys(stat)
+    end
+    l
   end
   private
 
