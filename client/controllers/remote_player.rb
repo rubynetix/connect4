@@ -17,14 +17,19 @@ class RemotePlayer < Player
     ui.set_turn(self)
     @board = board
     @waiting = true
-    update_remote_board(board, @name)
+    update_remote_board(board, @local_user)
     get_action ui, board
   end
 
   # Send updated board to remote server
   def update_remote_board(board, player)
     # TODO: Handle fail response
-    @client.put_game(@game_id, board, player)
+    begin
+      @client.put_game(@game_id, board, player)
+    rescue InvalidTurn
+      #TODO: Ignore move
+      nil
+    end
   end
 
   def get_action(ui, board)
@@ -46,7 +51,7 @@ class RemotePlayer < Player
   end
 
   def update_board(board)
-    @board.board = board
+    @board = board
     # TODO: Might have to do something (eg reset) board.last_location_pos
     PlayerAction::REMOTE_UPDATE_BOARD
   end
