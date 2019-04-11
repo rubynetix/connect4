@@ -5,7 +5,7 @@ class GameBoard
   INVALID_ROW = -1
 
   attr_accessor :rows, :cols
-  attr_reader :last_counter_pos, :win_check
+  attr_accessor :last_counter_pos, :win_check
 
   class << self
     def connect4
@@ -20,15 +20,13 @@ class GameBoard
   def initialize(rows: 6, cols: 7, board: nil, win_check: WinCheck.connect4, last_move: nil)
     @rows = rows
     @cols = cols
-    @board = Array.new(@rows) {Array.new(@cols, EmptyCounter.instance)}
-    @board = board unless board.nil?
+    @board = board || Array.new(@rows) {Array.new(@cols, EmptyCounter.instance)}
     @last_counter_pos = last_move
     @win_check = win_check
   end
 
   def dup(*)
-    cp = initialize_copy
-    cp
+    initialize_copy
   end
 
   def initialize_copy(*)
@@ -118,7 +116,7 @@ class GameBoard
   end
 
   def _dump level
-    s = ''
+    s = [@rows, @cols].join(':') + "$"
     @board.each do |r|
       r.each do |c|
         s += "#{c}"
@@ -129,12 +127,19 @@ class GameBoard
   end
 
   def self._load args
-    rows = args.split(':')
-    rows_a = []
-    rows.each do |r|
-      rows_a.append(r.chars)
+    params, board_str = args.split("$")
+    rows, cols = params.split(":")
+
+    board = board_str.split(':')
+    board = board.map do |row_str|
+      row = []
+      row_str.each_char do |c|
+        row.append(CounterUtil::symbol_to_counter(c))
+      end
+      row
     end
-    rows_a
+
+    new(rows: rows, cols: cols, board: board)
   end
 
   private

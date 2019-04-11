@@ -16,7 +16,7 @@ module C4
     GTK_PENDING_BLOCKS_LOCK = Monitor.new
 
     def initialize
-      super 'com.rubynetix.connect4', Gio::ApplicationFlags::FLAGS_NONE
+      super 'com.rubynetix.connect4' + rand(100).to_s, Gio::ApplicationFlags::FLAGS_NONE
 
       signal_connect :activate do |application|
 

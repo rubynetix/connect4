@@ -123,6 +123,7 @@ class Connect4
     puts "---- CONNECTING ----- #{username} on #{server_ip}"
     @user = username
     @client = Client.new(host: server_ip)
+    @config.client = @client
 
     unless @client.login(username)
       begin
@@ -175,6 +176,7 @@ class Connect4
       return
     end
 
+    @config.players[0] = PlayerFactory::player1(game_type, @user)
     @config.players[1] = PlayerFactory::remote_player(game_type, PlayerFactory::PLAYER_2,
                                                       opp, @user, gid, @client)
     @ui.load_online_game
@@ -187,6 +189,7 @@ class Connect4
 
   def continue_online_game(game)
     game_type = game[:game_type] == Connect4GameType.instance.name ? Connect4GameType.instance : TootOttoGameType.instance
+    @config.players[0] = PlayerFactory::player1(game_type, @user)
     @config.players[1] = PlayerFactory::remote_player(game_type, PlayerFactory::PLAYER_2,
                                                       game[:opponent], @user, game[:game_id], @client)
 
@@ -210,7 +213,7 @@ class GameConfig
     @alg = :AlphaBetaPruning
     @game_type = Connect4GameType.instance
     @client = Client.new
-    @online = true
+    @online = false
   end
 
   def reset; end

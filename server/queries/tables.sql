@@ -8,8 +8,7 @@ DROP TABLE IF EXISTS otto_stats;
 DROP TABLE IF EXISTS users;
 DROP FUNCTION IF EXISTS score;
 
-CREATE TABLE IF NOT EXISTS users
-(
+CREATE TABLE IF NOT EXISTS users (
   username VARCHAR(50),
   c4_wins   INTEGER     NOT NULL DEFAULT 0,
   c4_losses INTEGER     NOT NULL DEFAULT 0,
@@ -22,8 +21,7 @@ CREATE TABLE IF NOT EXISTS users
   PRIMARY KEY (username)
 );
 
-CREATE TABLE IF NOT EXISTS games
-(
+CREATE TABLE IF NOT EXISTS games (
   game_id BINARY(16) PRIMARY KEY,
   type    ENUM ('connect4','toototto')        NOT NULL,
   state   ENUM ('w1', 'w2', 'draw', 'active') NOT NULL,
@@ -34,10 +32,9 @@ CREATE TABLE IF NOT EXISTS games
   FOREIGN KEY (p2) REFERENCES users (username)
 );
 
-CREATE TABLE IF NOT EXISTS game_boards
-(
+CREATE TABLE IF NOT EXISTS game_boards (
   game_id BINARY(16) NOT NULL,
-  board   BLOB       NOT NULL,
+  board VARCHAR(500) NOT NULL,
   FOREIGN KEY (game_id) REFERENCES games (game_id) ON DELETE CASCADE
 );
 
