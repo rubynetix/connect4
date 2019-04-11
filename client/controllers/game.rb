@@ -57,7 +57,6 @@ class Game
         @done = true
         @winner = @players[1]
       end
-
     end
   end
 

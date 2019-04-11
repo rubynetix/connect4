@@ -4,6 +4,7 @@ def get_asset(assert_path)
   "#{File.expand_path(__dir__)}/../views/assets/#{assert_path}"
 end
 
+
 module Counter
 
   def sprite
@@ -73,5 +74,19 @@ class EmptyCounter
 
   def empty?
     true
+  end
+end
+
+class CounterUtil
+  ALL_COUNTERS = [
+      YellowCounter.instance,
+      RedCounter.instance,
+      TCounter.instance,
+      OCounter.instance,
+      EmptyCounter.instance
+  ]
+
+  def self.symbol_to_counter(symbol)
+    ALL_COUNTERS.detect {|c| c.symbol == symbol }
   end
 end
