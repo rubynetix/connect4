@@ -16,7 +16,7 @@ class GtkUI
     @app.register(self)
   end
 
-  def load_game
+  def load_offline_game
     @app.ui.display_window(C4::OfflineGameWindow.class_variable_get(:@@wid))
   end
 

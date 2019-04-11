@@ -8,12 +8,13 @@ class PlayerFactory
   PLAYER_2 = 1
 
   class << self
-    def player(game_type, p, name)
-      if p == PLAYER_1
-        Player.new(name, game_type.p1_counters)
-      else
-        Player.new(name, game_type.p2_counters)
-      end
+
+    def player1(game_type, name)
+      Player.new(name, game_type.p1_counters)
+    end
+
+    def player2(game_type, name)
+      Player.new(name, game_type.p2_counters)
     end
 
     def computer_player(game_type, p, name, algorithm)

@@ -44,7 +44,11 @@ class Connect4
 
   def launch_game
     game = Game.new(@config)
-    @ui.load_game
+    if @config.online?
+      @ui.load_online_game
+    else
+      @ui.load_offline_game
+    end
     game.game_loop
   end
 
@@ -80,8 +84,7 @@ class Connect4
   def handle_menu_click(event)
     case event.click
     when MenuClickEvent::START
-      @config.gameboard = @game_type.new_board
-      puts @config.gameboard.win_check.wins
+      @config.online = false
       @ready << true
     when MenuClickEvent::PVC_EASY
       @config.alg = :RandomAction
@@ -93,7 +96,6 @@ class Connect4
       @config.players[1] = PlayerFactory::player(@game_type, PlayerFactory::PLAYER_2, 'p2')
     when MenuClickEvent::CONNECT4
       @game_type = Connect4GameType.instance
-      @config.win_check = @game_type.win_check
       @config.players[0].counters = @game_type.p1_counters
       if @config.players[1].instance_of? ComputerPlayer
         configure_bot
@@ -102,7 +104,6 @@ class Connect4
       end
     when MenuClickEvent::TOOT_OTTO
       @game_type = TootOttoGameType.instance
-      @config.win_check = @game_type.win_check
       @config.players[0].counters = @game_type.p1_counters
       if @config.players[1].instance_of? ComputerPlayer
         configure_bot
@@ -122,6 +123,7 @@ class Connect4
     puts "---- CONNECTING ----- #{username} on #{server_ip}"
     @user = username
     @client = Client.new(host: server_ip)
+    @config.client = @client
 
     unless @client.login(username)
       begin
@@ -174,28 +176,33 @@ class Connect4
       return
     end
 
+    @config.players[0] = PlayerFactory::player1(game_type, @user)
     @config.players[1] = PlayerFactory::remote_player(game_type, PlayerFactory::PLAYER_2,
                                                       opp, @user, gid, @client)
     @ui.load_online_game
 
     # Save the configuration
     @config.game_type = game_type
+    @config.online = true
     @ready << true
   end
 
   def continue_online_game(game)
     game_type = game[:game_type] == Connect4GameType.instance.name ? Connect4GameType.instance : TootOttoGameType.instance
+    @config.players[0] = PlayerFactory::player1(game_type, @user)
     @config.players[1] = PlayerFactory::remote_player(game_type, PlayerFactory::PLAYER_2,
                                                       game[:opponent], @user, game[:game_id], @client)
 
     @ui.load_online_game
     @config.game_type = game_type
+    @config.online = true
     @ready << true
   end
 end
 
 class GameConfig
-  attr_accessor :players, :game_type, :ui, :alg, :client
+  attr_accessor :players, :game_type, :ui, :alg, :client, :online
+  alias_method :online?, :online
 
   def initialize(ui)
     @ui = ui
@@ -206,8 +213,8 @@ class GameConfig
     @alg = :AlphaBetaPruning
     @game_type = Connect4GameType.instance
     @client = Client.new
+    @online = false
   end
 
-  def reset
-  end
+  def reset; end
 end
