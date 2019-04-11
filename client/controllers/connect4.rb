@@ -80,8 +80,6 @@ class Connect4
   def handle_menu_click(event)
     case event.click
     when MenuClickEvent::START
-      @config.gameboard = @game_type.new_board
-      puts @config.gameboard.win_check.wins
       @ready << true
     when MenuClickEvent::PVC_EASY
       @config.alg = :RandomAction
@@ -93,7 +91,6 @@ class Connect4
       @config.players[1] = PlayerFactory::player(@game_type, PlayerFactory::PLAYER_2, 'p2')
     when MenuClickEvent::CONNECT4
       @game_type = Connect4GameType.instance
-      @config.win_check = @game_type.win_check
       @config.players[0].counters = @game_type.p1_counters
       if @config.players[1].instance_of? ComputerPlayer
         configure_bot
@@ -102,7 +99,6 @@ class Connect4
       end
     when MenuClickEvent::TOOT_OTTO
       @game_type = TootOttoGameType.instance
-      @config.win_check = @game_type.win_check
       @config.players[0].counters = @game_type.p1_counters
       if @config.players[1].instance_of? ComputerPlayer
         configure_bot
