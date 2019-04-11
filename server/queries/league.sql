@@ -1,2 +1,2 @@
-Select *, c4_games+to_games As games
+Select *
 FROM users;

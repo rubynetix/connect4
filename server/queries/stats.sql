@@ -7,9 +7,8 @@ Select username,
        to_losses,
        to_draws,
        to_games,
-       games,
        rank
-From (Select *, to_games + c4_games As games, @curRank := @curRank + 1 AS rank
+From (Select *, @curRank := @curRank + 1 AS rank
       FROM users u, (SELECT @curRank := 0) r
   Order By score(c4_wins+to_wins, c4_losses+to_losses, c4_draws+to_draws)) As League
 Where username = ?;
