@@ -57,5 +57,18 @@ module C4
         end
       end
     end
+
+    def run_with_queue timeout
+      GLib::Timeout.add timeout do
+        GTK_PENDING_BLOCKS_LOCK.synchronize do
+          for block in GTK_PENDING_BLOCKS
+            block.call
+          end
+          GTK_PENDING_BLOCKS.clear
+        end
+        true
+      end
+      run
+    end
   end
 end
