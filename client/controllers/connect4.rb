@@ -44,7 +44,11 @@ class Connect4
 
   def launch_game
     game = Game.new(@config)
-    @ui.load_game
+    if @config.online?
+      @ui.load_online_game
+    else
+      @ui.load_offline_game
+    end
     game.game_loop
   end
 
@@ -80,6 +84,7 @@ class Connect4
   def handle_menu_click(event)
     case event.click
     when MenuClickEvent::START
+      @config.online = false
       @ready << true
     when MenuClickEvent::PVC_EASY
       @config.alg = :RandomAction
@@ -197,6 +202,7 @@ end
 
 class GameConfig
   attr_accessor :players, :game_type, :ui, :alg, :client, :online
+  alias_method :online?, :online
 
   def initialize(ui)
     @ui = ui
@@ -210,6 +216,5 @@ class GameConfig
     @online = false
   end
 
-  def reset
-  end
+  def reset; end
 end
