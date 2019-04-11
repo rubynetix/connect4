@@ -181,12 +181,12 @@ class Connect4
   end
 
   def continue_online_game(game)
-    puts "Continuing game #{game[:game_id]}"
-    @config.players[1] = PlayerFactory::remote_player(game[:game_type], PlayerFactory::PLAYER_2,
+    game_type = game[:game_type] == Connect4GameType.instance.name ? Connect4GameType.instance : TootOttoGameType.instance
+    @config.players[1] = PlayerFactory::remote_player(game_type, PlayerFactory::PLAYER_2,
                                                       game[:opponent], @user, game[:game_id], @client)
 
     @ui.load_online_game
-    @config.game_type = game[:game_type]
+    @config.game_type = game_type
     @ready << true
   end
 end
