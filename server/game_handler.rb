@@ -50,6 +50,39 @@ class GameHandler < BaseHandler
     { success: true }
   end
 
+  def put2(game_id, new_board, player_name, counter_placement)
+    raise GameDoesNotExist unless
+        exists?("SELECT true from games WHERE game_id=UUID_TO_BIN(?);", game_id)
+
+    gid, state, current_turn, current_board = get(game_id).to_a()
+
+    raise GameOver unless state == "active"
+    raise InvalidTurn unless current_turn == player_name
+
+    #TODO: Refactor this into 'get' function
+    game_type = query("SELECT type FROM games WHERE game_id=UUID_TO_BIN(?);", game_id).first
+    if game_type == 'connect4'
+      win_check = WinCheck.connect4
+    else
+      win_check = WinCheck.toot_otto
+    end
+
+    # TODO: Change dummy state to actual wincheck. Need to rework wincheck to check 2d arrays
+    state = 'active'
+
+    p1, p2 = query("SELECT p1, p2 FROM games WHERE game_id=UUID_TO_BIN(?);", game_id).first(2)
+    if current_turn == p1
+      next_turn = p2
+    else
+      next_turn = p1
+    end
+
+    query(load_query('update_board'), new_board, game_id)
+    query(load_query('update_game'), next_turn, game_id)
+    query(load_query('update_game_state'), [state, game_id])
+
+  end
+
   def active_game?(p1, p2)
     exists? <<END_SQL
       SELECT true FROM games
