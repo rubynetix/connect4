@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS users
 CREATE TABLE IF NOT EXISTS games
 (
   game_id BINARY(16) PRIMARY KEY,
-  type    ENUM ('c','t')                      NOT NULL,
+  type    ENUM ('connect4','toototto')        NOT NULL,
   state   ENUM ('w1', 'w2', 'draw', 'active') NOT NULL,
   turn    VARCHAR(50)                         NOT NULL,
   p1      VARCHAR(50)                         NOT NULL,

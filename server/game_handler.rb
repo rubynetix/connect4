@@ -24,7 +24,7 @@ class GameHandler < BaseHandler
 
     transaction do
       query(load_query('create_game'),
-            game_id, game_type, p1, p2, p1)
+            game_id, game_type, p1, p1, p2)
       query(load_query('create_board'),
             game_id, gb)
     end
@@ -53,7 +53,7 @@ class GameHandler < BaseHandler
   def active_game?(p1, p2)
     exists? <<END_SQL
       SELECT true FROM games
-      WHERE ((p1='#{p1}' AND p2=#{p2}) OR (p1='#{p2}' AND p2='#{p1}'))
+      WHERE ((p1='#{p1}' AND p2='#{p2}') OR (p1='#{p2}' AND p2='#{p1}'))
         AND state = 'active';
 END_SQL
   end

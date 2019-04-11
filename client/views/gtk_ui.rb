@@ -1,6 +1,7 @@
 require_relative 'observable'
-require_relative '../views/windows/offline_game_menu_window'
-require_relative '../../client/views/windows/online_game_menu_window'
+require_relative 'windows/offline_game_menu_window'
+require_relative 'windows/online_game_menu_window'
+require_relative 'windows/online_game_window'
 
 # Wrapper class that knows about the GTK windows involved
 # in the presenting the application and presents a UI
