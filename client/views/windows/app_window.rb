@@ -63,8 +63,6 @@ module C4
       end
     end
 
-    private
-
     def display_help(msg)
       display_dialog(:info, msg, :ok)
     end

@@ -11,7 +11,6 @@ class GtkUI
 
   def initialize(app)
     @app = app
-
     # Listen for any events in the GTK application and bubble
     # them up the observable chain to listening controllers
     @app.register(self)
@@ -43,6 +42,11 @@ class GtkUI
 
   def method_missing(m, *args, &block)
     @app.ui.active_window.send(m, *args, &block)
+  end
+
+  def display_error(msg)
+    puts Thread.current.object_id
+    @app.queue {@app.ui.display_error(msg)}
   end
 
   def shutdown

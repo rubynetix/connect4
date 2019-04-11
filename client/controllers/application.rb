@@ -12,6 +12,9 @@ module C4
 
     attr_reader :ui, :main_menu_window, :online_menu_window, :offline_menu_window, :game_window, :online_game_window, :stats_window
 
+    GTK_PENDING_BLOCKS = []
+    GTK_PENDING_BLOCKS_LOCK = Monitor.new
+
     def initialize
       super 'com.rubynetix.connect4', Gio::ApplicationFlags::FLAGS_NONE
 
@@ -43,6 +46,29 @@ module C4
         @ui.register(self)
         @ui.present
       end
+    end
+
+    def queue &block #TODO: I'm not sure this is necessary; display error seems to always go on the gtk thread
+      if Thread.current == Thread.main
+        block.call
+      else
+        GTK_PENDING_BLOCKS_LOCK.synchronize do
+          GTK_PENDING_BLOCKS << block
+        end
+      end
+    end
+
+    def run_with_queue timeout
+      GLib::Timeout.add timeout do
+        GTK_PENDING_BLOCKS_LOCK.synchronize do
+          for block in GTK_PENDING_BLOCKS
+            block.call
+          end
+          GTK_PENDING_BLOCKS.clear
+        end
+        true
+      end
+      run
     end
   end
 end

@@ -33,5 +33,4 @@ c4 = Connect4.new(ui)
 Thread.new do
   c4.app_loop
 end
-
-puts app.run
+puts app.run_with_queue 100
