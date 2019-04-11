@@ -63,6 +63,9 @@ class Connect4
     else
       nil
     end
+  rescue Errno::ECONNREFUSED => e
+    puts e.message
+    @ui.display_error(e.message)
   end
 
   private

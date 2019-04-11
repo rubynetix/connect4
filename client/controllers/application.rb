@@ -12,6 +12,9 @@ module C4
 
     attr_reader :ui, :main_menu_window, :online_menu_window, :offline_menu_window, :game_window, :online_game_window, :stats_window
 
+    GTK_PENDING_BLOCKS = []
+    GTK_PENDING_BLOCKS_LOCK = Monitor.new
+
     def initialize
       super 'com.rubynetix.connect4', Gio::ApplicationFlags::FLAGS_NONE
 
@@ -42,6 +45,16 @@ module C4
         # chain to the wrapping GtkUI instance
         @ui.register(self)
         @ui.present
+      end
+    end
+
+    def queue &block
+      if Thread.current == Thread.main
+        block.call
+      else
+        GTK_PENDING_BLOCKS_LOCK.synchronize do
+          GTK_PENDING_BLOCKS << block
+        end
       end
     end
   end
