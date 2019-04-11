@@ -81,10 +81,6 @@ END_SQL
 
   private
 
-  def get_turn(game_id)
-
-  end
-
   def create_win_check(game_id)
     game_type = query("SELECT type FROM games WHERE game_id=UUID_TO_BIN(?);", game_id).first
     if game_type == 'connect4'

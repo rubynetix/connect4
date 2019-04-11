@@ -17,9 +17,8 @@ class RemotePlayer < Player
     ui.set_turn(self)
     @board = board
     @waiting = true
-    update_remote_board(board, @name)
+    update_remote_board(board, @local_user)
     get_action ui, board
-    update_remote_board(@board, @local_user)
   end
 
   # Send updated board to remote server
