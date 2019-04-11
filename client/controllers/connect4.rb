@@ -165,22 +165,22 @@ class Connect4
       # TODO: Display error message
       return
     rescue GameAlreadyInProgress
-      # TODO: Redirect to new game
+      # TODO: Redirect to existing game
       return
     end
 
     @config.players[1] = PlayerFactory::remote_player(game_type, PlayerFactory::PLAYER_2,
-                                                      opp, gid, @client)
+                                                      opp, @user, gid, @client)
     @ui.load_online_game
 
     # Save the configuration
-    @game_type = game_type
+    @config.game_type = game_type
     @ready << true
   end
 end
 
 class GameConfig
-  attr_accessor :players, :gameboard, :win_check, :ui, :alg, :client
+  attr_accessor :players, :game_type, :ui, :alg, :client
 
   def initialize(ui)
     @ui = ui
@@ -189,12 +189,10 @@ class GameConfig
         Player.new('p2', [YellowCounter.instance])
     ]
     @alg = :AlphaBetaPruning
-    @win_check = WinCheck.connect4
-    @gameboard = GameBoard.connect4
+    @game_type = Connect4GameType.instance
     @client = Client.new
   end
 
   def reset
-    @gameboard = @gameboard.clear
   end
 end

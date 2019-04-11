@@ -36,7 +36,7 @@ class Client
 
   def create_game(username1, username2, game_type, game_board)
     gb = encode(game_board)
-    call("game.create", username1, username2, game_type, gb)
+    call("game.create", username1, username2, game_type, gb)[:game_id]
   end
 
   def get_game(gid)
@@ -45,8 +45,9 @@ class Client
     game
   end
 
-  def put_game(gid, board_array, player_turn, game_state)
-    call("put.game", [gid, board_array, player_turn, game_state])
+  def put_game(gid, game_board, player_turn)
+    gb = encode(game_board)
+    call("game.put", gid, gb, player_turn)
   end
 
   def get_league_standings(username)
@@ -56,6 +57,7 @@ class Client
   def get_league
     call("league.league")[:league].map(&method(:symbolize_keys))
   end
+
   private
 
   def call(method, *args)

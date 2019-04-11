@@ -32,13 +32,12 @@ class PlayerFactory
       bot
     end
 
-    def remote_player(game_type, p, name, game_id, client)
+    def remote_player(game_type, p, name, local_user, game_id, client)
       if p == PLAYER_1
-        RemotePlayer.new(name, game_type.p1_counters, game_id, client)
+        RemotePlayer.new(name, local_user, game_type.p1_counters, game_id, 'w2', client)
       else
-        RemotePlayer.new(name, game_type.p2_counters, game_id, client)
+        RemotePlayer.new(name, local_user, game_type.p2_counters, game_id, 'w1', client)
       end
     end
-
   end
 end
