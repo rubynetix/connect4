@@ -3,9 +3,8 @@ class Game
     raise NotTwoPlayersError unless config.players.size == 2
 
     @players = config.players
-    puts config.gameboard.win_check.wins
-    @gameboard = config.gameboard
-    @win_check = config.win_check
+    @gameboard = config.game_type.new_board
+    @win_check = config.game_type.win_check
     @client = config.client
     @ui = config.ui
     @done = false

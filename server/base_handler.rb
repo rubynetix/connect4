@@ -8,7 +8,7 @@ def prod_db
       :database => "connect4",
       :port => 3306,
       :username => "ece421",
-      :password => "password")
+      :password => "ece421")
 end
 
 
