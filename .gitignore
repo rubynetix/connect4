@@ -14,7 +14,6 @@
 /tmp/
 
 ## Environment normalization:
-/.bundle/
 /vendor/bundle
 /lib/bundler/man/
 
