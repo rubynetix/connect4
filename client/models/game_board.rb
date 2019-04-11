@@ -117,6 +117,26 @@ class GameBoard
     col
   end
 
+  def _dump level
+    s = ''
+    @board.each do |r|
+      r.each do |c|
+        s += "#{c}"
+      end
+      s += ":"
+    end
+    s
+  end
+
+  def self._load args
+    rows = args.split(':')
+    rows_a = []
+    rows.each do |r|
+      rows_a.append(r.chars)
+    end
+    rows_a
+  end
+
   private
 
   # Get the row the counter will fall to if placed in column col
