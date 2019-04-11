@@ -1,4 +1,5 @@
 require_relative '../observable'
+require_relative '../events/continue_game_event'
 
 module C4
   class GameListRow < Gtk::ListBoxRow
@@ -18,12 +19,12 @@ module C4
 
     def initialize(game)
       super()
+      @game = game
 
       game_type_lbl.text = game[:game_type] || ""
       opponent_lbl.text = game[:opponent] || ""
 
-      @continue_btn = continue_game_btn
-      @continue_btn.signal_connect('clicked') {puts "---- CONTINUE CLICK ----"}
+      continue_game_btn.signal_connect('clicked') {notify_all(ContinueGameEvent.new(@game))}
     end
   end
 end
