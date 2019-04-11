@@ -8,6 +8,7 @@ require_relative '../components/game_list_row'
 require_relative '../events/ui_event'
 require_relative 'widget_window'
 require_relative 'stats_window'
+require_relative '../../../client/models/game_type'
 
 module C4
   class OnlineGameMenuWindow < Gtk::Box
@@ -94,9 +95,9 @@ module C4
     def game_type
       active_btn = connect4_btn.group.detect(&:active?)
       if active_btn.eql?(connect4_btn)
-        :c
+        Connect4GameType.instance.id
       else
-        :t
+        TootOttoGameType.instance.id
       end
     end
 
