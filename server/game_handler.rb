@@ -41,10 +41,10 @@ class GameHandler < BaseHandler
   end
 
   # Saves the gameboard and player turn
-  def put(game_id, game_board, player_turn)
+  def put(game_id, game_board, player_turn, last_counter_pos)
     transaction do
       query(load_query('update_game'), player_turn, game_id)
-      query(load_query('update_board'), game_board, game_id)
+      query(load_query('update_board'), game_board, game_id, last_counter_pos)
     end
 
     { success: true }

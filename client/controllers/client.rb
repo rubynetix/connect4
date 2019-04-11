@@ -47,7 +47,8 @@ class Client
 
   def put_game(gid, game_board, player_turn)
     gb = encode(game_board)
-    call("game.put", gid, gb, player_turn)
+    lcp = encode(game_board.last_counter_pos)
+    call("game.put", gid, gb, player_turn, lcp)
   end
 
   def get_league_standings(username)
