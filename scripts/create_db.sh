@@ -2,7 +2,7 @@
 
 PROJECT_ROOT=$( cd "$( dirname "${BASH_SOURCE[0]}")/.." ; pwd -P )
 
-echo Setup as root
+echo Enter your COMPUTER root password
 mysql -u root -p <<QUERY
 CREATE USER IF NOT EXISTS 'ece421'@'localhost'
     IDENTIFIED BY 'ece421';

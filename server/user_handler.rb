@@ -1,5 +1,5 @@
-require_relative 'enums'
 require_relative 'base_handler'
+require_relative '../client/models/game_type'
 
 # Handles user related requests
 class UserHandler < BaseHandler
@@ -32,7 +32,7 @@ class UserHandler < BaseHandler
     raise UserDoesNotExist unless user_exists?(username)
     games = []
     query(load_query('user_games'), username, username).each do |row|
-      row[:game_type] = GAME_TYPES[row[:game_type].to_sym]
+      row[:game_type] = game_type_to_name(row[:game_type])
       if row[:p1] != username
         games.append({ **row, opponent: row[:p1] })
       else
@@ -50,4 +50,11 @@ class UserHandler < BaseHandler
     end
     { :list => users }
   end
+
+
+  def game_type_to_name(id)
+    [Connect4GameType.instance, TootOttoGameType.instance]
+      .detect { |gt| gt.id == id }.name
+  end
+
 end

@@ -114,7 +114,6 @@ class Connect4
   end
 
   def server_connect(username, server_ip)
-    # TODO: Start the 'session'
     puts "---- CONNECTING ----- #{username} on #{server_ip}"
     @user = username
     @client = Client.new(host: server_ip)
@@ -186,6 +185,15 @@ class Connect4
 
     begin
       gid = @client.create_game(@user, opp, game_type.id, game_type.new_board)
+    rescue UserDoesNotExist
+      # TODO: Display error
+      return
+    rescue ArgumentError => e
+      # TODO: Display error message
+      return
+    rescue GameAlreadyInProgress
+      # TODO: Redirect to new game
+      return
     end
 
     @config.players[1] = PlayerFactory::remote_player(game_type, PlayerFactory::PLAYER_2,
@@ -194,6 +202,7 @@ class Connect4
 
     # Save the configuration
     @game_type = game_type
+    @ready << true
   end
 end
 

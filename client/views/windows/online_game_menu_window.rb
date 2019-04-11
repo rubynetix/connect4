@@ -1,14 +1,16 @@
-require_relative '../../../server/enums'
-require_relative '../../../client/views/events/window_change_event'
-require_relative '../../../client/views/observable'
-require_relative '../../../client/views/windows/main_menu_window'
+require_relative '../observable'
+require_relative 'main_menu_window'
 require_relative 'online_game_window'
-require_relative '../events/menu_click_event'
+require_relative '../../../client/models/game_type'
 require_relative '../components/game_list_row'
 require_relative '../events/ui_event'
+require_relative '../events/menu_click_event'
+require_relative '../events/window_change_event'
+require_relative '../events/new_online_game_event'
 require_relative 'widget_window'
 require_relative 'stats_window'
 require_relative '../../../client/models/game_type'
+
 
 module C4
   class OnlineGameMenuWindow < Gtk::Box
@@ -88,7 +90,6 @@ module C4
 
     def try_new_game
       opp = @opponent_entry.text
-
       notify_all(NewOnlineGameEvent.new(opp, game_type))
     end
 

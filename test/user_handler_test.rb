@@ -77,7 +77,9 @@ class UserHandlerTest < HandlerTestHelper
     name = 'tester'
     games = [1, 2, 3]
     db = MockDB.new(['tester'], [
-        {:game_id => 1, game_type: 'c' }, {:game_id => 2, game_type: 'c' }, {:game_id => 3, game_type: 't'}])
+        {:game_id => 1, game_type: 'connect4' },
+        {:game_id => 2, game_type: 'connect4' },
+        {:game_id => 3, game_type: 'toototto'}])
     handler = UserHandler.new(:db_client => db)
 
     # Preconditions
@@ -108,8 +110,6 @@ class UserHandlerTest < HandlerTestHelper
       assert_equal(user_list, result[:list], 'result not equal to user_list')
     end
   end
-
-
 
   def test_league_standings
     name = 'kanye'
