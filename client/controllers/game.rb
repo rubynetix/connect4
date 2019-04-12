@@ -12,6 +12,12 @@ class Game
 
     if config.online?
       game = @client.get_game(config.gid)
+
+      # Swap player order if opponent's turn
+      if game[:turn] == @players[1].name
+        @players[0], @players[1] = @players[1], @players[0]
+      end
+
       @gameboard = game[:board]
     else
       @gameboard = config.game_type.new_board
