@@ -24,7 +24,7 @@ class ClientTest < Helper
 
     def serve
       puts HOST
-      s = XMLRPC::Server.new()
+      s = XMLRPC::Server.new(PORT)
       db_client = test_db
       s.add_handler('user', UserHandler.new(db_client))
       s.add_handler('game', GameHandler.new(db_client))

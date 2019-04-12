@@ -62,6 +62,3 @@ class TestDBHandler < BaseHandler
     end
   end
 end
-
-
-tdbh = TestDBHandler.new
