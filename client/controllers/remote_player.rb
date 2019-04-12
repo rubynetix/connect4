@@ -38,6 +38,7 @@ class RemotePlayer < Player
       # TODO: CURRENTLY WHERE THE GAME FAILS
       result = @client.get_game(@game_id)
       if result[:state] != 'active'
+        ui.unregister(self)
         return PlayerAction::REMOTE_UPDATE
       elsif result[:turn] == @local_user
         ui.unregister(self)

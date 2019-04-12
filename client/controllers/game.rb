@@ -50,6 +50,9 @@ class Game
       @done = true
       @winner = other_player(player)
     when PlayerAction::PLACE_COUNTER
+      # No need to do win analysis locally for online games
+      return if @online
+
       case @win_check.check(@gameboard)
       when WinEnum::DRAW
         @done = true
