@@ -6,7 +6,7 @@ require_relative 'events/menu_click_event'
 require_relative 'events/counter_selected_event'
 
 def abs_path(path)
-  "#{File.expand_path(__dir__)}#{path}"
+  File.join("#{File.expand_path(__dir__)}","#{path}")
 end
 
 class GameWindow

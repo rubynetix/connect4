@@ -13,7 +13,7 @@ end
 
 
 def abs_path(path)
-  "#{File.expand_path(__dir__)}/#{path}"
+  File.join("#{File.expand_path(__dir__)}","#{path}")
 end
 
 
