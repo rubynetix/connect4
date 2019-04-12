@@ -93,9 +93,9 @@ class Connect4
       @config.alg = :AlphaBetaPruning
       configure_bot
     when MenuClickEvent::PVP
-      @config.players[1] = PlayerFactory::player(@game_type, PlayerFactory::PLAYER_2, 'p2')
+      @config.players[1] = PlayerFactory::player2(@game_type, 'p2')
     when MenuClickEvent::CONNECT4
-      @game_type = Connect4GameType.instance
+      @config.game_type = @game_type = Connect4GameType.instance
       @config.players[0].counters = @game_type.p1_counters
       if @config.players[1].instance_of? ComputerPlayer
         configure_bot
@@ -103,7 +103,7 @@ class Connect4
         @config.players[1].counters = @game_type.p2_counters
       end
     when MenuClickEvent::TOOT_OTTO
-      @game_type = TootOttoGameType.instance
+      @config.game_type = @game_type = TootOttoGameType.instance
       @config.players[0].counters = @game_type.p1_counters
       if @config.players[1].instance_of? ComputerPlayer
         configure_bot
