@@ -192,14 +192,13 @@ class Connect4
     game_type = game[:game_type] == Connect4GameType.instance.name ? Connect4GameType.instance : TootOttoGameType.instance
     opp = game[:opponent]
     gid = game[:game_id]
-    game = @client.get_game(gid)
 
-    if game[:turn] == @user
+    if @user == game[:p1]
       @config.players[0] = PlayerFactory::player1(game_type, @user)
       @config.players[1] = PlayerFactory::remote_player(game_type, PlayerFactory::PLAYER_2, opp, @user, gid, @client)
     else
-      @config.players[0] = PlayerFactory::remote_player(game_type, PlayerFactory::PLAYER_1, opp, @user, gid, @client)
-      @config.players[1] = PlayerFactory::player2(game_type, @user)
+      @config.players[0] = PlayerFactory::player2(game_type, @user)
+      @config.players[1] = PlayerFactory::remote_player(game_type, PlayerFactory::PLAYER_1, opp, @user, gid, @client)
     end
 
     @ui.load_online_game
