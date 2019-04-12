@@ -1,2 +1,2 @@
-UPDATE games SET turn = ?
+UPDATE games SET turn = ?, board = ?
 WHERE game_id = UUID_TO_BIN(?);

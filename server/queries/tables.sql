@@ -33,12 +33,6 @@ CREATE TABLE IF NOT EXISTS games (
   FOREIGN KEY (p2) REFERENCES users (username)
 );
 
-CREATE TABLE IF NOT EXISTS game_boards (
-  game_id BINARY(16) NOT NULL,
-  FOREIGN KEY (game_id) REFERENCES games (game_id) ON DELETE CASCADE
-);
-
-
 DELIMITER $$
 
 # TODO: stats can only be reset or incremented
