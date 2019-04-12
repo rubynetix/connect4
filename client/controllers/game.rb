@@ -23,7 +23,6 @@ class Game
       @gameboard = config.game_type.new_board
     end
 
-    # TODO: Properly initialize game settings (aka grab from server if remoteplayer)
     @game_state = WinEnum::NEUTRAL
   end
 

@@ -27,12 +27,17 @@ class Connect4
 
     @user = nil
     @client = nil
+    @tasks = []
   end
 
   def app_loop
     loop do
       @ui.register(self)
       @ready.pop
+
+      @tasks.each(&:kill)
+      @tasks.clear
+
       @ui.unregister(self)
       launch_game
     end
@@ -59,7 +64,14 @@ class Connect4
     when UIEvent::SERVER_CONN
       server_connect(event.username, event.server_url)
     when UIEvent::LIST_USER_GAMES
-      load_user_games
+      puts "---- LOADING USER GAMES -----"
+      load_games_thread = Thread.new do
+        while true
+         load_user_games
+         sleep(2)
+        end
+      end
+      @tasks.append(load_games_thread)
     when UIEvent::LIST_LEAGUE_STATS
       load_league_stats
     when UIEvent::NEW_ONLINE_GAME
@@ -140,8 +152,6 @@ class Connect4
   end
 
   def load_user_games
-    puts "---- LOADING USER GAMES -----"
-
     games = []
     begin
       games = @client.user_games(@user)

@@ -37,6 +37,7 @@ class GtkUI
   end
 
   def load_current_games(games)
+    @app.online_menu_window.clear_games_list
     games.each {|game| @app.online_menu_window.add_current_game(game)}
   end
 
