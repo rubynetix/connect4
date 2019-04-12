@@ -33,14 +33,24 @@ class RemotePlayer < Player
 
   def get_action(ui, board)
     # Wait for remote player to take their turn
-    while true
+    ui.register(self)
+    @cancelled = Queue.new
+
+    while @cancelled.empty?
       result = @client.get_game(@game_id)
       if result[:turn] == @local_user
-        parse_response(result)
-        break
+        ui.unregister(self)
+        return parse_response(result)
       end
       sleep(0.5)
     end
+
+    ui.unregister(self)
+    PlayerAction::EXIT_ONLINE_GAME
+  end
+
+  def notify(event)
+    @cancelled << true if event.id == UIEvent::EXIT_ONLINE_GAME
   end
 
   # Parse the result from the server and create the corresponding event
@@ -54,6 +64,4 @@ class RemotePlayer < Player
     # TODO: Might have to do something (eg reset) board.last_location_pos
     PlayerAction::REMOTE_UPDATE_BOARD
   end
-
-
 end
