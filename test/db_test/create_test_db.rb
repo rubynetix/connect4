@@ -24,7 +24,7 @@ class TestDBHandler < BaseHandler
 
   def rand_board(fill_factor: rand)
     board = GameBoard.connect4
-    counters = ([fill_factor.abs.to_f, 1.0].min * board.rows * board.cols).floor
+    counters = ([fill_factor.abs.to_f, 0.75].min * board.rows * board.cols).floor
 
     while counters > 0
       c = rand(0...board.cols)
@@ -54,7 +54,7 @@ class TestDBHandler < BaseHandler
   def load_gameboards
     @game_uuids.each do |gid|
       board = rand_board
-      query 'INSERT INTO game_boards (game_id, board) VALUES (UUID_TO_BIN(?), ?);', gid, board
+      query 'INSERT INTO game_boards (game_id, board) VALUES (UUID_TO_BIN(?), ?);', gid, board.to_s
     end
   end
 end
