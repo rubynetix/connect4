@@ -16,9 +16,9 @@ module C4
       def init
         set_template(:resource => "/com/rubynetix/connect4/ui/offline_game_menu_window.ui")
 
-        bind_template_child("connect4_btn")
+        bind_template_child("connect4_radio_btn")
         bind_template_child("connect4_btn_widget")
-        bind_template_child("toot_otto_btn")
+        bind_template_child("toot_otto_radio_btn")
         bind_template_child("toot_otto_btn_widget")
         bind_template_child("pvp_btn")
         bind_template_child("pvc_btn")
@@ -42,9 +42,9 @@ module C4
 
     def init_menu
       # Menu options
-      @menu_c4 = connect4_btn
+      @menu_c4 = connect4_radio_btn
       @menu_c4.mode = false
-      @menu_to = toot_otto_btn
+      @menu_to = toot_otto_radio_btn
       @menu_to.mode = false
       @menu_pvp = pvp_btn
       @menu_pvp.mode = false
@@ -66,12 +66,20 @@ module C4
 
       # Event signals
       @menu_start.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::START))}
-      @menu_c4.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::CONNECT4))}
-      @menu_to.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::TOOT_OTTO))}
+      @menu_c4.signal_connect("clicked") {handle_radio_click}
+      @menu_to.signal_connect("clicked") {handle_radio_click}
       @menu_pvp.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::PVP))}
       @menu_pvc.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::PVC_EASY))}
       @menu_pvc_hard.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::PVC_HARD))}
       @back_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(MainMenuWindow.class_variable_get(:@@wid)))}
+    end
+
+    def handle_radio_click
+      if @menu_c4.active?
+        notify_all(MenuClickEvent.new(MenuClickEvent::CONNECT4))
+      elsif @menu_to.active?
+        notify_all(MenuClickEvent.new(MenuClickEvent::TOOT_OTTO))
+      end
     end
 
     def load_image(path)
