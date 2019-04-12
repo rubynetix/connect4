@@ -2,6 +2,7 @@ require 'uuid'
 require_relative 'base_handler'
 require_relative '../client/models/game_board'
 require_relative '../client/models/counter'
+require 'mysql2'
 
 
 # Handles game related requests
@@ -45,35 +46,37 @@ class GameHandler < BaseHandler
 
   # Saves the gameboard and player turn
   def put(game_id, gb, player_name, counter_placement)
-    puts "DEBUG"
 
-    puts "GETTING GAME WITH ID: #{game_id}"
     # Throws if game does not exist
     game = get(game_id)
 
     state = game[:state]
     current_turn = game[:turn]
 
-    puts "RAISING POSSIBLE EXCEPTIONS"
-
     raise GameOver unless state == "active"
     raise InvalidTurn unless current_turn == player_name
+
+    decoded_counter = Marshal.load(counter_placement).map(&:to_i)
+    puts decoded_counter
 
     puts "CREATING WINCHECK AND BOARD"
     win_check = create_win_check(game_id)
     game_board = Marshal.load(gb)
     game_board.win_check = win_check
-    #game_board.last_counter_pos = Marshal.load(counter_placement).map(&:to_i)
+    game_board.last_counter_pos = decoded_counter
 
-    puts "GETTING THE NEXT TURN"
     # check_board(game_board)
     next_turn = get_next_turn(game_id, current_turn)
 
-    puts "DB TRANSACTIONS"
-    transaction do
-      query(load_query('update_board'), gb, game_id)
-      query(load_query('update_game'), next_turn, game_id)
-      # query(load_query('update_game_state'), [state, game_id])
+    begin
+      transaction do
+        query(load_query('update_board'), gb, game_id)
+        query(load_query('update_game'), next_turn, game_id)
+        # query(load_query('update_game_state'), [state, game_id])
+      end
+    rescue Mysql2::Error => e
+      puts e.backtrace
+      raise
     end
 
     { success: true }

@@ -50,9 +50,9 @@ class Client
     return if game_board.last_counter_pos.nil? or game_board.last_counter_pos[0] == -1
 
     begin
-    gb = encode(game_board)
-    counter = encode(game_board.last_counter_pos)
-    call("game.put", gid, gb, player_turn, counter)
+      gb = encode(game_board)
+      counter = encode(game_board.last_counter_pos)
+      call("game.put", gid, gb, player_turn, counter)
     rescue => exception
       puts "-------- DEBUG ---------"
       puts "GID: #{gid}"
