@@ -1,15 +1,9 @@
-USE connect4;
-
 # Cleanup tables if they exist
-DROP TABLE IF EXISTS game_boards;
 DROP TABLE IF EXISTS games;
-DROP TABLE IF EXISTS c4_stats;
-DROP TABLE IF EXISTS otto_stats;
 DROP TABLE IF EXISTS users;
-DROP FUNCTION IF EXISTS score;
 
-CREATE TABLE IF NOT EXISTS users (
-  username VARCHAR(50),
+CREATE TABLE users (
+  username VARCHAR(50)  PRIMARY KEY,
   c4_wins   INTEGER     NOT NULL DEFAULT 0,
   c4_losses INTEGER     NOT NULL DEFAULT 0,
   c4_draws  INTEGER     NOT NULL DEFAULT 0,
@@ -17,11 +11,10 @@ CREATE TABLE IF NOT EXISTS users (
   to_wins   INTEGER     NOT NULL DEFAULT 0,
   to_losses INTEGER     NOT NULL DEFAULT 0,
   to_draws  INTEGER     NOT NULL DEFAULT 0,
-  to_games  INTEGER     NOT NULL DEFAULT 0,
-  PRIMARY KEY (username)
+  to_games  INTEGER     NOT NULL DEFAULT 0
 );
 
-CREATE TABLE IF NOT EXISTS games (
+CREATE TABLE games (
   game_id BINARY(16) PRIMARY KEY,
   type    ENUM ('connect4','toototto')        NOT NULL,
   state   ENUM ('w1', 'w2', 'draw', 'active') NOT NULL,
@@ -118,7 +111,3 @@ BEGIN
   end if;
 END$$
 DELIMITER ;
-
-CREATE FUNCTION score(wins INTEGER, losses INTEGER, draws INTEGER)
-  RETURNS INTEGER DETERMINISTIC
-RETURN wins * 2 - losses * 2 + draws;
