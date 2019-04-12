@@ -2,6 +2,7 @@ require 'uuid'
 require_relative 'base_handler'
 require_relative '../client/models/game_board'
 require_relative '../client/models/counter'
+require 'mysql2'
 
 
 # Handles game related requests
@@ -54,18 +55,25 @@ class GameHandler < BaseHandler
     raise GameOver unless state == "active"
     raise InvalidTurn unless current_turn == player_name
 
+    decoded_counter = Marshal.load(counter_placement).map(&:to_i)
+
     win_check = create_win_check(game_id)
     game_board = Marshal.load(gb)
     game_board.win_check = win_check
-    game_board.last_counter_pos = counter_placement
+    game_board.last_counter_pos = decoded_counter
 
-    # check_board(game_board)
+    state = check_board(game_board, win_check)
     next_turn = get_next_turn(game_id, current_turn)
-    
-    transaction do
-      query(load_query('update_board'), gb, game_id)
-      query(load_query('update_game'), next_turn, game_id)
-      # query(load_query('update_game_state'), [state, game_id])
+
+    begin
+      transaction do
+        query(load_query('update_board'), gb, game_id)
+        query(load_query('update_game'), next_turn, game_id)
+        query(load_query('update_game_state'), state, game_id)
+      end
+    rescue Mysql2::Error => e
+      puts e.backtrace
+      raise
     end
 
     { success: true }
@@ -83,7 +91,8 @@ END_SQL
 
   def create_win_check(game_id)
     game_type = query("SELECT type FROM games WHERE game_id=UUID_TO_BIN(?);", game_id).first
-    if game_type == 'connect4'
+
+    if game_type[:type] == 'connect4'
       win_check = WinCheck.connect4
     else
       win_check = WinCheck.toot_otto
@@ -91,9 +100,8 @@ END_SQL
     win_check
   end
 
-  # This method requires a gameboard object, NOT a 2D array
-  def check_board(game_board)
-    case game_board.check
+  def check_board(game_board, win_check)
+    case win_check.check(game_board)
     when WinEnum::DRAW
       state = 'draw'
     when WinEnum::WIN1

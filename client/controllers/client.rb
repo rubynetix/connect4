@@ -46,8 +46,22 @@ class Client
   end
 
   def put_game(gid, game_board, player_turn)
-    gb = encode(game_board)
-    call("game.put", gid, gb, player_turn, game_board.last_counter_pos)
+    # Shouldn't update the board if no turn has been taken
+    return if game_board.last_counter_pos.nil? or game_board.last_counter_pos?
+
+    begin
+      gb = encode(game_board)
+      counter = encode(game_board.last_counter_pos)
+      call("game.put", gid, gb, player_turn, counter)
+    rescue => exception
+      puts "-------- DEBUG ---------"
+      puts "GID: #{gid}"
+      puts "GAME_BOARD: #{game_board}"
+      puts "PLAYER TURN: #{player_turn}"
+      puts "LAST COUNTER: #{game_board.last_counter_pos}"
+      puts exception.backtrace
+      raise
+    end
   end
 
   def get_league_standings(username)

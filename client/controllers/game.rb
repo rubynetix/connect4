@@ -22,8 +22,6 @@ class Game
     else
       @gameboard = config.game_type.new_board
     end
-
-    @game_state = WinEnum::NEUTRAL
   end
 
   def game_loop
@@ -31,9 +29,9 @@ class Game
     until @done
       @players.each do |p|
         @quit = Queue.new
-        @game_state = p.take_turn(@gameboard, @ui, @game_state)
-        process_action(p, @game_state)
+        process_action(p, p.take_turn(@gameboard, @ui))
         return unless @quit.empty?
+
         update_board
         break if @done
       end
@@ -59,8 +57,8 @@ class Game
         @done = true
         @winner = @players[1]
       end
-    when PlayerAction::REMOTE_UPDATE_BOARD
-      case @client.get_game(gid)[:state]
+    when PlayerAction::REMOTE_UPDATE
+      case @client.get_game(@gid)[:state]
       when 'draw'
         @done = true
       when 'w1'
@@ -73,9 +71,17 @@ class Game
     when PlayerAction::EXIT_ONLINE_GAME
       @quit << true
     end
+
+    # Update the server if the local player won
+    if @done and @winner.instance_of?(Player)
+      remote_player = other_player(@winner)
+      remote_player.update_remote_board(@gameboard)
+    end
   end
 
   def update_board
+    # Possibly update remote board here
+
     puts "\n--------- GAMESTATE ---------"
     puts @gameboard.to_s
     @ui.draw_gameboard(@gameboard)

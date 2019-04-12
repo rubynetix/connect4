@@ -42,6 +42,7 @@ class WinCheck
       win1 = (win1 or string.include? @win1_string)
       win2 = (win2 or string.include? @win2_string)
     end
+
     [win1, win2]
   end
 
