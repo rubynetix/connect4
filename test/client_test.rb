@@ -21,14 +21,14 @@ class ClientTest < Helper
     @tdbh = TestDBHandler.new
   end
 
-  def rand_board(fill_factor: rand(1..100))
+  def rand_board(fill_factor: rand)
     board = GameBoard.connect4
-    counters = ([fill_factor.abs.to_f, 1.0].min * board.rows * board.cols).floor
+    counters = ([fill_factor.abs.to_f, 0.75].min * board.rows * board.cols).floor
 
     while counters > 0
       c = rand(0...board.cols)
       unless board.col_full?(c)
-        board.place(@default_counter, c)
+        board.place(RedCounter.instance, c)
         counters -= 1
       end
     end
@@ -47,7 +47,7 @@ class ClientTest < Helper
 
   def test_user_games
     user = @tdbh.users.sample
-    length = 3
+    length = 4
 
     gids = @client.user_games user
 
@@ -59,14 +59,14 @@ class ClientTest < Helper
   def test_create_game
     user1 = @tdbh.users.sample
     user2 = @tdbh.no_game_user
-    gids1 = @client.user_games user1
-    gids2 = @client.user_games user1
+    gids1 = @client.user_games(user1).map {|e| e[:game_id]}
+    gids2 = @client.user_games(user2).map {|e| e[:game_id]}
 
 
     gid = @client.create_game user1, user2, 'connect4', rand_board
 
-    new_gids1 = @client.user_games user1
-    new_gids2 = @client.user_games user1
+    new_gids1 = @client.user_games(user1).map {|e| e[:game_id]}
+    new_gids2 = @client.user_games(user2).map {|e| e[:game_id]}
 
     begin
       assert_equal gids1.length+1, new_gids1.length
