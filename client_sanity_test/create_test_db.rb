@@ -1,8 +1,8 @@
 require 'mysql2'
 require 'uuid'
-require_relative '../../server/base_handler'
-require_relative '../../client/models/game_board'
-require_relative '../../client/models/counter'
+require_relative '../server/base_handler'
+require_relative '../client/models/game_board'
+require_relative '../client/models/counter'
 
 class TestDBHandler < BaseHandler
 
@@ -47,7 +47,7 @@ class TestDBHandler < BaseHandler
   end
 
   def load_games
-    File.open(Dir.pwd + '/test/db_test/queries/create_test_db_games.sql').each do |line|
+    File.open(Dir.pwd + '/client_sanity_test/queries/create_test_db_games.sql').each do |line|
       game_id = @uuid.generate
       @game_uuids.append(game_id)
       query(line, game_id)

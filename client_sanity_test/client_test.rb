@@ -1,9 +1,11 @@
-require_relative 'helper'
+require_relative '../test/helper'
 require 'xmlrpc/server'
 require_relative '../client/models/game_board'
-require_relative 'db_test/create_test_db'
+require_relative 'create_test_db'
 require_relative '../client/controllers/client'
-require_relative '../server/server_error'
+require_relative '../server/game_handler'
+require_relative '../server/league_handler'
+require_relative '../server/user_handler'
 
 class ClientTest < Helper
   HOST = "162.246.157.188"
