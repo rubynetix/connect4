@@ -22,8 +22,6 @@ class Game
     else
       @gameboard = config.game_type.new_board
     end
-
-    @game_state = WinEnum::NEUTRAL
   end
 
   def game_loop
@@ -31,9 +29,9 @@ class Game
     until @done
       @players.each do |p|
         @quit = Queue.new
-        @game_state = p.take_turn(@gameboard, @ui, @game_state)
-        process_action(p, @game_state)
+        process_action(p, p.take_turn(@gameboard, @ui))
         return unless @quit.empty?
+
         update_board
         break if @done
       end

@@ -13,7 +13,7 @@ class RemotePlayer < Player
     @client = client
   end
 
-  def take_turn(board, ui, state)
+  def take_turn(board, ui)
     ui.set_turn(self)
     @board = board
     @waiting = true
