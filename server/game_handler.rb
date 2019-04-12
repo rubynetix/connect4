@@ -65,14 +65,15 @@ class GameHandler < BaseHandler
     game_board.win_check = win_check
     game_board.last_counter_pos = decoded_counter
 
-    # check_board(game_board)
+    state = check_board(game_board)
+    puts "STATE: #{state}"
     next_turn = get_next_turn(game_id, current_turn)
 
     begin
       transaction do
         query(load_query('update_board'), gb, game_id)
         query(load_query('update_game'), next_turn, game_id)
-        # query(load_query('update_game_state'), [state, game_id])
+        query(load_query('update_game_state'), state, game_id)
       end
     rescue Mysql2::Error => e
       puts e.backtrace
