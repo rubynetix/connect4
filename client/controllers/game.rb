@@ -1,6 +1,8 @@
 class Game
   def initialize(config)
     raise NotTwoPlayersError unless config.players.size == 2
+    # Ensure online games have a client and offline games do not
+    raise InvalidConfigError if (config.online? && config.client.nil?) || (!config.online? && !config.client.nil?)
 
     @players = config.players
     @win_check = config.game_type.win_check
@@ -9,6 +11,7 @@ class Game
     @done = false
     @winner = nil
     @gid = config.gid
+    @online = config.online?
 
     if config.online?
       game = @client.get_game(config.gid)
@@ -73,7 +76,7 @@ class Game
     end
 
     # Update the server if the local player won
-    if @done and @winner.instance_of?(Player)
+    if @online && @done && @winner.instance_of?(Player)
       remote_player = other_player(@winner)
       remote_player.update_remote_board(@gameboard)
     end
@@ -99,3 +102,4 @@ end
 
 class NotTwoPlayersError < StandardError; end
 class GameAlreadyOverError < StandardError; end
+class InvalidConfigError < StandardError; end
