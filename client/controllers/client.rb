@@ -46,8 +46,11 @@ class Client
   end
 
   def put_game(gid, game_board, player_turn)
+    # Shouldn't update the board if no turn has been taken
+    return if game_board.last_counter_pos.nil?
     gb = encode(game_board)
-    call("game.put", gid, gb, player_turn, game_board.last_counter_pos)
+    counter = encode(game_board.last_counter_pos)
+    call("game.put", gid, gb, player_turn, counter)
   end
 
   def get_league_standings(username)

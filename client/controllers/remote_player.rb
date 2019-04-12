@@ -42,7 +42,7 @@ class RemotePlayer < Player
         ui.unregister(self)
         return parse_response(result)
       end
-      sleep(0.5)
+      sleep(1.0)
     end
 
     ui.unregister(self)

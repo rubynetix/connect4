@@ -57,7 +57,7 @@ class GameHandler < BaseHandler
     win_check = create_win_check(game_id)
     game_board = Marshal.load(gb)
     game_board.win_check = win_check
-    game_board.last_counter_pos = counter_placement
+    #game_board.last_counter_pos = Marshal.load(counter_placement).map(&:to_i)
 
     # check_board(game_board)
     next_turn = get_next_turn(game_id, current_turn)
