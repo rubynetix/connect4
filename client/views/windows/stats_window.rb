@@ -28,7 +28,7 @@ module C4
 
       @stats_list = stats_list
       @back_btn = back_btn
-      @back_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(OnlineGameMenuWindow.class_variable_get(:@@wid)))}
+      @back_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(OnlineGameMenuWindow.class_variable_get(:@@wid), @@wid))}
     end
 
     def add_user_stat(user_stat)

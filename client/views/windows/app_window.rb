@@ -53,7 +53,7 @@ module C4
     def notify(event)
       case event.id
       when UIEvent::WINDOW_CHANGE
-        display_window(event.wid)
+        display_window(event.to_wid)
       when UIEvent::MSG_ERR
         display_error(event.msg)
       when UIEvent::MSG_HELP

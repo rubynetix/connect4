@@ -61,8 +61,8 @@ module C4
       @start_btn.signal_connect('clicked') {try_new_game}
       # @c4_btn.signal_connect('clicked') {notify_all(MenuClickEvent.new(MenuClickEvent::CONNECT4))}
       # @to_btn.signal_connect('clicked') {notify_all(MenuClickEvent.new(MenuClickEvent::TOOT_OTTO))}
-      @back_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(MainMenuWindow.class_variable_get(:@@wid)))}
-      @stats_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(StatsWindow.class_variable_get(:@@wid)))}
+      @back_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(MainMenuWindow.class_variable_get(:@@wid), @@wid))}
+      @stats_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(StatsWindow.class_variable_get(:@@wid), @@wid))}
     end
 
     def add_current_game(game)
@@ -103,7 +103,7 @@ module C4
     end
 
     def start_new_game
-      notify_all(WindowChangeEvent.new(OnlineGameWindow.class_variable_get(:@@wid)))
+      notify_all(WindowChangeEvent.new(OnlineGameWindow.class_variable_get(:@@wid), @@wid))
     end
 
     def valid_username?(username)

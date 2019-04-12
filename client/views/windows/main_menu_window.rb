@@ -36,7 +36,7 @@ module C4
 
       @connect_btn.signal_connect('clicked') { try_connect }
       @offline_btn.signal_connect('clicked') do
-        notify_all(WindowChangeEvent.new(OfflineGameMenuWindow.class_variable_get(:@@wid)))
+        notify_all(WindowChangeEvent.new(OfflineGameMenuWindow.class_variable_get(:@@wid), @@wid))
       end
     end
 
