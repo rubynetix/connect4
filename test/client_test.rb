@@ -1,8 +1,31 @@
 require_relative 'helper'
 require_relative '../server/server'
 require_relative '../client/models/game_board'
+require_relative 'db_test/create_test_db'
+require_relative '../client/controllers/client'
 
 class ClientTest < Helper
+
+  class << self
+    def startup
+      puts 'runs twice at start'
+      @server_thread = Thread.new do
+        serve
+      end
+    end
+    def shutdown
+      puts 'runs only once at end'
+    end
+    def suite
+      mysuite = super
+      def mysuite.run(*args)
+        ClientTest.startup
+        super
+        ClientTest.shutdown
+      end
+      mysuite
+    end
+  end
 
   def setup_db
     @tdbh = TestDBHandler.new
@@ -25,14 +48,11 @@ class ClientTest < Helper
 
   def setup
     setup_db
-    @server_thread = Thread.new do
-      serve
-    end
     @client = Client.new
   end
 
   def teardown
-    Thread.kill @server_thread
+    #
   end
 
   def test_user_games
@@ -60,8 +80,8 @@ class ClientTest < Helper
     new_gids2 = @client.user_games user1
 
     begin
-      assert_equal gids1+1, new_gids1
-      assert_equal gids2+1, new_gids2
+      assert_equal gids1.length+1, new_gids1.length
+      assert_equal gids2.length+1, new_gids2.length
       assert_not_include gids1, gid
       assert_not_include gids2, gid
       assert_include new_gids1, gid
