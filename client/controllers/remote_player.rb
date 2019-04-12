@@ -27,8 +27,7 @@ class RemotePlayer < Player
     begin
       @client.put_game(@game_id, board, player)
     rescue InvalidTurn
-      #TODO: Ignore move
-      nil
+      # Throws when continuing game as remoteplayer -- no need to overwrite remote board in this case
     end
   end
 
@@ -51,7 +50,7 @@ class RemotePlayer < Player
   end
 
   def update_board(board)
-    @board = board
+    @board.board = board.board
     # TODO: Might have to do something (eg reset) board.last_location_pos
     PlayerAction::REMOTE_UPDATE_BOARD
   end

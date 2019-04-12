@@ -47,7 +47,7 @@ class WinCheck
 
 
   def check(board)
-    if board.last_counter_pos.nil?
+    if board.last_counter_pos?
       return WinEnum::NEUTRAL
     end
 

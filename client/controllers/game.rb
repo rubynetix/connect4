@@ -3,15 +3,27 @@ class Game
     raise NotTwoPlayersError unless config.players.size == 2
 
     @players = config.players
-    @gameboard = config.game_type.new_board
     @win_check = config.game_type.win_check
     @client = config.client
     @ui = config.ui
     @done = false
     @winner = nil
+    @gid = config.gid
+
+    if config.online?
+      game = @client.get_game(config.gid)
+
+      # Swap player order if opponent's turn
+      if game[:turn] == @players[1].name
+        @players[0], @players[1] = @players[1], @players[0]
+      end
+
+      @gameboard = game[:board]
+    else
+      @gameboard = config.game_type.new_board
+    end
 
     # TODO: Properly initialize game settings (aka grab from server if remoteplayer)
-    @gid = nil
     @game_state = WinEnum::NEUTRAL
   end
 
