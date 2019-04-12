@@ -13,7 +13,7 @@ class TestDBHandler < BaseHandler
     super
     @uuid = UUID.new
     @game_uuids = []
-    @users = ['conservative', 'ndp', 'green', 'rhinoceros', 'liberals']
+    @users = ['conservative', 'ndp', 'green', 'rhinoceros', 'liberal']
     query("DELETE from games;")
     query("DELETE from users;")
     load_users
