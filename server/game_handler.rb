@@ -25,10 +25,8 @@ class GameHandler < BaseHandler
 
     game_id = @uuid.generate
 
-    transaction do
-      query(load_query('create_game'),
-            game_id, game_type, p1, p1, p2, gb)
-    end
+    query(load_query('create_game'),
+          game_id, game_type, p1, p1, p2, gb)
 
     { game_id: game_id }
   end
@@ -38,8 +36,7 @@ class GameHandler < BaseHandler
     raise GameDoesNotExist unless
         exists?("SELECT true from games WHERE game_id=UUID_TO_BIN(?);", game_id)
 
-    res = query(load_query('get_game'), game_id).first
-    res
+    query(load_query('get_game'), game_id).first
   end
 
   # Saves the gameboard and player turn

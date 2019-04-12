@@ -1,25 +1,27 @@
-require_relative '../test/helper'
 require 'xmlrpc/server'
-require_relative '../client/models/game_board'
+require 'mysql2/client'
+require_relative '../helper'
+require_relative '../../client/models/game_board'
+require_relative '../../client/controllers/client'
+require_relative '../../server/game_handler'
+require_relative '../../server/league_handler'
+require_relative '../../server/user_handler'
 require_relative 'create_test_db'
-require_relative '../client/controllers/client'
-require_relative '../server/game_handler'
-require_relative '../server/league_handler'
-require_relative '../server/user_handler'
+
 
 class ClientTest < Helper
-  HOST = "162.246.157.188"
+  HOST = "127.0.0.1"
   PORT = '8080'
 
   class << self
     def test_db
-      c = Mysql2::Client.new(
+      @client ||= Mysql2::Client.new(
           :host => HOST,
           :database => "test",
           :port => 3306,
-          :username => "test",
-          :password => "test")
-      {db_client: c}
+          :username => "ece421",
+          :password => "ece421")
+      {db_client: @client}
     end
 
     def serve
@@ -31,12 +33,16 @@ class ClientTest < Helper
       s.add_handler('league', LeagueHandler.new(db_client))
       s.serve
     end
+
     def startup
       @server_thread = Thread.new(&method(:serve))
+      TestDBHandler::create_db
     end
+
     def shutdown
       #
     end
+
   end
 
   def setup_db
@@ -150,6 +156,7 @@ class ClientTest < Helper
     @client.user_games(user).map {|e| e[:game_id]}.each do |gid|
      game = @client.get_game gid
 
+     # Post conditions
       begin
         assert_true game.key?(:game_id), 'result must contain an id'
         assert_true game.key?(:state), 'result must contain a state'

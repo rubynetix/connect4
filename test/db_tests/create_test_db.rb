@@ -1,12 +1,20 @@
 require 'mysql2'
 require 'uuid'
-require_relative '../server/base_handler'
-require_relative '../client/models/game_board'
-require_relative '../client/models/counter'
+require_relative '../../server/base_handler'
+require_relative '../../client/models/game_board'
+require_relative '../../client/models/counter'
+
 
 class TestDBHandler < BaseHandler
 
   attr_reader :users, :no_game_user, :boards
+
+  def self.create_db
+    fork do
+      Kernel.exec(File.expand_path('create_db.sh', __dir__))
+    end
+    Process.wait
+  end
 
   def initialize(opts = {})
     super(opts)
@@ -15,11 +23,10 @@ class TestDBHandler < BaseHandler
     @users = ['conservative', 'ndp', 'green', 'rhinoceros', 'liberal']
     @no_game_user = 'libertarian'
     @boards = {}
-    query("DELETE from games;")
-    query("DELETE from users;")
+    query('DELETE FROM games')
+    query('DELETE FROM users')
     load_users
     load_games
-    load_gameboards
   end
 
   def rand_board(fill_factor: rand)
@@ -47,18 +54,12 @@ class TestDBHandler < BaseHandler
   end
 
   def load_games
-    File.open(Dir.pwd + '/client_sanity_test/queries/create_test_db_games.sql').each do |line|
+    File.open(File.expand_path('queries/create_test_db_games.sql', __dir__)).each do |line|
       game_id = @uuid.generate
       @game_uuids.append(game_id)
-      query(line, game_id)
-    end
-  end
-
-  def load_gameboards
-    @game_uuids.each do |gid|
       board = rand_board
-      @boards[gid] = board
-      query 'INSERT INTO game_boards (game_id, board) VALUES (UUID_TO_BIN(?), ?);', gid, Marshal.dump(board)
+      @boards[game_id] = board
+      query(line, game_id, Marshal.dump(board))
     end
   end
 end
