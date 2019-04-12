@@ -47,7 +47,7 @@ class Client
 
   def put_game(gid, game_board, player_turn)
     # Shouldn't update the board if no turn has been taken
-    return if game_board.last_counter_pos.nil? or game_board.last_counter_pos[0] == -1
+    return if game_board.last_counter_pos.nil? or game_board.last_counter_pos?
 
     begin
       gb = encode(game_board)

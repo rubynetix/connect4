@@ -46,7 +46,6 @@ class GameHandler < BaseHandler
 
   # Saves the gameboard and player turn
   def put(game_id, gb, player_name, counter_placement)
-
     # Throws if game does not exist
     game = get(game_id)
 
@@ -57,16 +56,13 @@ class GameHandler < BaseHandler
     raise InvalidTurn unless current_turn == player_name
 
     decoded_counter = Marshal.load(counter_placement).map(&:to_i)
-    puts decoded_counter
 
-    puts "CREATING WINCHECK AND BOARD"
     win_check = create_win_check(game_id)
     game_board = Marshal.load(gb)
     game_board.win_check = win_check
     game_board.last_counter_pos = decoded_counter
 
-    state = check_board(game_board)
-    puts "STATE: #{state}"
+    state = check_board(game_board, win_check)
     next_turn = get_next_turn(game_id, current_turn)
 
     begin
@@ -95,7 +91,8 @@ END_SQL
 
   def create_win_check(game_id)
     game_type = query("SELECT type FROM games WHERE game_id=UUID_TO_BIN(?);", game_id).first
-    if game_type == 'connect4'
+
+    if game_type[:type] == 'connect4'
       win_check = WinCheck.connect4
     else
       win_check = WinCheck.toot_otto
@@ -103,9 +100,8 @@ END_SQL
     win_check
   end
 
-  # This method requires a gameboard object, NOT a 2D array
-  def check_board(game_board)
-    case game_board.check
+  def check_board(game_board, win_check)
+    case win_check.check(game_board)
     when WinEnum::DRAW
       state = 'draw'
     when WinEnum::WIN1
