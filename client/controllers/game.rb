@@ -50,6 +50,9 @@ class Game
       @done = true
       @winner = other_player(player)
     when PlayerAction::PLACE_COUNTER
+      # No need to do win analysis locally for online games
+      return if @online
+
       case @win_check.check(@gameboard)
       when WinEnum::DRAW
         @done = true
@@ -61,15 +64,17 @@ class Game
         @winner = @players[1]
       end
     when PlayerAction::REMOTE_UPDATE
-      case @client.get_game(@gid)[:state]
+      game = @client.get_game(@gid)
+      @gameboard = game[:board]
+      case game[:state]
       when 'draw'
         @done = true
       when 'w1'
         @done = true
-        @winner = @players[0]
+        @winner = game[:p1] == @players[0].name ? @players[0] : @players[1]
       when 'w2'
         @done = true
-        @winner = @players[1]
+        @winner = game[:p2] == @players[0].name ? @players[0] : @players[1]
       end
     when PlayerAction::EXIT_ONLINE_GAME
       @quit << true
