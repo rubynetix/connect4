@@ -83,7 +83,7 @@ END_SQL
 
   def forfeit(gid, player_name)
     raise GameDoesNotExist unless
-        exists?("SELECT true from games WHERE game_id=UUID_TO_BIN(?);", game_id)
+        exists?("SELECT true from games WHERE game_id=UUID_TO_BIN(?);", gid)
 
     game = get(gid)
     if game[:p1] == player_name
@@ -94,7 +94,8 @@ END_SQL
       raise ArgumentError.new("You are not in this game!")
     end
 
-    query(load_query('update_game_state'), state, game_id)
+    query(load_query('update_game_state'), state, gid)
+    { success: true }
   end
 
   private
