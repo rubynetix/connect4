@@ -62,8 +62,13 @@ class BaseHandler
   end
 
   def query(sql, *args, **kwargs)
-    statement = @db_client.prepare(sql)
-    statement.execute(*args, **kwargs, symbolize_keys: true)
+    begin
+      statement = @db_client.prepare(sql)
+      statement.execute(*args, **kwargs, symbolize_keys: true)
+    rescue Mysql2::Error, ArgumentError => e
+      puts "Query failed:\n#{sql}\nArguments: #{args.to_s}\n#{e.message}}"
+      raise e
+    end
   end
 
   def exists?(sql, *args, **kwargs)

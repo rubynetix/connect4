@@ -28,16 +28,10 @@ CREATE TABLE IF NOT EXISTS games (
   turn    VARCHAR(50)                         NOT NULL,
   p1      VARCHAR(50)                         NOT NULL,
   p2      VARCHAR(50)                         NOT NULL,
+  board   VARCHAR(500)                        NOT NULL,
   FOREIGN KEY (p1) REFERENCES users (username),
   FOREIGN KEY (p2) REFERENCES users (username)
 );
-
-CREATE TABLE IF NOT EXISTS game_boards (
-  game_id BINARY(16) NOT NULL,
-  board VARCHAR(500) NOT NULL,
-  FOREIGN KEY (game_id) REFERENCES games (game_id) ON DELETE CASCADE
-);
-
 
 DELIMITER $$
 
@@ -59,9 +53,9 @@ CREATE TRIGGER no_changing_finished_game_states
   ON games
   FOR EACH ROW
 BEGIN
-  IF OLD.state IN ('w1', 'w2', 'draw') THEN
+  IF OLD.state != 'active' THEN
     SIGNAL SQLSTATE '45000'
-      SET MESSAGE_TEXT = "Cannot change game ending!";
+      SET MESSAGE_TEXT = "Cannot change finished games!";
   end if;
 END$$
 
@@ -76,24 +70,13 @@ BEGIN
   end if;
 END$$
 
-
-CREATE TRIGGER gameboard_delete
-  AFTER UPDATE
-  ON games
-  FOR EACH ROW
-BEGIN
-  IF NEW.state IN ('w1', 'w2', 'draw') THEN
-    DELETE FROM game_boards WHERE game_id = NEW.game_id;
-  end if;
-END$$
-
 CREATE TRIGGER game_win1
   AFTER UPDATE
   ON games
   FOR EACH ROW
 BEGIN
   IF NEW.state = 'w1' THEN
-    IF NEW.type = 'c' THEN
+    IF NEW.type = 'connect4' THEN
       UPDATE users SET c4_wins = c4_wins + 1, c4_games = c4_games + 1 WHERE username = NEW.p1;
       UPDATE users SET c4_losses = c4_losses + 1, c4_games = c4_games + 1 WHERE username = NEW.p2;
     ELSE
@@ -109,7 +92,7 @@ CREATE TRIGGER game_win2
   FOR EACH ROW
 BEGIN
   IF NEW.state = 'w2' THEN
-    IF NEW.type = 'c' THEN
+    IF NEW.type = 'connect4' THEN
       UPDATE users SET c4_wins = c4_wins + 1, c4_games = c4_games + 1 WHERE username = NEW.p2;
       UPDATE users SET c4_losses = c4_losses + 1, c4_games = c4_games + 1 WHERE username = NEW.p1;
     ELSE
@@ -125,7 +108,7 @@ CREATE TRIGGER game_draw
   FOR EACH ROW
 BEGIN
   IF NEW.state = 'draw' THEN
-    IF NEW.type = 'c' THEN
+    IF NEW.type = 'connect4' THEN
       UPDATE users SET c4_draws = c4_draws + 1, c4_games = c4_games + 1 WHERE username = NEW.p2;
       UPDATE users SET c4_draws = c4_draws + 1, c4_games = c4_games + 1 WHERE username = NEW.p1;
     ELSE

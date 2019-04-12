@@ -27,9 +27,7 @@ class GameHandler < BaseHandler
 
     transaction do
       query(load_query('create_game'),
-            game_id, game_type, p1, p1, p2)
-      query(load_query('create_board'),
-            game_id, gb)
+            game_id, game_type, p1, p1, p2, gb)
     end
 
     { game_id: game_id }
@@ -67,8 +65,7 @@ class GameHandler < BaseHandler
 
     begin
       transaction do
-        query(load_query('update_board'), gb, game_id)
-        query(load_query('update_game'), next_turn, game_id)
+        query(load_query('update_game'), next_turn, gb, game_id)
         query(load_query('update_game_state'), state, game_id)
       end
     rescue Mysql2::Error => e
