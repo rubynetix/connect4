@@ -90,7 +90,7 @@ class ClientTest < Helper
         assert_true game.key?(:state), 'result must contain a state'
         assert_true game.key?(:turn), 'result must contain a turn'
         assert_true game.key?(:board), 'result must contain a board'
-        assert_equal game[gid], @tdbh.boards[gid], 'the board must be the same as the board put into the db'
+        assert_equal game[:board], @tdbh.boards[gid], 'the board must be the same as the board put into the db'
       end
     end
 
@@ -113,7 +113,7 @@ class ClientTest < Helper
       gids.each do |gid|
         game = @client.get_game gid
         if gid.equal?rand_gid
-          assert_equal board, game[gid], 'the board must be the same as the board put into the db'
+          assert_equal board, game[:board], 'the board must be the same as the board put into the db'
         else
           assert_equal @tdbh.boards[gid], game[gid], 'other boards must not have changed'
         end
