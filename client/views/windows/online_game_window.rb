@@ -108,7 +108,7 @@ module C4
 
     def exit_game
       notify_all(UIEvent.new(UIEvent::EXIT_ONLINE_GAME))
-      notify_all(WindowChangeEvent.new(OnlineGameMenuWindow.class_variable_get(:@@wid)))
+      notify_all(WindowChangeEvent.new(OnlineGameMenuWindow.class_variable_get(:@@wid), @@wid))
     end
 
     def draw_board(grid_layout, rows, cols)

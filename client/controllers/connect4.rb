@@ -12,6 +12,7 @@ require_relative 'algorithms/alpha_beta_pruning'
 require_relative 'algorithms/random'
 require_relative '../../client/views/events/server_connect_event'
 require_relative 'client'
+require_relative '../views/windows/main_menu_window'
 
 # Class representing the application
 class Connect4
@@ -78,11 +79,12 @@ class Connect4
       new_online_game(event.opponent, event.game_type)
     when UIEvent::CONTINUE_ONLINE_GAME
       continue_online_game(event.game)
+    when UIEvent::WINDOW_CHANGE
+      handle_window_change(event)
     else
       nil
     end
   rescue Errno::ECONNREFUSED => e
-    puts e.message
     @ui.display_error(e.message)
   end
 
@@ -131,6 +133,14 @@ class Connect4
     end
   end
 
+  def handle_window_change(event)
+    case event.to_wid
+    when C4::MainMenuWindow.class_variable_get(:@@wid)
+      @tasks.each(&:kill)
+      @tasks.clear
+    end
+  end
+
   def server_connect(username, server_ip)
     puts "---- CONNECTING ----- #{username} on #{server_ip}"
     @user = username
@@ -175,14 +185,14 @@ class Connect4
 
     begin
       gid = @client.create_game(@user, opp, game_type.id, game_type.new_board)
-    rescue UserDoesNotExist
-      # TODO: Display error
+    rescue UserDoesNotExist => e
+      @ui.displayError(e.message)
       return
     rescue ArgumentError => e
-      # TODO: Display error message
+      @ui.displayError(e.message)
       return
-    rescue GameAlreadyInProgress
-      # TODO: Redirect to existing game
+    rescue GameAlreadyInProgress => e
+      @ui.displayError(e.message)
       return
     end
 

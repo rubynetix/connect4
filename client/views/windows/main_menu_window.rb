@@ -1,6 +1,5 @@
 require_relative '../../../client/views/events/window_change_event'
 require_relative '../../../client/views/observable'
-require_relative '../../../client/views/windows/main_menu_window'
 require_relative 'offline_game_window'
 require_relative 'widget_window'
 
@@ -36,7 +35,7 @@ module C4
 
       @connect_btn.signal_connect('clicked') { try_connect }
       @offline_btn.signal_connect('clicked') do
-        notify_all(WindowChangeEvent.new(OfflineGameMenuWindow.class_variable_get(:@@wid)))
+        notify_all(WindowChangeEvent.new(OfflineGameMenuWindow.class_variable_get(:@@wid), @@wid))
       end
     end
 
