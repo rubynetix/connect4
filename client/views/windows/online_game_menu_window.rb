@@ -72,6 +72,10 @@ module C4
       @games_list.add(row)
     end
 
+    def clear_games_list
+      @games_list.children.each { |game| game.unregister(self); @games_list.remove(game) }
+    end
+
     def prepare
       # Clear any existing games and request the most recent games list
       clear_games_list
@@ -83,10 +87,6 @@ module C4
     end
 
     private
-
-    def clear_games_list
-      @games_list.children.each { |game| game.unregister(self); @games_list.remove(game) }
-    end
 
     def try_new_game
       opp = @opponent_entry.text

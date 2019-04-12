@@ -27,12 +27,17 @@ class Connect4
 
     @user = nil
     @client = nil
+    @tasks = []
   end
 
   def app_loop
     loop do
       @ui.register(self)
       @ready.pop
+
+      @tasks.each(&:kill)
+      @tasks.clear
+
       @ui.unregister(self)
       launch_game
     end
@@ -59,7 +64,14 @@ class Connect4
     when UIEvent::SERVER_CONN
       server_connect(event.username, event.server_url)
     when UIEvent::LIST_USER_GAMES
-      load_user_games
+      puts "---- LOADING USER GAMES -----"
+      load_games_thread = Thread.new do
+        while true
+         load_user_games
+         sleep(2)
+        end
+      end
+      @tasks.append(load_games_thread)
     when UIEvent::LIST_LEAGUE_STATS
       load_league_stats
     when UIEvent::NEW_ONLINE_GAME
@@ -93,9 +105,9 @@ class Connect4
       @config.alg = :AlphaBetaPruning
       configure_bot
     when MenuClickEvent::PVP
-      @config.players[1] = PlayerFactory::player(@game_type, PlayerFactory::PLAYER_2, 'p2')
+      @config.players[1] = PlayerFactory::player2(@game_type, 'p2')
     when MenuClickEvent::CONNECT4
-      @game_type = Connect4GameType.instance
+      @config.game_type = @game_type = Connect4GameType.instance
       @config.players[0].counters = @game_type.p1_counters
       if @config.players[1].instance_of? ComputerPlayer
         configure_bot
@@ -103,7 +115,7 @@ class Connect4
         @config.players[1].counters = @game_type.p2_counters
       end
     when MenuClickEvent::TOOT_OTTO
-      @game_type = TootOttoGameType.instance
+      @config.game_type = @game_type = TootOttoGameType.instance
       @config.players[0].counters = @game_type.p1_counters
       if @config.players[1].instance_of? ComputerPlayer
         configure_bot
@@ -140,8 +152,6 @@ class Connect4
   end
 
   def load_user_games
-    puts "---- LOADING USER GAMES -----"
-
     games = []
     begin
       games = @client.user_games(@user)
@@ -183,25 +193,34 @@ class Connect4
 
     # Save the configuration
     @config.game_type = game_type
+    @config.gid = gid
     @config.online = true
     @ready << true
   end
 
   def continue_online_game(game)
     game_type = game[:game_type] == Connect4GameType.instance.name ? Connect4GameType.instance : TootOttoGameType.instance
-    @config.players[0] = PlayerFactory::player1(game_type, @user)
-    @config.players[1] = PlayerFactory::remote_player(game_type, PlayerFactory::PLAYER_2,
-                                                      game[:opponent], @user, game[:game_id], @client)
+    opp = game[:opponent]
+    gid = game[:game_id]
+
+    if @user == game[:p1]
+      @config.players[0] = PlayerFactory::player1(game_type, @user)
+      @config.players[1] = PlayerFactory::remote_player(game_type, PlayerFactory::PLAYER_2, opp, @user, gid, @client)
+    else
+      @config.players[0] = PlayerFactory::player2(game_type, @user)
+      @config.players[1] = PlayerFactory::remote_player(game_type, PlayerFactory::PLAYER_1, opp, @user, gid, @client)
+    end
 
     @ui.load_online_game
     @config.game_type = game_type
+    @config.gid = game[:game_id]
     @config.online = true
     @ready << true
   end
 end
 
 class GameConfig
-  attr_accessor :players, :game_type, :ui, :alg, :client, :online
+  attr_accessor :players, :game_type, :ui, :alg, :client, :online, :gid
   alias_method :online?, :online
 
   def initialize(ui)
@@ -214,6 +233,7 @@ class GameConfig
     @game_type = Connect4GameType.instance
     @client = Client.new
     @online = false
+    @gid = nil
   end
 
   def reset; end
