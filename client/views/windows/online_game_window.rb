@@ -4,6 +4,7 @@ require_relative '../events/window_change_event'
 require_relative 'online_game_menu_window'
 require_relative 'main_menu_window'
 require_relative 'widget_window'
+require_relative '../events/ui_event'
 
 module C4
   class OnlineGameWindow < Gtk::Box
@@ -106,7 +107,7 @@ module C4
     end
 
     def exit_game
-      # TODO: Logic for exiting an online game
+      notify_all(UIEvent.new(UIEvent::EXIT_ONLINE_GAME))
       notify_all(WindowChangeEvent.new(OnlineGameMenuWindow.class_variable_get(:@@wid)))
     end
 

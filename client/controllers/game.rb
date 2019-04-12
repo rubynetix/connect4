@@ -30,8 +30,10 @@ class Game
     update_board
     until @done
       @players.each do |p|
+        @quit = Queue.new
         @game_state = p.take_turn(@gameboard, @ui, @game_state)
         process_action(p, @game_state)
+        return unless @quit.empty?
         update_board
         break if @done
       end
@@ -68,6 +70,8 @@ class Game
         @done = true
         @winner = @players[1]
       end
+    when PlayerAction::EXIT_ONLINE_GAME
+      @quit << true
     end
   end
 
