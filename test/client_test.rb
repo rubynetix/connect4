@@ -54,14 +54,6 @@ class ClientTest < Helper
     end
   end
 
-  def test_login_dup
-    1..3.times do
-      user = @tdbh.users.sample
-      res = @client.login(user)
-      assert_true(res)
-    end
-  end
-
   def test_login_fail
     non_users = ['republican', 'democrat', 'Communist Party of China']
     non_users.each do |name|
