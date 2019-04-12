@@ -1,6 +1,5 @@
 require_relative '../../../client/views/events/window_change_event'
 require_relative '../../../client/views/observable'
-require_relative 'main_menu_window'
 require_relative 'widget_window'
 
 module C4
