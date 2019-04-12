@@ -4,7 +4,7 @@ require_relative '../models/win_check'
 class GameBoard
   INVALID_ROW = -1
 
-  attr_accessor :rows, :cols
+  attr_accessor :rows, :cols, :board
   attr_accessor :last_counter_pos, :win_check
 
   class << self

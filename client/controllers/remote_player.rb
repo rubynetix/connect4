@@ -50,7 +50,7 @@ class RemotePlayer < Player
   end
 
   def update_board(board)
-    @board = board
+    @board.board = board.board
     # TODO: Might have to do something (eg reset) board.last_location_pos
     PlayerAction::REMOTE_UPDATE_BOARD
   end
