@@ -12,6 +12,7 @@ require_relative 'algorithms/alpha_beta_pruning'
 require_relative 'algorithms/random'
 require_relative '../../client/views/events/server_connect_event'
 require_relative 'client'
+require_relative '../views/windows/main_menu_window'
 
 # Class representing the application
 class Connect4
@@ -78,6 +79,8 @@ class Connect4
       new_online_game(event.opponent, event.game_type)
     when UIEvent::CONTINUE_ONLINE_GAME
       continue_online_game(event.game)
+    when UIEvent::WINDOW_CHANGE
+      handle_window_change(event)
     else
       nil
     end
@@ -128,6 +131,14 @@ class Connect4
     when MenuClickEvent::RETURN_MAIN_MENU
       @config.reset
       @ui.load_menu
+    end
+  end
+
+  def handle_window_change(event)
+    case event.wid
+    when C4::MainMenuWindow.class_variable_get(:@@wid)
+      @tasks.each(&:kill)
+      @tasks.clear
     end
   end
 
