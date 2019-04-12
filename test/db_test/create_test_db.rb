@@ -10,8 +10,8 @@ class TestDBHandler < BaseHandler
 
   attr_reader :users, :no_game_user, :boards
 
-  def initialize
-    super
+  def initialize(opts = {})
+    super(opts)
     @uuid = UUID.new
     @game_uuids = []
     @users = ['conservative', 'ndp', 'green', 'rhinoceros', 'liberal']

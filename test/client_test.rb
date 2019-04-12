@@ -1,16 +1,38 @@
 require_relative 'helper'
-require_relative '../server/server'
+require 'xmlrpc/server'
 require_relative '../client/models/game_board'
 require_relative 'db_test/create_test_db'
 require_relative '../client/controllers/client'
+require_relative '../server/game_handler'
+require_relative '../server/league_handler'
+require_relative '../server/user_handler'
 
 class ClientTest < Helper
+  HOST = "162.246.157.188"
+  PORT = '8080'
 
   class << self
+    def test_db
+      c = Mysql2::Client.new(
+          :host => HOST,
+          :database => "test",
+          :port => 3306,
+          :username => "test",
+          :password => "test")
+      {db_client: c}
+    end
+
+    def serve
+      puts HOST
+      s = XMLRPC::Server.new()
+      db_client = test_db
+      s.add_handler('user', UserHandler.new(db_client))
+      s.add_handler('game', GameHandler.new(db_client))
+      s.add_handler('league', LeagueHandler.new(db_client))
+      s.serve
+    end
     def startup
-      @server_thread = Thread.new do
-        serve
-      end
+      @server_thread = Thread.new(&method(:serve))
     end
     def shutdown
       #
@@ -18,7 +40,7 @@ class ClientTest < Helper
   end
 
   def setup_db
-    @tdbh = TestDBHandler.new
+    @tdbh = TestDBHandler.new self.class.test_db
   end
 
   def rand_board(fill_factor: rand)
