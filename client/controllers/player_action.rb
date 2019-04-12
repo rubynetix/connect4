@@ -1,5 +1,6 @@
 module PlayerAction
   PLACE_COUNTER = 0
   FORFEIT = 1
-  REMOTE_UPDATE_BOARD = 2
+  REMOTE_UPDATE = 2
+  EXIT_ONLINE_GAME = 3
 end

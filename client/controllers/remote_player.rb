@@ -13,17 +13,16 @@ class RemotePlayer < Player
     @client = client
   end
 
-  def take_turn(board, ui, state)
+  def take_turn(board, ui)
     ui.set_turn(self)
     @board = board
     @waiting = true
-    update_remote_board(board, @local_user)
+    update_remote_board(board)
     get_action ui, board
   end
 
   # Send updated board to remote server
-  def update_remote_board(board, player)
-    # TODO: Handle fail response
+  def update_remote_board(board, player: @local_user)
     begin
       @client.put_game(@game_id, board, player)
     rescue InvalidTurn
@@ -32,15 +31,27 @@ class RemotePlayer < Player
   end
 
   def get_action(ui, board)
-    # Wait for remote player to take their turn
-    while true
+    ui.register(self)
+    @cancelled = Queue.new
+
+    while @cancelled.empty?
+      # TODO: CURRENTLY WHERE THE GAME FAILS
       result = @client.get_game(@game_id)
-      if result[:turn] == @local_user
-        parse_response(result)
-        break
+      if result[:state] != 'active'
+        return PlayerAction::REMOTE_UPDATE
+      elsif result[:turn] == @local_user
+        ui.unregister(self)
+        return parse_response(result)
       end
-      sleep(0.5)
+      sleep(4)
     end
+
+    ui.unregister(self)
+    PlayerAction::EXIT_ONLINE_GAME
+  end
+
+  def notify(event)
+    @cancelled << true if event.id == UIEvent::EXIT_ONLINE_GAME
   end
 
   # Parse the result from the server and create the corresponding event
@@ -51,9 +62,6 @@ class RemotePlayer < Player
 
   def update_board(board)
     @board.board = board.board
-    # TODO: Might have to do something (eg reset) board.last_location_pos
-    PlayerAction::REMOTE_UPDATE_BOARD
+    PlayerAction::REMOTE_UPDATE
   end
-
-
 end
