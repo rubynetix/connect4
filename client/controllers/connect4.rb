@@ -82,7 +82,6 @@ class Connect4
       nil
     end
   rescue Errno::ECONNREFUSED => e
-    puts e.message
     @ui.display_error(e.message)
   end
 
@@ -175,14 +174,14 @@ class Connect4
 
     begin
       gid = @client.create_game(@user, opp, game_type.id, game_type.new_board)
-    rescue UserDoesNotExist
-      # TODO: Display error
+    rescue UserDoesNotExist => e
+      @ui.displayError(e.message)
       return
     rescue ArgumentError => e
-      # TODO: Display error message
+      @ui.displayError(e.message)
       return
-    rescue GameAlreadyInProgress
-      # TODO: Redirect to existing game
+    rescue GameAlreadyInProgress => e
+      @ui.displayError(e.message)
       return
     end
 
