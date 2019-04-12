@@ -90,7 +90,8 @@ class ClientTest < Helper
         assert_true game.key?(:state), 'result must contain a state'
         assert_true game.key?(:turn), 'result must contain a turn'
         assert_true game.key?(:board), 'result must contain a board'
-        assert_equal game[:board], @tdbh.boards[gid], 'the board must be the same as the board put into the db'
+        assert_equal game[:game_id], gid
+        assert_equal game[:board].to_s, @tdbh.boards[gid].to_s, 'the board must be the same as the board put into the db'
       end
     end
 
@@ -98,11 +99,9 @@ class ClientTest < Helper
 
   def test_put_game
     user = @tdbh.users.sample
-    games = @client.user_games(user)
-    gids = games.map {|e| e[:game_id]}
-    game = games.sample
-    rand_gid = game[:game_id]
-    turn = game[:turn]
+    gids = @client.user_games(user).map {|e| e[:game_id]}
+    rand_gid = gids.sample
+    turn = @client.get_game(rand_gid)[:turn]
 
     board = rand_board
     res = @client.put_game rand_gid, board, turn
@@ -113,9 +112,9 @@ class ClientTest < Helper
       gids.each do |gid|
         game = @client.get_game gid
         if gid.equal?rand_gid
-          assert_equal board, game[:board], 'the board must be the same as the board put into the db'
+          assert_equal board.to_s, game[:board].to_s, 'the board must be the same as the board put into the db'
         else
-          assert_equal @tdbh.boards[gid], game[gid], 'other boards must not have changed'
+          assert_equal @tdbh.boards[gid].to_s, game[:board].to_s, 'other boards must not have changed'
         end
       end
     end
