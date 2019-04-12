@@ -71,10 +71,10 @@ class Game
         @done = true
       when 'w1'
         @done = true
-        @winner = @players[0]
+        @winner = game[:p1] == @players[0].name ? @players[0] : @players[1]
       when 'w2'
         @done = true
-        @winner = @players[1]
+        @winner = game[:p2] == @players[0].name ? @players[0] : @players[1]
       end
     when PlayerAction::EXIT_ONLINE_GAME
       @quit << true
