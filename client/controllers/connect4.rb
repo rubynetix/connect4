@@ -134,7 +134,7 @@ class Connect4
   end
 
   def handle_window_change(event)
-    case event.wid
+    case event.to_wid
     when C4::MainMenuWindow.class_variable_get(:@@wid)
       @tasks.each(&:kill)
       @tasks.clear
