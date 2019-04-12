@@ -231,7 +231,7 @@ class GameConfig
     ]
     @alg = :AlphaBetaPruning
     @game_type = Connect4GameType.instance
-    @client = Client.new
+    @client = nil
     @online = false
     @gid = nil
   end
