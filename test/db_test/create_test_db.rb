@@ -6,14 +6,15 @@ require_relative '../../client/models/counter'
 
 class TestDBHandler < BaseHandler
 
-  attr_reader :users, :no_game_user
+  attr_reader :users, :no_game_user, :boards
 
-  def initialize
-    super
+  def initialize(opts = {})
+    super(opts)
     @uuid = UUID.new
     @game_uuids = []
     @users = ['conservative', 'ndp', 'green', 'rhinoceros', 'liberal']
     @no_game_user = 'libertarian'
+    @boards = {}
     query("DELETE from games;")
     query("DELETE from users;")
     load_users
@@ -56,10 +57,8 @@ class TestDBHandler < BaseHandler
   def load_gameboards
     @game_uuids.each do |gid|
       board = rand_board
+      @boards[gid] = board
       query 'INSERT INTO game_boards (game_id, board) VALUES (UUID_TO_BIN(?), ?);', gid, Marshal.dump(board)
     end
   end
 end
-
-
-tdbh = TestDBHandler.new
