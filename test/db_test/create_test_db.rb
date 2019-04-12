@@ -2,6 +2,7 @@ require 'mysql2'
 require 'uuid'
 require_relative '../../server/base_handler'
 require_relative '../../client/models/game_board'
+require_relative '../../client/models/counter'
 
 
 
@@ -18,16 +19,17 @@ class TestDBHandler < BaseHandler
     query("DELETE from users;")
     load_users
     load_games
+    load_gameboards
   end
 
-  def rand_board(fill_factor: rand(1..100))
+  def rand_board(fill_factor: rand)
     board = GameBoard.connect4
     counters = ([fill_factor.abs.to_f, 1.0].min * board.rows * board.cols).floor
 
     while counters > 0
       c = rand(0...board.cols)
       unless board.col_full?(c)
-        board.place(@default_counter, c)
+        board.place(RedCounter.instance, c)
         counters -= 1
       end
     end
@@ -46,6 +48,13 @@ class TestDBHandler < BaseHandler
       game_id = @uuid.generate
       @game_uuids.append(game_id)
       query(line, game_id)
+    end
+  end
+
+  def load_gameboards
+    @game_uuids.each do |gid|
+      board = rand_board
+      query 'INSERT INTO game_boards (game_id, board) VALUES (UUID_TO_BIN(?), ?);', gid, board
     end
   end
 end
