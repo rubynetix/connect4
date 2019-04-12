@@ -17,7 +17,7 @@ class GameBoard
     end
   end
 
-  def initialize(rows: 6, cols: 7, board: nil, win_check: WinCheck.connect4, last_move: nil)
+  def initialize(rows: 6, cols: 7, board: nil, win_check: WinCheck.connect4, last_move: [-1,-1])
     @rows = rows
     @cols = cols
     @board = board || Array.new(@rows) {Array.new(@cols, EmptyCounter.instance)}
@@ -36,6 +36,10 @@ class GameBoard
     self.class.new rows: @rows.dup, cols: @cols.dup, board: board.dup,
                    last_move: @last_counter_pos.dup, win_check: @win_check.dup
 
+  end
+
+  def last_counter_pos?
+    last_counter_pos == [-1, -1]
   end
 
   def place(counter, col)
@@ -139,7 +143,7 @@ class GameBoard
       row
     end
 
-    new(rows: rows, cols: cols, board: board)
+    new(rows: rows.to_i, cols: cols.to_i, board: board)
   end
 
   private

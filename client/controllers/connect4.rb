@@ -183,25 +183,35 @@ class Connect4
 
     # Save the configuration
     @config.game_type = game_type
+    @config.gid = gid
     @config.online = true
     @ready << true
   end
 
   def continue_online_game(game)
     game_type = game[:game_type] == Connect4GameType.instance.name ? Connect4GameType.instance : TootOttoGameType.instance
-    @config.players[0] = PlayerFactory::player1(game_type, @user)
-    @config.players[1] = PlayerFactory::remote_player(game_type, PlayerFactory::PLAYER_2,
-                                                      game[:opponent], @user, game[:game_id], @client)
+    opp = game[:opponent]
+    gid = game[:game_id]
+    game = @client.get_game(gid)
+
+    if game[:turn] == @user
+      @config.players[0] = PlayerFactory::player1(game_type, @user)
+      @config.players[1] = PlayerFactory::remote_player(game_type, PlayerFactory::PLAYER_2, opp, @user, gid, @client)
+    else
+      @config.players[0] = PlayerFactory::remote_player(game_type, PlayerFactory::PLAYER_1, opp, @user, gid, @client)
+      @config.players[1] = PlayerFactory::player2(game_type, @user)
+    end
 
     @ui.load_online_game
     @config.game_type = game_type
+    @config.gid = game[:game_id]
     @config.online = true
     @ready << true
   end
 end
 
 class GameConfig
-  attr_accessor :players, :game_type, :ui, :alg, :client, :online
+  attr_accessor :players, :game_type, :ui, :alg, :client, :online, :gid
   alias_method :online?, :online
 
   def initialize(ui)
@@ -214,6 +224,7 @@ class GameConfig
     @game_type = Connect4GameType.instance
     @client = Client.new
     @online = false
+    @gid = nil
   end
 
   def reset; end
