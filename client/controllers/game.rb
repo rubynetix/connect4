@@ -64,7 +64,9 @@ class Game
         @winner = @players[1]
       end
     when PlayerAction::REMOTE_UPDATE
-      case @client.get_game(@gid)[:state]
+      game = @client.get_game(@gid)
+      @gameboard = game[:board]
+      case game[:state]
       when 'draw'
         @done = true
       when 'w1'
