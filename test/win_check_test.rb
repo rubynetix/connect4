@@ -168,7 +168,7 @@ class WinCheckTest < Test::Unit::TestCase
 
     # Preconditions
     begin
-      assert_true(last_counter_pos.nil?, "board.last_counter_pos is not initialized to nil")
+      assert_true(empty_board.last_counter_pos?, "board.last_counter_pos is not initialized to nil")
       assert_true(board_counter_check(empty_board, [EmptyCounter.instance]))
     end
 
