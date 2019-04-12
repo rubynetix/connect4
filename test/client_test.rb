@@ -69,12 +69,12 @@ class ClientTest < Helper
     new_gids2 = @client.user_games(user2).map {|e| e[:game_id]}
 
     begin
-      assert_equal gids1.length+1, new_gids1.length
-      assert_equal gids2.length+1, new_gids2.length
-      assert_not_include gids1, gid
-      assert_not_include gids2, gid
-      assert_include new_gids1, gid
-      assert_include new_gids2, gid
+      assert_equal gids1.length+1, new_gids1.length, "One game should have been added for user1"
+      assert_equal gids2.length+1, new_gids2.length, "One game should have been added for user2"
+      assert_not_include gids1, gid, "The created game id must be new for user1"
+      assert_not_include gids2, gid, "The created game id must be new for user2"
+      assert_include new_gids1, gid, "The created game id must be user1's game ids"
+      assert_include new_gids2, gid, "The created game id must be user2's game ids"
     end
 
   end
@@ -82,10 +82,43 @@ class ClientTest < Helper
   def test_get_game
     user = @tdbh.users.sample
 
+    @client.user_games(user).map {|e| e[:game_id]}.each do |gid|
+     game = @client.get_game gid
+
+      begin
+        assert_true game.key?(:game_id), 'result must contain an id'
+        assert_true game.key?(:state), 'result must contain a state'
+        assert_true game.key?(:turn), 'result must contain a turn'
+        assert_true game.key?(:board), 'result must contain a board'
+        assert_equal game[gid], @tdbh.boards[gid], 'the board must be the same as the board put into the db'
+      end
+    end
+
   end
 
   def test_put_game
     user = @tdbh.users.sample
+    games = @client.user_games(user)
+    gids = games.map {|e| e[:game_id]}
+    game = games.sample
+    rand_gid = game[:game_id]
+    turn = game[:turn]
+
+    board = rand_board
+    res = @client.put_game rand_gid, board, turn
+    exp_res = { success: true }
+
+    begin
+      assert_equal exp_res, res, 'Put game response not success'
+      gids.each do |gid|
+        game = @client.get_game gid
+        if gid.equal?rand_gid
+          assert_equal board, game[gid], 'the board must be the same as the board put into the db'
+        else
+          assert_equal @tdbh.boards[gid], game[gid], 'other boards must not have changed'
+        end
+      end
+    end
 
   end
 end
