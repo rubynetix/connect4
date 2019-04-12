@@ -49,6 +49,7 @@ class Game
     when PlayerAction::FORFEIT
       @done = true
       @winner = other_player(player)
+      @client.forfeit_game(@gid, player.name) if @online
     when PlayerAction::PLACE_COUNTER
       # No need to do win analysis locally for online games
       return if @online
