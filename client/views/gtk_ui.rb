@@ -46,7 +46,6 @@ class GtkUI
   end
 
   def display_error(msg)
-    puts Thread.current.object_id
     @app.queue {@app.ui.display_error(msg)}
   end
 

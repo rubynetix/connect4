@@ -82,7 +82,6 @@ class Connect4
       nil
     end
   rescue Errno::ECONNREFUSED => e
-    puts e.message
     @ui.display_error(e.message)
   end
 
