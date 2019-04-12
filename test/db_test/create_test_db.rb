@@ -8,13 +8,14 @@ require_relative '../../client/models/counter'
 
 class TestDBHandler < BaseHandler
 
-  attr_reader :users
+  attr_reader :users, :no_game_user
 
   def initialize
     super
     @uuid = UUID.new
     @game_uuids = []
     @users = ['conservative', 'ndp', 'green', 'rhinoceros', 'liberal']
+    @no_game_user = 'libertarian'
     query("DELETE from games;")
     query("DELETE from users;")
     load_users
@@ -41,6 +42,7 @@ class TestDBHandler < BaseHandler
     @users.each do |user|
       query('INSERT INTO users (username) VALUES (?);', user)
     end
+    query('INSERT INTO users (username) VALUES (?);', @no_game_user)
   end
 
   def load_games

@@ -8,22 +8,12 @@ class ClientTest < Helper
 
   class << self
     def startup
-      puts 'runs twice at start'
       @server_thread = Thread.new do
         serve
       end
     end
     def shutdown
-      puts 'runs only once at end'
-    end
-    def suite
-      mysuite = super
-      def mysuite.run(*args)
-        ClientTest.startup
-        super
-        ClientTest.shutdown
-      end
-      mysuite
+      #
     end
   end
 
@@ -68,8 +58,7 @@ class ClientTest < Helper
 
   def test_create_game
     user1 = @tdbh.users.sample
-    @tdbh.users.delete(user1)
-    user2 = @tdbh.users.sample
+    user2 = @tdbh.no_game_user
     gids1 = @client.user_games user1
     gids2 = @client.user_games user1
 
