@@ -4,14 +4,13 @@ require_relative '../events/window_change_event'
 require_relative 'online_game_menu_window'
 require_relative 'main_menu_window'
 require_relative 'widget_window'
+require_relative 'app_window_id'
 require_relative '../events/ui_event'
 
 module C4
   class OnlineGameWindow < Gtk::Box
     include PassthroughObservable
     include WidgetWindow
-
-    @@wid = "online_game_window"
 
     type_register
 
@@ -31,6 +30,7 @@ module C4
 
     def initialize
       super(:orientation => Gtk::Orientation::VERTICAL)
+      @id = AppWindowId::ONLINE_GAME_WINDOW
 
       init_gameboard
     end
@@ -108,7 +108,7 @@ module C4
 
     def exit_game
       notify_all(UIEvent.new(UIEvent::EXIT_ONLINE_GAME))
-      notify_all(WindowChangeEvent.new(OnlineGameMenuWindow.class_variable_get(:@@wid)))
+      notify_all(WindowChangeEvent.new(AppWindowId::ONLINE_GAME_MENU_WINDOW, @id))
     end
 
     def draw_board(grid_layout, rows, cols)

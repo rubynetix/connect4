@@ -1,7 +1,7 @@
 require_relative '../../../client/views/events/window_change_event'
 require_relative '../../../client/views/observable'
-require_relative '../../../client/views/windows/main_menu_window'
 require_relative 'offline_game_window'
+require_relative 'app_window_id'
 require_relative 'widget_window'
 
 RX_IP = /((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/
@@ -10,8 +10,6 @@ module C4
   class MainMenuWindow < Gtk::Box
     include PassthroughObservable
     include WidgetWindow
-
-    @@wid = "main_menu"
 
     type_register
 
@@ -28,6 +26,7 @@ module C4
 
     def initialize
       super(:orientation => Gtk::Orientation::VERTICAL)
+      @id = AppWindowId::MAIN_MENU_WINDOW
 
       @username_input = username_entry
       @server_input = server_url_entry
@@ -36,7 +35,7 @@ module C4
 
       @connect_btn.signal_connect('clicked') { try_connect }
       @offline_btn.signal_connect('clicked') do
-        notify_all(WindowChangeEvent.new(OfflineGameMenuWindow.class_variable_get(:@@wid)))
+        notify_all(WindowChangeEvent.new(AppWindowId::OFFLINE_GAME_MENU_WINDOW, @id))
       end
     end
 

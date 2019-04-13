@@ -9,6 +9,7 @@ require_relative '../events/window_change_event'
 require_relative '../events/new_online_game_event'
 require_relative 'widget_window'
 require_relative 'stats_window'
+require_relative 'app_window_id'
 require_relative '../../../client/models/game_type'
 
 
@@ -16,8 +17,6 @@ module C4
   class OnlineGameMenuWindow < Gtk::Box
     include PassthroughObservable
     include WidgetWindow
-
-    @@wid = "online_game_menu"
 
     type_register
 
@@ -39,6 +38,7 @@ module C4
 
     def initialize
       super(:orientation => Gtk::Orientation::VERTICAL)
+      @id = AppWindowId::ONLINE_GAME_MENU_WINDOW
 
       @opponent_entry = opponent_entry
       @games_list = current_games_list
@@ -61,8 +61,8 @@ module C4
       @start_btn.signal_connect('clicked') {try_new_game}
       # @c4_btn.signal_connect('clicked') {notify_all(MenuClickEvent.new(MenuClickEvent::CONNECT4))}
       # @to_btn.signal_connect('clicked') {notify_all(MenuClickEvent.new(MenuClickEvent::TOOT_OTTO))}
-      @back_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(MainMenuWindow.class_variable_get(:@@wid)))}
-      @stats_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(StatsWindow.class_variable_get(:@@wid)))}
+      @back_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(AppWindowId::MAIN_MENU_WINDOW, @id))}
+      @stats_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(AppWindowId::STATS_WINDOW, @id))}
     end
 
     def add_current_game(game)
@@ -103,7 +103,7 @@ module C4
     end
 
     def start_new_game
-      notify_all(WindowChangeEvent.new(OnlineGameWindow.class_variable_get(:@@wid)))
+      notify_all(WindowChangeEvent.new(AppWindowId::ONLINE_GAME_WINDOW, @id))
     end
 
     def valid_username?(username)
