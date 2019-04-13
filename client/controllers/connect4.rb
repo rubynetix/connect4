@@ -99,6 +99,7 @@ class Connect4
     case event.click
     when MenuClickEvent::START
       @config.online = false
+      @config.client = nil
       @ready << true
     when MenuClickEvent::PVC_EASY
       @config.alg = :RandomAction
@@ -125,7 +126,6 @@ class Connect4
         @config.players[1].counters = @game_type.p2_counters
       end
     when MenuClickEvent::NEW_GAME
-      @config.reset
       @ready << true
     when MenuClickEvent::RETURN_MAIN_MENU
       @config.reset
@@ -138,6 +138,7 @@ class Connect4
     when C4::MainMenuWindow.class_variable_get(:@@wid)
       @tasks.each(&:kill)
       @tasks.clear
+      @config.reset
     end
   end
 
@@ -246,5 +247,10 @@ class GameConfig
     @gid = nil
   end
 
-  def reset; end
+  def reset
+    @players = [
+        Player.new('p1', [RedCounter.instance]),
+        Player.new('p2', [YellowCounter.instance])
+    ]
+  end
 end
