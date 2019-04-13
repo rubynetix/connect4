@@ -16,6 +16,7 @@ require_relative '../views/windows/app_window_id'
 
 # Class representing the application
 class Connect4
+  GAME_REFRESH = 3
 
   attr_accessor :config
 
@@ -69,7 +70,7 @@ class Connect4
       load_games_thread = Thread.new do
         while true
          load_user_games
-         sleep(2)
+         sleep(GAME_REFRESH)
         end
       end
       @tasks.append(load_games_thread)
