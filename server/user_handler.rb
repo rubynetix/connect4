@@ -5,7 +5,7 @@ require_relative '../client/models/game_type'
 class UserHandler < BaseHandler
 
   def self.endpoints
-    [:create, :games, :list]
+    [:create, :games, :list, :login]
   end
 
   def valid_username(username)

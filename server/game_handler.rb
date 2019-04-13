@@ -9,7 +9,7 @@ require 'mysql2'
 class GameHandler < BaseHandler
 
   def self.endpoints
-    [:create, :get, :put]
+    [:create, :get, :put, :forfeit]
   end
 
   def initialize(opts = {})
