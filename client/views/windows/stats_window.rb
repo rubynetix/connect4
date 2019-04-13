@@ -3,14 +3,13 @@ require_relative '../../../client/views/observable'
 require_relative '../events/ui_event'
 require_relative 'online_game_menu_window'
 require_relative 'widget_window'
+require_relative 'app_window_id'
 require_relative '../components/stats_list_row'
 
 module C4
   class StatsWindow < Gtk::Box
     include PassthroughObservable
     include WidgetWindow
-
-    @@wid = "stats_window"
 
     type_register
 
@@ -25,10 +24,11 @@ module C4
 
     def initialize
       super(:orientation => Gtk::Orientation::VERTICAL)
+      @id = AppWindowId::STATS_WINDOW
 
       @stats_list = stats_list
       @back_btn = back_btn
-      @back_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(OnlineGameMenuWindow.class_variable_get(:@@wid), @@wid))}
+      @back_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(AppWindowId::ONLINE_GAME_MENU_WINDOW, @id))}
     end
 
     def add_user_stat(user_stat)
