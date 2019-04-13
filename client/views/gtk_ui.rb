@@ -3,7 +3,6 @@ require_relative 'windows/offline_game_menu_window'
 require_relative 'windows/online_game_menu_window'
 require_relative 'windows/online_game_window'
 require_relative '../views/windows/app_window_id'
-require_relative '../../client/views/windows/app_window_id'
 
 # Wrapper class that knows about the GTK windows involved
 # in the presenting the application and presents a UI
