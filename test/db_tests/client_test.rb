@@ -113,7 +113,7 @@ class ClientTest < Helper
 
   def test_user_list
     expected = @tdbh.users.append(@tdbh.no_game_user)
-    assert_true(expected.sort.uniq == @client.user_list[:list].sort.uniq)
+    assert_true(expected.sort.uniq == @client.user_list.sort.uniq)
   end
 
   def test_user_games

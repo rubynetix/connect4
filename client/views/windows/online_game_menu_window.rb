@@ -41,6 +41,13 @@ module C4
       @id = AppWindowId::ONLINE_GAME_MENU_WINDOW
 
       @opponent_entry = opponent_entry
+
+      # Create entry completion for users
+      @user_completion = Gtk::EntryCompletion.new
+      @opponent_entry.completion = @user_completion
+      @user_completion.model = user_completion_model([])
+      @user_completion.text_column = 0
+
       @games_list = current_games_list
       @c4_btn = connect4_btn
       @to_btn = toot_otto_btn
@@ -59,8 +66,6 @@ module C4
 
       # Signals
       @start_btn.signal_connect('clicked') {try_new_game}
-      # @c4_btn.signal_connect('clicked') {notify_all(MenuClickEvent.new(MenuClickEvent::CONNECT4))}
-      # @to_btn.signal_connect('clicked') {notify_all(MenuClickEvent.new(MenuClickEvent::TOOT_OTTO))}
       @back_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(AppWindowId::MAIN_MENU_WINDOW, @id))}
       @stats_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(AppWindowId::STATS_WINDOW, @id))}
     end
@@ -74,6 +79,19 @@ module C4
 
     def clear_games_list
       @games_list.children.each { |game| game.unregister(self); @games_list.remove(game) }
+    end
+
+    def user_completion_model(items)
+      store = Gtk::ListStore.new(String)
+      items.each do |word|
+        iter = store.append
+        iter[0] = word
+      end
+      store
+    end
+
+    def load_users(users)
+      @user_completion.model = user_completion_model(users)
     end
 
     def prepare

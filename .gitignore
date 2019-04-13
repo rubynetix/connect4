@@ -13,6 +13,8 @@
 /test/version_tmp/
 /tmp/
 
+/**/*.ui~
+
 ## Environment normalization:
 /vendor/bundle
 /lib/bundler/man/

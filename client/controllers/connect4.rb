@@ -73,6 +73,11 @@ class Connect4
         end
       end
       @tasks.append(load_games_thread)
+      tid = Thread.new do
+        sleep(0.5)
+        load_users
+      end
+      @tasks.append tid
     when UIEvent::LIST_LEAGUE_STATS
       load_league_stats
     when UIEvent::NEW_ONLINE_GAME
@@ -173,6 +178,12 @@ class Connect4
     @ui.load_current_games(games)
   end
 
+  def load_users
+    users = @client.user_list.select { |u| u != @user }
+    puts users
+    @ui.load_users(users)
+  end
+
   def load_league_stats
     @ui.load_stats(@client.get_league)
   end
@@ -187,13 +198,13 @@ class Connect4
     begin
       gid = @client.create_game(@user, opp, game_type.id, game_type.new_board)
     rescue UserDoesNotExist => e
-      @ui.displayError(e.message)
+      @ui.display_error(e.message)
       return
     rescue ArgumentError => e
-      @ui.displayError(e.message)
+      @ui.display_error(e.message)
       return
     rescue GameAlreadyInProgress => e
-      @ui.displayError(e.message)
+      @ui.display_error(e.message)
       return
     end
 

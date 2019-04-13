@@ -29,6 +29,10 @@ class GtkUI
     user_stats.each {|stat| @app.stats_window.add_user_stat(stat)}
   end
 
+  def load_users(users)
+    @app.online_menu_window.load_users(users)
+  end
+
   def load_online_menu
     @app.ui.display_window(AppWindowId::ONLINE_GAME_MENU_WINDOW)
   end
