@@ -81,6 +81,23 @@ class GameHandler < BaseHandler
 END_SQL
   end
 
+  def forfeit(gid, player_name)
+    raise GameDoesNotExist unless
+        exists?("SELECT true from games WHERE game_id=UUID_TO_BIN(?);", gid)
+
+    game = get(gid)
+    if game[:p1] == player_name
+      state = 'w2'
+    elsif game[:p2] == player_name
+      state = 'w1'
+    else
+      raise ArgumentError.new("You are not in this game!")
+    end
+
+    query(load_query('update_game_state'), state, gid)
+    { success: true }
+  end
+
   private
 
   def create_win_check(game_id)

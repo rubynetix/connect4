@@ -45,7 +45,6 @@ class Connect4Test < Helper
 
       sink_stdout do
         c4.launch_game
-        cvc_config.reset
       end
 
       # Postconditions
