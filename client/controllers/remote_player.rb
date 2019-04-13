@@ -35,7 +35,6 @@ class RemotePlayer < Player
     @cancelled = Queue.new
 
     while @cancelled.empty?
-      # TODO: CURRENTLY WHERE THE GAME FAILS
       result = @client.get_game(@game_id)
       if result[:state] != 'active'
         ui.unregister(self)
