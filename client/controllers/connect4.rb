@@ -74,7 +74,7 @@ class Connect4
       end
       @tasks.append(load_games_thread)
       tid = Thread.new do
-        sleep(2)
+        sleep(0.5)
         load_users
       end
       @tasks.append tid
