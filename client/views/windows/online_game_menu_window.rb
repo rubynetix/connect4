@@ -40,14 +40,13 @@ module C4
     def initialize
       super(:orientation => Gtk::Orientation::VERTICAL)
 
-      @users = []
       @opponent_entry = opponent_entry
 
       # Create entry completion for users
-      completion = Gtk::EntryCompletion.new
-      @opponent_entry.completion = completion
-      completion.model = user_completion_model
-      completion.text_column = 0
+      @user_completion = Gtk::EntryCompletion.new
+      @opponent_entry.completion = @user_completion
+      @user_completion.model = user_completion_model([])
+      @user_completion.text_column = 0
 
       @games_list = current_games_list
       @c4_btn = connect4_btn
@@ -82,9 +81,9 @@ module C4
       @games_list.children.each { |game| game.unregister(self); @games_list.remove(game) }
     end
 
-    def user_completion_model
+    def user_completion_model(items)
       store = Gtk::ListStore.new(String)
-      @users.each do |word|
+      items.each do |word|
         iter = store.append
         iter[0] = word
       end
@@ -92,7 +91,7 @@ module C4
     end
 
     def load_users(users)
-      @users = users
+      @user_completion.model = user_completion_model(users)
     end
 
     def prepare
