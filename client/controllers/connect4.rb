@@ -72,6 +72,7 @@ class Connect4
         end
       end
       @tasks.append(load_games_thread)
+      load_users
     when UIEvent::LIST_LEAGUE_STATS
       load_league_stats
     when UIEvent::NEW_ONLINE_GAME
@@ -160,6 +161,11 @@ class Connect4
     end
 
     @ui.load_current_games(games)
+  end
+
+  def load_users
+    users = @client.user_list.select { |u| u != @user }
+    @ui.load_users(users)
   end
 
   def load_league_stats

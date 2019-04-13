@@ -40,7 +40,15 @@ module C4
     def initialize
       super(:orientation => Gtk::Orientation::VERTICAL)
 
+      @users = []
       @opponent_entry = opponent_entry
+
+      # Create entry completion for users
+      completion = Gtk::EntryCompletion.new
+      @opponent_entry.completion = completion
+      completion.model = user_completion_model
+      completion.text_column = 0
+
       @games_list = current_games_list
       @c4_btn = connect4_btn
       @to_btn = toot_otto_btn
@@ -59,8 +67,6 @@ module C4
 
       # Signals
       @start_btn.signal_connect('clicked') {try_new_game}
-      # @c4_btn.signal_connect('clicked') {notify_all(MenuClickEvent.new(MenuClickEvent::CONNECT4))}
-      # @to_btn.signal_connect('clicked') {notify_all(MenuClickEvent.new(MenuClickEvent::TOOT_OTTO))}
       @back_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(MainMenuWindow.class_variable_get(:@@wid)))}
       @stats_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(StatsWindow.class_variable_get(:@@wid)))}
     end
@@ -74,6 +80,19 @@ module C4
 
     def clear_games_list
       @games_list.children.each { |game| game.unregister(self); @games_list.remove(game) }
+    end
+
+    def user_completion_model
+      store = Gtk::ListStore.new(String)
+      @users.each do |word|
+        iter = store.append
+        iter[0] = word
+      end
+      store
+    end
+
+    def load_users(users)
+      @users = users
     end
 
     def prepare

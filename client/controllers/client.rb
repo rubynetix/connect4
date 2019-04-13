@@ -30,8 +30,8 @@ class Client
     call("user.games", username)[:games].map(&method(:symbolize_keys))
   end
 
-  def user_list()
-    call("user.list")
+  def user_list
+    call("user.list")[:list]
   end
 
   def create_game(username1, username2, game_type, game_board)
