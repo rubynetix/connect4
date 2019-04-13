@@ -31,7 +31,6 @@ class Client
   end
 
   def user_list
-    puts 'get users'
     call("user.list")[:list]
   end
 
