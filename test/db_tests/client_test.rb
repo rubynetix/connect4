@@ -192,4 +192,26 @@ class ClientTest < Helper
     end
 
   end
+
+  def test_forfeit_game
+    1..3.times do
+      user = @tdbh.users.sample
+      gids = @client.user_games(user).map {|e| e[:game_id]}
+      rand_gid = gids.sample
+      game_before = @client.get_game(rand_gid)
+
+      @client.forfeit_game(rand_gid, user)
+      game_after = @client.get_game(rand_gid)
+      begin
+        assert_equal(game_before[:game_id], game_after[:game_id], "ID changed after forfeit.")
+        assert_equal(game_before[:turn], game_after[:turn], "Turn changed after forfeit.")
+        assert_equal(game_before[:board].to_s, game_after[:board].to_s, "Board changed after forfeit.")
+        if game_before[:p1] == user
+          assert_equal('w2', game_after[:state], "State did not change to w2.")
+        elsif game_before[:p2] == user
+          assert_equal('w1', game_after[:state], "State did not change to w2.")
+        end
+      end
+    end
+  end
 end

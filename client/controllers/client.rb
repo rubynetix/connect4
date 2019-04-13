@@ -64,6 +64,10 @@ class Client
     end
   end
 
+  def forfeit_game(gid, player_name)
+    call("game.forfeit", gid, player_name)
+  end
+
   def get_league_standings(username)
     call("league.standings", username)
   end

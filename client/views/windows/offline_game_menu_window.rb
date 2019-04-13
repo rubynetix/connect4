@@ -1,14 +1,13 @@
 require_relative '../../../client/views/events/window_change_event'
 require_relative '../../../client/views/observable'
 require_relative 'main_menu_window'
+require_relative 'app_window_id'
 require_relative 'widget_window'
 
 module C4
   class OfflineGameMenuWindow < Gtk::Box
     include PassthroughObservable
     include WidgetWindow
-
-    @@wid = "game_menu"
 
     type_register
 
@@ -30,6 +29,7 @@ module C4
 
     def initialize
       super(:orientation => Gtk::Orientation::VERTICAL)
+      @id = AppWindowId::OFFLINE_GAME_MENU_WINDOW
 
       init_menu
     end
@@ -71,7 +71,7 @@ module C4
       @menu_pvp.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::PVP))}
       @menu_pvc.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::PVC_EASY))}
       @menu_pvc_hard.signal_connect("clicked") {notify_all(MenuClickEvent.new(MenuClickEvent::PVC_HARD))}
-      @back_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(MainMenuWindow.class_variable_get(:@@wid)))}
+      @back_btn.signal_connect('clicked') {notify_all(WindowChangeEvent.new(AppWindowId::MAIN_MENU_WINDOW, @id))}
     end
 
     def handle_radio_click

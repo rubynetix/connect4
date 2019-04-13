@@ -12,6 +12,7 @@ require_relative 'algorithms/alpha_beta_pruning'
 require_relative 'algorithms/random'
 require_relative '../../client/views/events/server_connect_event'
 require_relative 'client'
+require_relative '../views/windows/app_window_id'
 
 # Class representing the application
 class Connect4
@@ -79,11 +80,12 @@ class Connect4
       new_online_game(event.opponent, event.game_type)
     when UIEvent::CONTINUE_ONLINE_GAME
       continue_online_game(event.game)
+    when UIEvent::WINDOW_CHANGE
+      handle_window_change(event)
     else
       nil
     end
   rescue Errno::ECONNREFUSED => e
-    puts e.message
     @ui.display_error(e.message)
   end
 
@@ -98,6 +100,7 @@ class Connect4
     case event.click
     when MenuClickEvent::START
       @config.online = false
+      @config.client = nil
       @ready << true
     when MenuClickEvent::PVC_EASY
       @config.alg = :RandomAction
@@ -124,11 +127,19 @@ class Connect4
         @config.players[1].counters = @game_type.p2_counters
       end
     when MenuClickEvent::NEW_GAME
-      @config.reset
       @ready << true
     when MenuClickEvent::RETURN_MAIN_MENU
       @config.reset
       @ui.load_menu
+    end
+  end
+
+  def handle_window_change(event)
+    case event.to_wid
+    when AppWindowId::MAIN_MENU_WINDOW
+      @tasks.each(&:kill)
+      @tasks.clear
+      @config.reset
     end
   end
 
@@ -181,14 +192,14 @@ class Connect4
 
     begin
       gid = @client.create_game(@user, opp, game_type.id, game_type.new_board)
-    rescue UserDoesNotExist
-      # TODO: Display error
+    rescue UserDoesNotExist => e
+      @ui.displayError(e.message)
       return
     rescue ArgumentError => e
-      # TODO: Display error message
+      @ui.displayError(e.message)
       return
-    rescue GameAlreadyInProgress
-      # TODO: Redirect to existing game
+    rescue GameAlreadyInProgress => e
+      @ui.displayError(e.message)
       return
     end
 
@@ -242,5 +253,10 @@ class GameConfig
     @gid = nil
   end
 
-  def reset; end
+  def reset
+    @players = [
+        Player.new('p1', [RedCounter.instance]),
+        Player.new('p2', [YellowCounter.instance])
+    ]
+  end
 end
