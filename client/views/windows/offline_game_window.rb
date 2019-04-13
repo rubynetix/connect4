@@ -1,13 +1,12 @@
 require_relative '../../../client/views/events/window_change_event'
 require_relative '../../../client/views/observable'
 require_relative 'widget_window'
+require_relative 'app_window_id'
 
 module C4
   class OfflineGameWindow < Gtk::Box
     include PassthroughObservable
     include WidgetWindow
-
-    @@wid = "game_window"
 
     type_register
 
@@ -29,6 +28,7 @@ module C4
 
     def initialize
       super(:orientation => Gtk::Orientation::VERTICAL)
+      @id = AppWindowId::OFFLINE_GAME_WINDOW
 
       init_gameboard
     end
