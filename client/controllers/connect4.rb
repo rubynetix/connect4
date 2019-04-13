@@ -180,6 +180,7 @@ class Connect4
 
   def load_users
     users = @client.user_list.select { |u| u != @user }
+    puts users
     @ui.load_users(users)
   end
 
