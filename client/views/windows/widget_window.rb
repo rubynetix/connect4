@@ -3,7 +3,7 @@ require_relative '../events/dialog_event'
 
 module WidgetWindow
   def id
-    self.class.class_variable_get(:@@wid)
+    @id
   end
 
   # Override in windows that need to prepare before
