@@ -193,13 +193,13 @@ class Connect4
     begin
       gid = @client.create_game(@user, opp, game_type.id, game_type.new_board)
     rescue UserDoesNotExist => e
-      @ui.displayError(e.message)
+      @ui.display_error(e.message)
       return
     rescue ArgumentError => e
-      @ui.displayError(e.message)
+      @ui.display_error(e.message)
       return
     rescue GameAlreadyInProgress => e
-      @ui.displayError(e.message)
+      @ui.display_error(e.message)
       return
     end
 
