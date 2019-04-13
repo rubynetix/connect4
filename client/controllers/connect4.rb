@@ -73,7 +73,11 @@ class Connect4
         end
       end
       @tasks.append(load_games_thread)
-      load_users
+      tid = Thread.new do
+        sleep(2)
+        load_users
+      end
+      @tasks.append tid
     when UIEvent::LIST_LEAGUE_STATS
       load_league_stats
     when UIEvent::NEW_ONLINE_GAME
