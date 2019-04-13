@@ -12,7 +12,7 @@ require_relative 'algorithms/alpha_beta_pruning'
 require_relative 'algorithms/random'
 require_relative '../../client/views/events/server_connect_event'
 require_relative 'client'
-require_relative '../views/windows/main_menu_window'
+require_relative '../views/windows/app_window_id'
 
 # Class representing the application
 class Connect4
